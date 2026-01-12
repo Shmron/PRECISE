@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental & Social Determinants of Maternal Health | PRECISE Network</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --terracotta: #C86A3F;
+            --ochre: #D4A574;
+            --forest: #3A5A40;
+            --sage: #6B8E6B;
+            --clay: #A85751;
+            --sand: #E8D6C3;
+            --earth: #8B6F47;
+            --sky: #5B8E9F;
+            --lavender: #8B7BA8;
+            --olive: #7A8450;
+            --text-primary: #2A2520;
+            --text-secondary: #5A5047;
+            --bg-cream: #FAF7F2;
+            --bg-light: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--bg-cream) 0%, #F5EFE7 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(200, 106, 63, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(58, 90, 64, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-light);
+            border-radius: 0;
+            box-shadow: 0 20px 60px rgba(42, 37, 32, 0.12);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Decorative border */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg,
+                var(--terracotta) 0%,
+                var(--forest) 25%,
+                var(--sky) 50%,
+                var(--lavender) 75%,
+                var(--clay) 100%);
+        }
+
+        header {
+            padding: 4rem 3rem 3rem;
+            background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-cream) 100%);
+            border-bottom: 1px solid rgba(138, 111, 71, 0.2);
+            position: relative;
+        }
+
+        .header-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--terracotta);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(138, 111, 71, 0.2);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        main {
+            padding: 3rem;
+        }
+
+        .intro-section {
+            max-width: 750px;
+            margin: 0 auto 4rem;
+            text-align: center;
+        }
+
+        .intro-section p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .category-section {
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .category-section {
+            transform: translateY(20px);
+        }
+
+        .category-section:nth-child(1) { animation-delay: 0.1s; }
+        .category-section:nth-child(2) { animation-delay: 0.2s; }
+        .category-section:nth-child(3) { animation-delay: 0.3s; }
+        .category-section:nth-child(4) { animation-delay: 0.4s; }
+        .category-section:nth-child(5) { animation-delay: 0.5s; }
+        .category-section:nth-child(6) { animation-delay: 0.6s; }
+        .category-section:nth-child(7) { animation-delay: 0.7s; }
+        .category-section:nth-child(8) { animation-delay: 0.8s; }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            padding: 1.5rem;
+            border-radius: 0;
+            background: var(--bg-cream);
+            border-left: 6px solid;
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover {
+            background: var(--bg-light);
+            box-shadow: 0 4px 20px rgba(42, 37, 32, 0.08);
+            transform: translateX(4px);
+        }
+
+        .category-number {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+            opacity: 0.3;
+            min-width: 80px;
+        }
+
+        .category-title-wrapper {
+            flex: 1;
+        }
+
+        .category-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .category-count {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+            letter-spacing: 0.05em;
+        }
+
+        .toggle-indicator {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .category-header.active .toggle-indicator {
+            transform: rotate(180deg);
+        }
+
+        /* Category colors */
+        .cat-air { border-color: var(--forest); }
+        .cat-air .category-number { color: var(--forest); }
+
+        .cat-anc { border-color: var(--clay); }
+        .cat-anc .category-number { color: var(--clay); }
+
+        .cat-temp { border-color: var(--terracotta); }
+        .cat-temp .category-number { color: var(--terracotta); }
+
+        .cat-precip { border-color: var(--sky); }
+        .cat-precip .category-number { color: var(--sky); }
+
+        .cat-humid { border-color: var(--sage); }
+        .cat-humid .category-number { color: var(--sage); }
+
+        .cat-isolate { border-color: var(--lavender); }
+        .cat-isolate .category-number { color: var(--lavender); }
+
+        .cat-soil { border-color: var(--olive); }
+        .cat-soil .category-number { color: var(--olive); }
+
+        .cat-social { border-color: var(--ochre); }
+        .cat-social .category-number { color: var(--ochre); }
+
+        .variables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .variables-grid.active {
+            max-height: 10000px;
+            opacity: 1;
+            margin-bottom: 2rem;
+        }
+
+        .variable-card {
+            background: var(--bg-light);
+            border: 1px solid rgba(138, 111, 71, 0.15);
+            padding: 1.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .variable-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: currentColor;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .variable-card:hover {
+            border-color: rgba(138, 111, 71, 0.3);
+            box-shadow: 0 8px 24px rgba(42, 37, 32, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .variable-card:hover::before {
+            opacity: 0.6;
+        }
+
+        .cat-air .variable-card { color: var(--forest); }
+        .cat-anc .variable-card { color: var(--clay); }
+        .cat-temp .variable-card { color: var(--terracotta); }
+        .cat-precip .variable-card { color: var(--sky); }
+        .cat-humid .variable-card { color: var(--sage); }
+        .cat-isolate .variable-card { color: var(--lavender); }
+        .cat-soil .variable-card { color: var(--olive); }
+        .cat-social .variable-card { color: var(--ochre); }
+
+        .variable-name {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .variable-unit {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .stats-display {
+            background: var(--bg-cream);
+            padding: 1rem;
+            border-radius: 0;
+            margin-bottom: 1rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .stats-display div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-display div:last-child {
+            margin-bottom: 0;
+        }
+
+        .stats-label {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .stats-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .expand-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: currentColor;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .expand-btn:hover {
+            opacity: 0.7;
+        }
+
+        .expand-btn::after {
+            content: '↓';
+            transition: transform 0.3s ease;
+        }
+
+        .variable-card.expanded .expand-btn::after {
+            transform: rotate(180deg);
+        }
+
+        .variable-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 1.5rem;
+        }
+
+        .variable-card.expanded .variable-details {
+            max-height: 2000px;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(138, 111, 71, 0.1);
+        }
+
+        .detail-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .detail-section h4 {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: currentColor;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .detail-section p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .dataset-info {
+            background: var(--bg-cream);
+            padding: 0.75rem 1rem;
+            border-left: 3px solid currentColor;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            margin-top: 0.5rem;
+        }
+
+        .formula {
+            background: var(--text-primary);
+            color: var(--sand);
+            padding: 1rem 1.25rem;
+            border-radius: 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            margin-top: 0.75rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .references-section {
+            margin-top: 5rem;
+            padding: 3rem;
+            background: var(--bg-cream);
+            border-top: 1px solid rgba(138, 111, 71, 0.2);
+        }
+
+        .references-section h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+        }
+
+        .reference-item {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .reference-number {
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+            color: var(--terracotta);
+        }
+
+        footer {
+            padding: 3rem;
+            background: var(--text-primary);
+            color: var(--sand);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--ochre);
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .container {
+                border-radius: 0;
+            }
+
+            header {
+                padding: 2rem 1.5rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            main {
+                padding: 1.5rem;
+            }
+
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .category-number {
+                font-size: 2rem;
+                min-width: auto;
+            }
+
+            .variables-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .references-section,
+            footer {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-label">PRECISE Network Research</div>
+            <h1>Environmental & Social Determinants of Maternal Health</h1>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Study Sites</div>
+                    <div class="meta-value">Kenya • Mozambique • The Gambia</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Sample Size</div>
+                    <div class="meta-value">5,264 pregnant women</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Indicators</div>
+                    <div class="meta-value">8 categories • 21 variables</div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="intro-section">
+                <p>Designing and measuring geographically varying phenomena that elevate the risk of adverse maternal health outcomes related to placental function across three Sub-Saharan African nations.</p>
+            </div>
+
+            <!-- 1. AIR QUALITY -->
+            <div class="category-section cat-air">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">01</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">🌿</div>
+                        <h2 class="category-title">Air Quality</h2>
+                        <div class="category-count">6 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">NDVI</div>
+                        <div class="variable-unit">Normalized Difference Vegetation Index (-1 to 1, unitless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">0.42 ± 0.14</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.42 [0.28, 0.54]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">0.71</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Landsat Collection 2 Tier 1 Level 2 8-Day NDVI Composite</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Computed by determining reflectance values in visible red (RED) and near-infrared (NIR) bands of remotely sensed images. Values calculated per village by averaging pixel values of the NDVI raster within each village boundary.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>The greenness of the environment had a positive effect on pregnancy outcomes, despite poor air quality and civilization (24). Increasing evidence has shown that exposure to greenness in the vicinity of home is related to health (25). Previous research has shown correlation between satellite derived vegetation indices such as NDVI with health wellbeing as a proxy measure for air quality (26–28). High NDVI values are inversely proportional to air pollution levels.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5</div>
+                        <div class="variable-unit">Particulate Matter (µg/m³)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">13.17 ± 6.22</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">7.85 [7.00, 17.58]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">42.93</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Global High Air Pollutants (GHAP) PM2.5 Concentrations</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Raster values averaged per neighborhood to obtain community-level PM2.5 exposure estimates.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Quasi-direct air quality measure. The exposure level of PM2.5 is significantly correlated with an increased incidence of gestational hypertension and a decrease in birth weight (36).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Distance to Highways</div>
+                        <div class="variable-unit">Kilometers (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">2.35 ± 2.72</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1.03 [0.40, 5.21]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">8.05</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Road dataset, HDX population data (100m resolution)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">Σ (Population × distance to nearest highway) / Σ Population</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Euclidean distance to road is a proxy for traffic pollution (29,30). Women living within 200m from a major road increased the risk of preterm birth by 1.5 times (31). The concentration of traffic pollutants is spatially non-linear, with the highest levels adjacent to roads and a non-linear decay with increasing distance (32). Residential proximity to major roadways may serve as a proxy for a complex set of urban exposures, including traffic-related air pollution (33).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Distance to Major Roads</div>
+                        <div class="variable-unit">Kilometers (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">0.86 ± 1.31</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.37 [0.29, 0.98]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">3.86</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Road dataset, HDX population data (100m resolution)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">Σ (Population × distance to nearest major road) / Σ Population</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proxy for traffic-related air pollution exposure (29,30). Complements highway distance measure by capturing proximity to all major transportation routes that may affect air quality.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Road Network Density</div>
+                        <div class="variable-unit">Population-weighted (km⁻¹)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">8.43 ± 5.79</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">8.20 [2.09, 16.12]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">20.49</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Road dataset, HDX population data (100m resolution)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">Population-Weighted Road Density =
+(Σ (Population_i × Road Density_i)) / (Σ Population_i)
+
+Where:
+  i = each grid cell within village
+  Road Density_i = Road Length_i / Area_i</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Pregnant women exposed to traffic pollution have an increased risk of negative birth outcomes (37). Road related pollution increases with an increase in road density as more roads built are in response of high traffic volume in an area motivated by social and economic benefits of these roads. The population living near busy roads such as highways and major roads are more likely to be affected by vehicular pollution (38).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Elevation</div>
+                        <div class="variable-unit">Altitude (meters)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">84.80 ± 136.75</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">26.55 [16.96, 111.95]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">184.07</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Digital Elevation Model (DEM) - MERIT/DEM/v1_0_3: Elevation referenced to EGM96 geoid model</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Mean elevation pixel value computed for each village/neighborhood from DEM raster data.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Atmospheric pressure and air circulation changes by elevation could affect movements of air pollutants and air pollution concentrations at a given location (34). It has also been shown that recent migrants to high altitude may experience infertility, low birth weight, and a significantly higher risk of pregnancy complications (35).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ANC SEEKING BEHAVIOUR -->
+            <div class="category-section cat-anc">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">02</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">🏥</div>
+                        <h2 class="category-title">ANC Seeking Behaviour</h2>
+                        <div class="category-count">2 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Road Quality Index</div>
+                        <div class="variable-unit">RQI (0 to 1, dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">0.45 ± 0.09</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.39 [0.37, 0.53]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">0.70</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Road dataset, HDX population data (100m resolution)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">RQI = (Σ (road length × speed limit) / Σ road length) / 120 km/h</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>The quality of roads used to transport women to health facilities differ with the type of the road and seasonal variations. Paved or unpaved roads affects the quality of the road which affects navigability. During the wet season, roads are flooded with poor quality due to flooding and slippery surfaces. These limitations affect speed limit in each respective road surface. Travel times to seek healthcare on roads with low RQI are long and may have adverse health outcomes (39).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Travel Time to Facility</div>
+                        <div class="variable-unit">Spatial Access (minutes)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">13.97 ± 45.54</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">6.40 [5.25, 12.61]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">42.60</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Road network, village point dataset, health facilities</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">Spatial Access to Care =
+(Σ (Population_i × Access_i)) / (Σ Population_i)
+
+Where:
+  Population_i = Population of grid cell i
+  Access_i = Travel distance and time from grid
+             cell centroid to nearest healthcare facility
+
+Calculated using network analysis, averaged per community.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Travel time to the nearest facility is a known determinant of access to care. Delays in getting to a health facility when there is a pregnancy-related need are the second of three delays known to elevate risks for adverse maternal outcomes (40). Most pregnancy-related deaths are preventable and could be averted if all women had access to timely health services (41).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. TEMPERATURE -->
+            <div class="category-section cat-temp">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">03</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">🌡️</div>
+                        <h2 class="category-title">Temperature</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Mean Monthly Temperature</div>
+                        <div class="variable-unit">Degrees Celsius (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">27.48 ± 2.83</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">26.93 [23.27, 31.43]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">36.29</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF/ERA5_LAND/MONTHLY_AGGR</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Average monthly temperature for the month derived from ERA5-Land monthly aggregated climate reanalysis data.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Birth weight and length have seasonal fluctuations due to temperature variations (40,41). Temperature exposure during pregnancy can affect fetal development and maternal health outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. PRECIPITATION -->
+            <div class="category-section cat-precip">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">04</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">🌧️</div>
+                        <h2 class="category-title">Precipitation</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Mean Monthly Precipitation</div>
+                        <div class="variable-unit">Millimeters (mm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">4.88 ± 6.68</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.02 [0.36, 7.49]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">22.02</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF/ERA5_LAND/MONTHLY_AGGR</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Average monthly precipitation for the month per community from ERA5-Land monthly aggregated data.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Birth weight and length may also have seasonal fluctuations due to precipitation variations (41). Rainfall affects food availability, disease transmission, and access to healthcare.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. RELATIVE HUMIDITY -->
+            <div class="category-section cat-humid">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">05</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">💧</div>
+                        <h2 class="category-title">Relative Humidity</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Mean Monthly Relative Humidity</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">67.00 ± 13.14</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">71.21 [49.82, 78.73]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">85.19</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF/ERA5_LAND/HOURLY</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">Calculate saturation vapor pressure at temperature T:
+e_s(T) = exp((a·T) / (b+T))
+
+Calculate saturation vapor pressure at dew point T_d:
+e_s(T_d) = exp((a·T_d) / (b+T_d))
+
+Calculate relative humidity:
+RH = 100 · (e_s(T_d) / e_s(T))
+
+Where:
+  a = 17.625, b = 243.04 (Magnus-Tetens approximation)
+  T = Temperature (°C)
+  T_d = Dew point temperature (°C)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Low humidity is a protective factor for preterm birth, whereas high humidity is a risk factor for preterm birth (42). Humidity affects thermal comfort and disease transmission.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. ISOLATION -->
+            <div class="category-section cat-isolate">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">06</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">🚶</div>
+                        <h2 class="category-title">Isolation</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Walking Distance to Major Roads</div>
+                        <div class="variable-unit">Kilometers (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">1.48 ± 3.35</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.60 [0.42, 1.24]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">7.11</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Road network, village point dataset, population density</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">Σ (Population × walking distance to major roads) / Σ Population</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>It is estimated that about 1.4 million people a year either miss, refuse or do not seek healthcare due to transport difficulties (43). Walking distance to major roads is a proxy for isolation indicator. The longer the walking distance, the more isolated the place where woman lives (44). Isolation affects access to healthcare and emergency services during pregnancy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. MACRONUTRIENTS -->
+            <div class="category-section cat-soil">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">07</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">🌱</div>
+                        <h2 class="category-title">Macronutrients (Soil Quality)</h2>
+                        <div class="category-count">3 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Nitrogen</div>
+                        <div class="variable-unit">Grams per kilogram (g/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">57.94 ± 7.64</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">53.84 [50.61, 67.45]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">80.30</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/nitrogen_total</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Raster values averaged per neighborhood to obtain community-level soil nitrogen content.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Soil nutrients affect agricultural productivity and food security, indirectly affecting maternal nutrition during pregnancy. Poor soil quality can contribute to malnutrition and adverse pregnancy outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Phosphorus</div>
+                        <div class="variable-unit">Parts per million (ppm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">24.23 ± 0.86</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">24.26 [23.56, 24.97]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">25.75</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/phosphorus_extractable</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Raster values averaged per neighborhood to obtain extractable phosphorus levels.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Essential for crop productivity; affects household food security and maternal nutritional status during pregnancy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Potassium</div>
+                        <div class="variable-unit">Parts per million (ppm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean ±SD</span><span class="stats-value">44.76 ± 1.59</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">45.30 [43.00, 47.09]</span></div>
+                            <div><span class="stats-label">P95</span><span class="stats-value">49.22</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/potassium_extractable</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Raster values averaged per neighborhood to obtain extractable potassium levels.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Links to agricultural productivity and food security, indirectly affecting maternal nutrition and pregnancy health outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. SOCIO-DEMOGRAPHIC -->
+            <div class="category-section cat-social">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">08</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">👥</div>
+                        <h2 class="category-title">Socio-Demographic Indicators</h2>
+                        <div class="category-count">8 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">▼</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Social Inclusion</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">7.5% (n=338/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total women who know and participate in community groups / Σ Population) × 100</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Number of pregnant women participating in Healthy Communities Initiatives and activities. This captures the extent to which pregnant women are engaged in community-level health promotion programs, reflecting processes through which societies combat poverty and social exclusion during the critical prenatal period (45).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Community Help</div>
+                        <div class="variable-unit">Bonding Social Capital</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">62.6% have community help</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total that are aware they received help from community / Σ Population) × 100
+
+"Don't know" responses reclassified to "No"
+(Yes=1, No=0, Don't Know=0)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women who received help from neighbours during pregnancy-related problems. Bonding social capital refers to strong ties of trust and cooperation between close individuals such as family members, close friends, relatives, and neighbours, which act through psychosocial support mechanisms to improve health during pregnancy (45). Social support during pregnancy reduces the risk of low child body length, birthweight, and preterm birth (46).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">General Financial Autonomy</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">11.7% have autonomy</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total participants who are primary financial decision makers / Σ Population) × 100
+
+Responses indicating other decision-makers (husband, male partner, family members, or "don't know") coded as lacking financial autonomy.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women who reported autonomous decision-making regarding household financial matters. Gender power relations are fundamentally shaped by women's access to and control over financial resources, with limited financial control affecting maternal health decisions and access to reproductive health services (47). Research consistently demonstrates that in households where women make decisions on financial matters, they have a greater chance of receiving antenatal and delivery care (48,49).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Pregnancy Financial Autonomy</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">16.0% have autonomy</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total participants who are primary financial decision makers / Σ Population) × 100
+
+Responses indicating other decision-makers coded as lacking autonomy.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women who reported autonomous decision-making regarding pregnancy related financial matters. Women with financial autonomy on pregnancy related issues have greater uptake of antenatal care, birth attendance and use of maternal services and positive birth outcomes (49,50).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Partner Availability</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">73.3% (n=3858/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total participants living with partners / Σ Population) × 100</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women living with a partner. Pregnant women whose partners are involved in their pregnancies are more likely to receive prenatal care while lack of prenatal partner involvement is associated with higher rates of neonatal mortality, low birth weight, preterm birth, and small for gestational age (51).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Emotional Support</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">32.2% (n=1693/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total participants who received emotional support / Σ Population) × 100</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women who reported to get Emotional support from neighbours and other people in the community. Emotional support is perceived as availability of empathy, reassurance, and caring from family, friends, or neighbours during pregnancy. Low social support shows significant associations with the risk of depression, anxiety, and self-harm during pregnancy (51). Low emotional support is associated with worse maternal mental health and may indirectly raise risk factors for adverse birth outcomes through stress-related pathways (52).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Transport Support</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">22.2% (n=1170/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total participants who received transport support / Σ Population) × 100</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women whose households have access to social transport support if there were pregnancy related problems. Emergency maternal transport services are essential to improving maternal outcomes and mitigating the extent to which lack of transport is a barrier to utilizing health services, thereby decreasing morbidity and mortality rates (53). Transportation barriers produce delays or missed antenatal care and emergency care, which are consistently reported as contributors to poor perinatal outcomes (54).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Financial Support</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">4.7% (n=250/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PRECISE questionnaire survey data</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula">(Σ Total participants who received financial support / Σ Population) × 100</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Proportion of pregnant women whose households have access to social financial support during pregnancy. Financial constraints represent one of several socio-economic and healthcare system barriers that significantly hinder women's access to antenatal care in low- and middle-income countries (55). Financial support significantly influences pregnant women LMICS by enhancing their access to essential maternal health services. This support can alleviate financial barriers, ultimately leading to improved health outcomes for both mothers and their infants (56).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- REFERENCES -->
+        <div class="references-section">
+            <h2>References</h2>
+            <div class="reference-item"><span class="reference-number">24.</span> Lee KJ, Moon H, Yun HR, Park EL, Park AR, Choi H, et al. Greenness, civil environment, and pregnancy outcomes: perspectives with a systematic review and meta-analysis. Environ Health. 2020 Dec;19(1):91.</div>
+            <div class="reference-item"><span class="reference-number">25.</span> Rantala AK, Paciência I, Antikainen H, Hjort J, Hugg TT, Jaakkola MS, et al. Residential greenness during pregnancy and early life and development of asthma up to 27 years of age: The Espoo Cohort Study. Environ Res. 2024 July;252:118776.</div>
+            <div class="reference-item"><span class="reference-number">26.</span> Reza M, Kusuma C, Hernawati R, Darmawan S. CORRELATION ANALYSIS OF PM10 AIR POLLUTION WITH NDVI (NORMALIZED DIFFERENCE VEGETATION INDEX) BASED ON LANDSAT-8 AND SENTINEL-2A SATELLITE IMAGES Case Study: Bandung City, West Java. 2014;43–54.</div>
+            <div class="reference-item"><span class="reference-number">27.</span> Sedda L, Tatema AJ, Morley DW, Atkinson PM, Wardrop NA, Pezzulo C, et al. Poverty, health and satellite-derived vegetation indices: Their inter-spatial relationship in West Africa. Int Health. 2015;7(2):99–106.</div>
+            <div class="reference-item"><span class="reference-number">28.</span> Yang BY, Markevych I, Bloom MS, Heinrich J, Guo Y, Morawska L, et al. Community greenness, blood pressure, and hypertension in urban dwellers: The 33 Communities Chinese Health Study. Environ Int. 2019;126(November 2018):727–34.</div>
+            <div class="reference-item"><span class="reference-number">29.</span> Barnett AG, Plonka K, Seow WK, Wilson LA, Hansen C. Increased traffic exposure and negative birth outcomes: A prospective cohort in Australia. Environ Health Glob Access Sci Source. 2011;10(1):1–11.</div>
+            <div class="reference-item"><span class="reference-number">30.</span> Hitchins J, Morawska L, Wolff R, Gilbert D. Concentrations of submicrometre particles from vehicle emissions near a major road. Atmos Environ. 2000;34(1):51–9.</div>
+            <div class="reference-item"><span class="reference-number">31.</span> Yorifuji T, Naruse H, Kashima S, Takao S, Murakoshi T, Doi H, et al. Residential proximity to major roads and adverse birth outcomes: a hospital-based study. Environ Health. 2013 Dec;12(1):34.</div>
+            <div class="reference-item"><span class="reference-number">32.</span> Račić N, Petrić V, Mureddu F, Portin H, Niemi JV, Hussein T, et al. A Proxy Model for Traffic Related Air Pollution Indicators Based on Traffic Count. Atmosphere. 2025 May 1;16(5):538.</div>
+            <div class="reference-item"><span class="reference-number">33.</span> Wesselink AK, Kirwa K, Hatch EE, Hystad P, Szpiro AA, Kaufman JD, et al. Residential proximity to major roads and fecundability in a preconception cohort. Environ Epidemiol. 2020 Dec;4(6):e112.</div>
+            <div class="reference-item"><span class="reference-number">34.</span> Eum Y, Song I, Kim HC, Leem JH, Kim SY. Computation of geographic variables for air pollution prediction models in South Korea. Environ Health Toxicol. 2015;30:e2015010–e2015010.</div>
+            <div class="reference-item"><span class="reference-number">35.</span> Burton GJ, Moore LG, Giussani DA, Murray AJ. Pregnancy at high altitude: the challenge of hypoxia.</div>
+            <div class="reference-item"><span class="reference-number">36.</span> Li F, Liu X, Gong S, Li P, Gao Y, Guo X, et al. The silent threat: effects of PM2.5 exposure on perinatal complications and neonatal outcomes. BMC Pregnancy Childbirth. 2025 July 2;25(1):686.</div>
+            <div class="reference-item"><span class="reference-number">37.</span> Barnett AG, Plonka K, Seow WK, Wilson LA, Hansen C. Increased traffic exposure and negative birth outcomes: a prospective cohort in Australia. Environ Health. 2011 Dec;10(1):26.</div>
+            <div class="reference-item"><span class="reference-number">38.</span> Phillips BB, Bullock JM, Osborne JL, Gaston KJ. Spatial extent of road pollution: A national analysis. Sci Total Environ. 2021;773:145589–145589.</div>
+            <div class="reference-item"><span class="reference-number">39.</span> Gage AJ, Guirlène Calixte M. Effects of the physical accessibility of maternal health services on their use in rural Haiti. Popul Stud. 2006;60(3):271–88.</div>
+            <div class="reference-item"><span class="reference-number">40.</span> Rylander C, Odland Jøyvind, Sandanger TM. Climate change and the potential effects on maternal and pregnancy outcomes: An assessment of the most vulnerable - the mother, fetus, and newborn child. Glob Health Action. 2013;6(1):1–9.</div>
+            <div class="reference-item"><span class="reference-number">41.</span> Yu X, Feric Z, Cordero JF, Meeker JD, Alshawabkeh A. Potential influence of temperature and precipitation on preterm birth rate in Puerto Rico. Sci Rep. 2018;8(1):1–9.</div>
+            <div class="reference-item"><span class="reference-number">42.</span> Wu Y, Yuan J, Yuan Y, Kong C, Jing W, Liu J, et al. Effects of ambient temperature and relative humidity on preterm birth during early pregnancy and before parturition in China from 2010 to 2018: a population-based large-sample cohort study. Front Public Health. 2023 June 20;11:1101283.</div>
+            <div class="reference-item"><span class="reference-number">43.</span> Olapoju OM. Access to healthcare and impediment(s) of transport: examining lived experience of pregnant women in selected local governments of Oyo state, Nigeria. Discov Health Syst. 2025 Feb 21;4(1):17.</div>
+            <div class="reference-item"><span class="reference-number">44.</span> Makanga PT, Sacoor C, Schuurman N, Lee T, Vilanculo FC, Munguambe K, et al. Place-specific factors associated with adverse maternal and perinatal outcomes in Southern Mozambique: a retrospective cohort study. BMJ Open. 2019 Feb;9(2):e024042.</div>
+            <div class="reference-item"><span class="reference-number">45.</span> Girardi G, Longo M, Bremer AA. Social determinants of health in pregnant individuals from underrepresented, understudied, and underreported populations in the United States. Int J Equity Health. 2023 Sept 6;22(1):186.</div>
+            <div class="reference-item"><span class="reference-number">46.</span> Schölmerich VLN, Erdem Ö, Borsboom G, Ghorashi H, Groenewegen P, Steegers EAP, et al. The Association of Neighborhood Social Capital and Ethnic (Minority) Density with Pregnancy Outcomes in the Netherlands. Zhang H, editor. PLoS ONE. 2014 May 7;9(5):e95873.</div>
+            <div class="reference-item"><span class="reference-number">47.</span> Girardi G, Longo M, Bremer AA. Social determinants of health in pregnant individuals from underrepresented, understudied, and underreported populations in the United States. Int J Equity Health. 2023 Sept 6;22(1):186.</div>
+            <div class="reference-item"><span class="reference-number">48.</span> Maness SB, Buhi ER. Associations between Social Determinants of Health and Pregnancy among Young People: A Systematic Review of Research Published during the Past 25 Years. Public Health Reports®. 2016 Jan;131(1):86–99.</div>
+            <div class="reference-item"><span class="reference-number">49.</span> Ifelunini IA, Agbutun AS, Ugwu SC, Ugwu MO. Women autonomy and demand for maternal health services in Nigeria: Evidence from the Nigeria Demographic and Health Survey.</div>
+            <div class="reference-item"><span class="reference-number">50.</span> Ghose B, Feng D, Tang S, Yaya S, He Z, Udenigwe O, et al. Women's decision-making autonomy and utilisation of maternal healthcare services: results from the Bangladesh Demographic and Health Survey. BMJ Open. 2017 Sept;7(9):e017142.</div>
+            <div class="reference-item"><span class="reference-number">51.</span> Wang E, Glazer KB, Howell EA, Janevic TM. Social Determinants of Pregnancy-related Mortality and Morbidity in the United States: A Systematic Review. Obstet Anesth Dig. 2021 Mar;41(1):12–12.</div>
+            <div class="reference-item"><span class="reference-number">52.</span> Bedaso A, Adams J, Peng W, Sibbritt D. The relationship between social support and mental health problems during pregnancy: a systematic review and meta-analysis. Reprod Health. 2021 July 28;18(1):162.</div>
+            <div class="reference-item"><span class="reference-number">53.</span> Girardi G, Longo M, Bremer AA. Social determinants of health in pregnant individuals from underrepresented, understudied, and underreported populations in the United States. Int J Equity Health. 2023 Sept 6;22(1):186.</div>
+            <div class="reference-item"><span class="reference-number">54.</span> Roozbeh N, Nahidi F, Hajiyan S. Barriers related to prenatal care utilization among women. Saudi Med J. 2016 Dec;37(12):1319–27.</div>
+            <div class="reference-item"><span class="reference-number">55.</span> Tchounwou PB. Environmental Research and Public Health. Int J Environ Res Public Health. 2004 Apr 30;1(1):1–2.</div>
+            <div class="reference-item"><span class="reference-number">56.</span> Banke-Thomas A, Ayomoh FI, Abejirinde IOO, Banke-Thomas O, Eboreime EA, Ameh CA. Cost of Utilising Maternal Health Services in Low- and Middle-Income Countries: A Systematic Review. Int J Health Policy Manag. 2020 June 28;1.</div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Authors</h3>
+                    <p>Makanga PT, Makacha L, Mlambo R, Nyapwere N, Dube YP, Craik R, Misty H, Magee LA, Barrat B, von Dadelszen P</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Affiliations</h3>
+                    <p>PRECISE Network | Midlands State University (Zimbabwe) | King's College London (UK) | Imperial College London (UK) | University of British Columbia (Canada)</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Funding</h3>
+                    <p>United Kingdom Research and Innovation GCRF GROW award (MR/P027938/1)</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCategory(header) {
+            header.classList.toggle('active');
+            const grid = header.nextElementSibling;
+            grid.classList.toggle('active');
+        }
+
+        function toggleCard(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // Auto-open first category on load with animation
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const firstCategory = document.querySelector('.category-header');
+                if (firstCategory) {
+                    toggleCategory(firstCategory);
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>
