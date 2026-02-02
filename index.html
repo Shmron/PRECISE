@@ -26,170 +26,25 @@
             --forest: #2D5016;
             --lavender: #7B6BA8;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Source Sans 3', sans-serif;
-            background: var(--cream);
-            color: var(--charcoal);
-            line-height: 1.7;
-            font-weight: 400;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: 0.015;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            max-width: 1500px;
-            margin: 0 auto;
-            background: var(--ivory);
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 0 80px rgba(45, 52, 54, 0.08);
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg,
-                var(--copper) 0%, var(--copper) 20%,
-                var(--teal-deep) 20%, var(--teal-deep) 40%,
-                var(--coral) 40%, var(--coral) 60%,
-                var(--sage) 60%, var(--sage) 80%,
-                var(--lavender) 80%, var(--lavender) 100%);
-        }
-
-        header {
-            padding: 5rem 4rem 4rem;
-            background: linear-gradient(180deg, var(--ivory) 0%, var(--sand) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 400px;
-            height: 400px;
-            border: 2px solid var(--copper);
-            border-radius: 50%;
-            opacity: 0.08;
-        }
-
-        .header-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--copper);
-            font-weight: 600;
-            margin-bottom: 2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .header-label::before {
-            content: '';
-            display: inline-block;
-            width: 40px;
-            height: 2px;
-            background: var(--copper);
-        }
-
-        header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.8rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            max-width: 900px;
-            letter-spacing: -0.02em;
-        }
-
-        header h1 span {
-            color: var(--copper);
-        }
-
-        .header-subtitle {
-            font-size: 1.2rem;
-            font-weight: 300;
-            color: var(--slate);
-            max-width: 650px;
-            line-height: 1.8;
-        }
-
-        .header-meta {
-            display: flex;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-            padding-top: 2.5rem;
-            border-top: 1px solid rgba(184, 115, 51, 0.2);
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .meta-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--slate);
-        }
-
-        .meta-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--charcoal);
-        }
-
-        main {
-            padding: 4rem;
-        }
-
-        /* Category sections */
-        .category-section {
-            margin-bottom: 4rem;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeSlideIn 0.7s ease forwards;
-        }
-
-        @keyframes fadeSlideIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: var(--cream); color: var(--charcoal); line-height: 1.7; font-weight: 400; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); opacity: 0.015; pointer-events: none; z-index: 0; }
+        .container { max-width: 1500px; margin: 0 auto; background: var(--ivory); position: relative; z-index: 1; box-shadow: 0 0 80px rgba(45, 52, 54, 0.08); }
+        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper) 20%, var(--teal-deep) 20%, var(--teal-deep) 40%, var(--coral) 40%, var(--coral) 60%, var(--sage) 60%, var(--sage) 80%, var(--lavender) 80%, var(--lavender) 100%); }
+        header { padding: 5rem 4rem 4rem; background: linear-gradient(180deg, var(--ivory) 0%, var(--sand) 100%); position: relative; overflow: hidden; }
+        header::after { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; border: 2px solid var(--copper); border-radius: 50%; opacity: 0.08; }
+        .header-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--copper); font-weight: 600; margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 1rem; }
+        .header-label::before { content: ''; display: inline-block; width: 40px; height: 2px; background: var(--copper); }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 3.8rem; font-weight: 700; color: var(--charcoal); line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; letter-spacing: -0.02em; }
+        header h1 span { color: var(--copper); }
+        .header-subtitle { font-size: 1.2rem; font-weight: 300; color: var(--slate); max-width: 650px; line-height: 1.8; }
+        .header-meta { display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid rgba(184, 115, 51, 0.2); }
+        .meta-item { display: flex; flex-direction: column; gap: 0.4rem; }
+        .meta-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--slate); }
+        .meta-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--charcoal); }
+        main { padding: 4rem; }
+        .category-section { margin-bottom: 4rem; opacity: 0; transform: translateY(30px); animation: fadeSlideIn 0.7s ease forwards; }
+        @keyframes fadeSlideIn { to { opacity: 1; transform: translateY(0); } }
         .category-section:nth-child(1) { animation-delay: 0.1s; }
         .category-section:nth-child(2) { animation-delay: 0.15s; }
         .category-section:nth-child(3) { animation-delay: 0.2s; }
@@ -198,146 +53,37 @@
         .category-section:nth-child(6) { animation-delay: 0.35s; }
         .category-section:nth-child(7) { animation-delay: 0.4s; }
         .category-section:nth-child(8) { animation-delay: 0.45s; }
-
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            cursor: pointer;
-            padding: 1.75rem 2rem;
-            background: var(--sand);
-            border-left: 5px solid;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .category-header:hover {
-            background: var(--ivory);
-            box-shadow: 0 8px 30px rgba(45, 52, 54, 0.06);
-            transform: translateX(8px);
-        }
-
-        .category-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1;
-            opacity: 0.15;
-            min-width: 90px;
-        }
-
-        .category-title-wrapper {
-            flex: 1;
-        }
-
-        .category-icon {
-            font-size: 1.3rem;
-            margin-bottom: 0.25rem;
-            opacity: 0.8;
-        }
-
-        .category-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.9rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            margin: 0;
-            letter-spacing: -0.01em;
-        }
-
-        .category-count {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--slate);
-            margin-top: 0.35rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .toggle-indicator {
-            font-size: 1.2rem;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            color: var(--slate);
-            opacity: 0.5;
-        }
-
-        .category-header.active .toggle-indicator {
-            transform: rotate(180deg);
-        }
-
-        /* Category colors */
+        .category-header { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; cursor: pointer; padding: 1.75rem 2rem; background: var(--sand); border-left: 5px solid; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .category-header:hover { background: var(--ivory); box-shadow: 0 8px 30px rgba(45, 52, 54, 0.06); transform: translateX(8px); }
+        .category-number { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; line-height: 1; opacity: 0.15; min-width: 90px; }
+        .category-title-wrapper { flex: 1; }
+        .category-icon { font-size: 1.3rem; margin-bottom: 0.25rem; opacity: 0.8; }
+        .category-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: var(--charcoal); margin: 0; letter-spacing: -0.01em; }
+        .category-count { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); margin-top: 0.35rem; letter-spacing: 0.08em; text-transform: uppercase; }
+        .toggle-indicator { font-size: 1.2rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); color: var(--slate); opacity: 0.5; }
+        .category-header.active .toggle-indicator { transform: rotate(180deg); }
         .cat-air { border-color: var(--teal-deep); }
         .cat-air .category-number { color: var(--teal-deep); }
-
         .cat-anc { border-color: var(--coral); }
         .cat-anc .category-number { color: var(--coral); }
-
         .cat-temp { border-color: var(--copper); }
         .cat-temp .category-number { color: var(--copper); }
-
         .cat-precip { border-color: var(--slate); }
         .cat-precip .category-number { color: var(--slate); }
-
         .cat-humid { border-color: var(--sage); }
         .cat-humid .category-number { color: var(--sage); }
-
         .cat-soil { border-color: var(--forest); }
         .cat-soil .category-number { color: var(--forest); }
-
         .cat-social { border-color: var(--burgundy); }
         .cat-social .category-number { color: var(--burgundy); }
-
         .cat-urban { border-color: var(--lavender); }
         .cat-urban .category-number { color: var(--lavender); }
-
-        .variables-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-            gap: 1.5rem;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-            opacity: 0;
-        }
-
-        .variables-grid.active {
-            max-height: 15000px;
-            opacity: 1;
-            margin-bottom: 2rem;
-        }
-
-        .variable-card {
-            background: white;
-            border: 1px solid rgba(45, 52, 54, 0.08);
-            padding: 2rem;
-            cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .variable-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background: currentColor;
-            opacity: 0.08;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .variable-card:hover {
-            border-color: rgba(45, 52, 54, 0.15);
-            box-shadow: 0 12px 40px rgba(45, 52, 54, 0.08);
-            transform: translateY(-3px);
-        }
-
-        .variable-card:hover::before {
-            width: 4px;
-        }
-
+        .variables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 1.5rem; max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease; opacity: 0; }
+        .variables-grid.active { max-height: 25000px; opacity: 1; margin-bottom: 2rem; }
+        .variable-card { background: white; border: 1px solid rgba(45, 52, 54, 0.08); padding: 2rem; cursor: pointer; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .variable-card::before { content: ''; position: absolute; top: 0; left: 0; width: 0; height: 100%; background: currentColor; opacity: 0.08; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .variable-card:hover { border-color: rgba(45, 52, 54, 0.15); box-shadow: 0 12px 40px rgba(45, 52, 54, 0.08); transform: translateY(-3px); }
+        .variable-card:hover::before { width: 4px; }
         .cat-air .variable-card { color: var(--teal-deep); }
         .cat-anc .variable-card { color: var(--coral); }
         .cat-temp .variable-card { color: var(--copper); }
@@ -346,406 +92,72 @@
         .cat-soil .variable-card { color: var(--forest); }
         .cat-social .variable-card { color: var(--burgundy); }
         .cat-urban .variable-card { color: var(--lavender); }
-
-        .variable-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
-            font-weight: 600;
-            color: var(--charcoal);
-            margin-bottom: 0.4rem;
-            line-height: 1.3;
-        }
-
-        .variable-unit {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--slate);
-            letter-spacing: 0.03em;
-            margin-bottom: 1.25rem;
-        }
-
-        .stats-display {
-            background: var(--mist);
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            line-height: 2;
-            color: var(--charcoal);
-        }
-
-        .stats-display div {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.15rem 0;
-            border-bottom: 1px solid rgba(45, 52, 54, 0.05);
-        }
-
-        .stats-display div:last-child {
-            border-bottom: none;
-        }
-
-        .stats-label {
-            color: var(--slate);
-            font-weight: 400;
-        }
-
-        .stats-value {
-            font-weight: 600;
-            color: var(--charcoal);
-        }
-
-        .expand-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: currentColor;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            border: none;
-            background: none;
-            cursor: pointer;
-            padding: 0.6rem 0;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .expand-btn:hover {
-            opacity: 0.7;
-            transform: translateX(4px);
-        }
-
-        .expand-btn::after {
-            content: '\2193';
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .variable-card.expanded .expand-btn::after {
-            transform: rotate(180deg);
-        }
-
-        .variable-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 1.5rem;
-        }
-
-        .variable-card.expanded .variable-details {
-            max-height: 3000px;
-        }
-
-        .detail-section {
-            margin-bottom: 1.75rem;
-            padding-bottom: 1.75rem;
-            border-bottom: 1px solid rgba(45, 52, 54, 0.08);
-        }
-
-        .detail-section:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-            margin-bottom: 0;
-        }
-
-        .detail-section h4 {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: currentColor;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-
-        .detail-section p {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: var(--slate);
-        }
-
-        .dataset-info {
-            background: var(--sand);
-            padding: 0.85rem 1.15rem;
-            border-left: 3px solid currentColor;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            color: var(--charcoal);
-            margin-top: 0.5rem;
-        }
-
-        .formula-display {
-            background: var(--charcoal);
-            color: var(--sand);
-            padding: 1.25rem 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            line-height: 1.9;
-            margin-top: 0.75rem;
-            white-space: pre-wrap;
-            overflow-x: auto;
-        }
-
-        /* Population Weighting Methodology - Compact Sidebar Style */
-        .methodology-sidebar {
-            background: var(--sand);
-            border: 1px solid rgba(184, 115, 51, 0.2);
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .methodology-sidebar h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .methodology-sidebar h3::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 24px;
-            background: var(--teal-deep);
-        }
-
-        .methodology-intro {
-            font-size: 0.95rem;
-            color: var(--slate);
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-
-        .methodology-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.3fr;
-            gap: 2.5rem;
-            align-items: start;
-        }
-
-        .hex-visual {
-            background: white;
-            border: 1px solid rgba(45, 52, 54, 0.1);
-            padding: 1.5rem;
-        }
-
-        .hex-visual svg {
-            width: 100%;
-            height: auto;
-            max-height: 280px;
-        }
-
-        .hex-visual-caption {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--slate);
-            text-align: center;
-            margin-top: 1rem;
-            letter-spacing: 0.05em;
-        }
-
-        .methodology-right {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .calc-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            background: white;
-        }
-
-        .calc-table th {
-            background: var(--teal-deep);
-            color: white;
-            padding: 0.75rem 0.5rem;
-            text-align: center;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-        }
-
-        .calc-table td {
-            padding: 0.6rem 0.5rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(45, 52, 54, 0.08);
-        }
-
-        .calc-table tr:last-child td {
-            background: var(--gold);
-            font-weight: 700;
-            color: var(--charcoal);
-        }
-
-        .calc-table .hex-label {
-            font-weight: 600;
-            color: var(--teal-deep);
-        }
-
-        .formula-compact {
-            background: var(--charcoal);
-            color: var(--teal-mid);
-            padding: 1rem 1.25rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            text-align: center;
-            letter-spacing: 0.02em;
-        }
-
-        .comparison-compact {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .comp-item {
-            flex: 1;
-            background: white;
-            border: 1px solid rgba(45, 52, 54, 0.1);
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .comp-item.weighted {
-            border-color: var(--teal-mid);
-            background: rgba(78, 205, 196, 0.05);
-        }
-
-        .comp-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--slate);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-
-        .comp-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--charcoal);
-        }
-
-        .comp-item.weighted .comp-value {
-            color: var(--teal-deep);
-        }
-
-        .comp-unit {
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
-
-        .comp-note {
-            font-size: 0.7rem;
-            color: var(--slate);
-            margin-top: 0.3rem;
-        }
-
-        /* References section */
-        .references-section {
-            margin-top: 5rem;
-            padding: 4rem;
-            background: var(--sand);
-            border-top: 1px solid rgba(184, 115, 51, 0.2);
-        }
-
-        .references-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--charcoal);
-            margin-bottom: 2.5rem;
-        }
-
-        .reference-item {
-            font-size: 0.88rem;
-            line-height: 1.8;
-            color: var(--slate);
-            margin-bottom: 1rem;
-            padding-left: 2.5rem;
-            position: relative;
-        }
-
-        .reference-number {
-            position: absolute;
-            left: 0;
-            font-weight: 600;
-            color: var(--copper);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-        }
-
-        footer {
-            padding: 4rem;
-            background: var(--charcoal);
-            color: var(--sand);
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 3rem;
-        }
-
-        .footer-section h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.15rem;
-            margin-bottom: 1rem;
-            color: var(--copper-light);
-        }
-
-        .footer-section p {
-            font-size: 0.9rem;
-            line-height: 1.7;
-            opacity: 0.8;
-        }
-
+        .variable-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.4rem; line-height: 1.3; }
+        .variable-unit { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); letter-spacing: 0.03em; margin-bottom: 1.25rem; }
+        .stats-display { background: var(--mist); padding: 1.25rem; margin-bottom: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 2; color: var(--charcoal); }
+        .stats-display div { display: flex; justify-content: space-between; align-items: center; padding: 0.15rem 0; border-bottom: 1px solid rgba(45, 52, 54, 0.05); }
+        .stats-display div:last-child { border-bottom: none; }
+        .stats-label { color: var(--slate); font-weight: 400; }
+        .stats-value { font-weight: 600; color: var(--charcoal); }
+        .expand-btn { display: inline-flex; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: currentColor; text-transform: uppercase; letter-spacing: 0.12em; border: none; background: none; cursor: pointer; padding: 0.6rem 0; transition: all 0.3s ease; font-weight: 500; }
+        .expand-btn:hover { opacity: 0.7; transform: translateX(4px); }
+        .expand-btn::after { content: '\2193'; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .variable-card.expanded .expand-btn::after { transform: rotate(180deg); }
+        .variable-details { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 1.5rem; }
+        .variable-card.expanded .variable-details { max-height: 3000px; }
+        .detail-section { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid rgba(45, 52, 54, 0.08); }
+        .detail-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        .detail-section h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em; color: currentColor; margin-bottom: 0.75rem; font-weight: 600; }
+        .detail-section p { font-size: 0.95rem; line-height: 1.8; color: var(--slate); }
+        .dataset-info { background: var(--sand); padding: 0.85rem 1.15rem; border-left: 3px solid currentColor; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--charcoal); margin-top: 0.5rem; }
+        .formula-display { background: var(--charcoal); color: var(--sand); padding: 1.25rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; margin-top: 0.75rem; white-space: pre-wrap; overflow-x: auto; }
+        .methodology-sidebar { background: var(--sand); border: 1px solid rgba(184, 115, 51, 0.2); padding: 2.5rem; margin-bottom: 3rem; }
+        .methodology-sidebar h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+        .methodology-sidebar h3::before { content: ''; display: inline-block; width: 4px; height: 24px; background: var(--teal-deep); }
+        .methodology-intro { font-size: 0.95rem; color: var(--slate); margin-bottom: 2rem; line-height: 1.7; }
+        .methodology-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 2.5rem; align-items: start; }
+        .hex-visual { background: white; border: 1px solid rgba(45, 52, 54, 0.1); padding: 1.5rem; }
+        .hex-visual svg { width: 100%; height: auto; max-height: 280px; }
+        .hex-visual-caption { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); text-align: center; margin-top: 1rem; letter-spacing: 0.05em; }
+        .methodology-right { display: flex; flex-direction: column; gap: 1.5rem; }
+        .calc-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background: white; }
+        .calc-table th { background: var(--teal-deep); color: white; padding: 0.75rem 0.5rem; text-align: center; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.65rem; }
+        .calc-table td { padding: 0.6rem 0.5rem; text-align: center; border-bottom: 1px solid rgba(45, 52, 54, 0.08); }
+        .calc-table tr:last-child td { background: var(--gold); font-weight: 700; color: var(--charcoal); }
+        .calc-table .hex-label { font-weight: 600; color: var(--teal-deep); }
+        .formula-compact { background: var(--charcoal); color: var(--teal-mid); padding: 1rem 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; text-align: center; letter-spacing: 0.02em; }
+        .comparison-compact { display: flex; gap: 1rem; }
+        .comp-item { flex: 1; background: white; border: 1px solid rgba(45, 52, 54, 0.1); padding: 1rem; text-align: center; }
+        .comp-item.weighted { border-color: var(--teal-mid); background: rgba(78, 205, 196, 0.05); }
+        .comp-item.centroid { border-color: var(--coral); background: rgba(224, 122, 95, 0.05); }
+        .comp-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .comp-value { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); }
+        .comp-item.weighted .comp-value { color: var(--teal-deep); }
+        .comp-item.centroid .comp-value { color: var(--coral); }
+        .comp-unit { font-size: 0.9rem; font-weight: 400; }
+        .comp-note { font-size: 0.7rem; color: var(--slate); margin-top: 0.3rem; }
+        .tier-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.25rem 0.5rem; border-radius: 3px; display: inline-block; margin-bottom: 0.5rem; }
+        .tier-1 { background: #e74c3c; color: white; }
+        .tier-2 { background: #f39c12; color: white; }
+        .tier-3 { background: #3498db; color: white; }
+        .references-section { margin-top: 5rem; padding: 4rem; background: var(--sand); border-top: 1px solid rgba(184, 115, 51, 0.2); }
+        .references-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 2.5rem; }
+        .reference-item { font-size: 0.88rem; line-height: 1.8; color: var(--slate); margin-bottom: 1rem; padding-left: 2.5rem; position: relative; }
+        .reference-number { position: absolute; left: 0; font-weight: 600; color: var(--copper); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        footer { padding: 4rem; background: var(--charcoal); color: var(--sand); }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; }
+        .footer-section h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 1rem; color: var(--copper-light); }
+        .footer-section p { font-size: 0.9rem; line-height: 1.7; opacity: 0.8; }
         @media (max-width: 900px) {
-            header {
-                padding: 3rem 2rem;
-            }
-
-            header h1 {
-                font-size: 2.4rem;
-            }
-
-            main {
-                padding: 2rem;
-            }
-
-            .methodology-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .category-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .category-number {
-                font-size: 2.5rem;
-                min-width: auto;
-            }
-
-            .variables-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .references-section,
-            footer {
-                padding: 3rem 2rem;
-            }
+            header { padding: 3rem 2rem; }
+            header h1 { font-size: 2.4rem; }
+            main { padding: 2rem; }
+            .methodology-grid { grid-template-columns: 1fr; }
+            .category-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .category-number { font-size: 2.5rem; min-width: auto; }
+            .variables-grid { grid-template-columns: 1fr; }
+            .references-section, footer { padding: 3rem 2rem; }
+            .comparison-compact { flex-direction: column; }
         }
     </style>
 </head>
@@ -762,138 +174,83 @@
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Participants</div>
-                    <div class="meta-value">5,264 pregnant women</div>
+                    <div class="meta-value">6,525 pregnant women</div>
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Villages</div>
-                    <div class="meta-value">209 communities</div>
+                    <div class="meta-value">733 communities</div>
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Indicators</div>
-                    <div class="meta-value">8 categories, 28 variables</div>
+                    <div class="meta-value">8 categories, 28+ variables</div>
                 </div>
             </div>
         </header>
 
         <main>
-            <!-- POPULATION WEIGHTING METHODOLOGY - Compact Sidebar -->
+            <!-- POPULATION WEIGHTING METHODOLOGY -->
             <div class="methodology-sidebar">
                 <h3>Population-Weighted Methodology Example</h3>
                 <p class="methodology-intro">Environmental exposures are calculated using Carto's H3 hexagonal tessellation to account for heterogeneous population distribution within village boundaries. Each metric is weighted by the population residing in each grid cell, ensuring that densely populated areas have proportionally greater influence on the village-level estimate.</p>
-
                 <div class="methodology-grid">
                     <div class="hex-visual">
                         <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Village boundary -->
-                            <path d="M 20 130 Q 20 50 70 35 Q 140 10 190 50 Q 220 70 220 130 Q 220 200 170 220 Q 100 250 50 210 Q 20 185 20 130 Z"
-                                  fill="rgba(78,205,196,0.08)" stroke="#4ECDC4" stroke-width="1.5" stroke-dasharray="6,3"/>
-
-                            <!-- Hexagon D (low pop) -->
-                            <polygon points="60,130 75,115 100,115 115,130 100,145 75,145"
-                                     fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
+                            <path d="M 20 130 Q 20 50 70 35 Q 140 10 190 50 Q 220 70 220 130 Q 220 200 170 220 Q 100 250 50 210 Q 20 185 20 130 Z" fill="rgba(78,205,196,0.08)" stroke="#4ECDC4" stroke-width="1.5" stroke-dasharray="6,3"/>
+                            <polygon points="60,130 75,115 100,115 115,130 100,145 75,145" fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
                             <text x="87" y="125" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">D</text>
                             <text x="87" y="138" text-anchor="middle" fill="#1A535C" font-size="8">400 | 5.8km</text>
-
-                            <!-- Hexagon E (medium pop) -->
-                            <polygon points="60,80 75,65 100,65 115,80 100,95 75,95"
-                                     fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
+                            <polygon points="60,80 75,65 100,65 115,80 100,95 75,95" fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
                             <text x="87" y="75" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">E</text>
                             <text x="87" y="88" text-anchor="middle" fill="#1A535C" font-size="8">600 | 5.5km</text>
-
-                            <!-- Hexagon B (medium-high pop) -->
-                            <polygon points="105,175 120,160 145,160 160,175 145,190 120,190"
-                                     fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
+                            <polygon points="105,175 120,160 145,160 160,175 145,190 120,190" fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
                             <text x="132" y="170" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">B</text>
                             <text x="132" y="183" text-anchor="middle" fill="#1A535C" font-size="8">800 | 4.2km</text>
-
-                            <!-- Hexagon C (high pop) -->
-                            <polygon points="105,105 120,90 145,90 160,105 145,120 120,120"
-                                     fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
+                            <polygon points="105,105 120,90 145,90 160,105 145,120 120,120" fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
                             <text x="132" y="100" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">C</text>
                             <text x="132" y="113" text-anchor="middle" fill="#1A535C" font-size="8">1,200 | 4.0km</text>
-
-                            <!-- Hexagon A (highest pop, closest) -->
-                            <polygon points="150,138 165,123 190,123 205,138 190,153 165,153"
-                                     fill="#CD853F" stroke="#2D3436" stroke-width="1"/>
+                            <polygon points="150,138 165,123 190,123 205,138 190,153 165,153" fill="#CD853F" stroke="#2D3436" stroke-width="1"/>
                             <text x="177" y="133" text-anchor="middle" fill="white" font-size="11" font-weight="bold">A</text>
                             <text x="177" y="146" text-anchor="middle" fill="white" font-size="8">1,500 | 2.8km</text>
-
-                            <!-- Distance lines -->
+                            <circle cx="120" cy="130" r="8" fill="#E07A5F" stroke="#722F37" stroke-width="1.5"/>
+                            <text x="120" y="134" text-anchor="middle" fill="white" font-size="8" font-weight="bold">C</text>
+                            <text x="120" y="155" text-anchor="middle" fill="#722F37" font-size="7">Centroid</text>
+                            <line x1="120" y1="130" x2="270" y2="130" stroke="#E07A5F" stroke-width="1.2" stroke-dasharray="4,2"/>
                             <line x1="87" y1="130" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
                             <line x1="87" y1="80" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
                             <line x1="132" y1="175" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
                             <line x1="132" y1="105" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
                             <line x1="177" y1="138" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
-
-                            <!-- Health Facility -->
                             <polygon points="270,115 285,130 270,145 255,130" fill="#4ECDC4" stroke="#1A535C" stroke-width="1.5"/>
                             <text x="270" y="134" text-anchor="middle" fill="#1A535C" font-size="12" font-weight="bold">+</text>
                             <text x="270" y="160" text-anchor="middle" fill="#1A535C" font-size="8" font-weight="600">Facility</text>
-
-                            <!-- Legend -->
                             <rect x="240" y="20" width="12" height="10" fill="#FFE4B5" stroke="#2D3436" stroke-width="0.5"/>
-                            <text x="256" y="28" fill="#2D3436" font-size="7">Low</text>
+                            <text x="256" y="28" fill="#2D3436" font-size="7">Low Pop</text>
                             <rect x="240" y="34" width="12" height="10" fill="#FFA07A" stroke="#2D3436" stroke-width="0.5"/>
-                            <text x="256" y="42" fill="#2D3436" font-size="7">Med</text>
+                            <text x="256" y="42" fill="#2D3436" font-size="7">Med Pop</text>
                             <rect x="240" y="48" width="12" height="10" fill="#CD853F" stroke="#2D3436" stroke-width="0.5"/>
-                            <text x="256" y="56" fill="#2D3436" font-size="7">High</text>
+                            <text x="256" y="56" fill="#2D3436" font-size="7">High Pop</text>
                         </svg>
                         <div class="hex-visual-caption">H3 Hexagons with Population &amp; Distance to Facility</div>
                     </div>
-
                     <div class="methodology-right">
                         <table class="calc-table">
-                            <thead>
-                                <tr>
-                                    <th>Hex</th>
-                                    <th>Population</th>
-                                    <th>Distance (km)</th>
-                                    <th>Pop &times; Dist</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Hex</th><th>Population</th><th>Distance (km)</th><th>Pop x Dist</th></tr></thead>
                             <tbody>
-                                <tr>
-                                    <td class="hex-label">A</td>
-                                    <td>1,500</td>
-                                    <td>2.8</td>
-                                    <td>4,200</td>
-                                </tr>
-                                <tr>
-                                    <td class="hex-label">B</td>
-                                    <td>800</td>
-                                    <td>4.2</td>
-                                    <td>3,360</td>
-                                </tr>
-                                <tr>
-                                    <td class="hex-label">C</td>
-                                    <td>1,200</td>
-                                    <td>4.0</td>
-                                    <td>4,800</td>
-                                </tr>
-                                <tr>
-                                    <td class="hex-label">D</td>
-                                    <td>400</td>
-                                    <td>5.8</td>
-                                    <td>2,320</td>
-                                </tr>
-                                <tr>
-                                    <td class="hex-label">E</td>
-                                    <td>600</td>
-                                    <td>5.5</td>
-                                    <td>3,300</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>SUM</strong></td>
-                                    <td><strong>4,500</strong></td>
-                                    <td>&mdash;</td>
-                                    <td><strong>17,980</strong></td>
-                                </tr>
+                                <tr><td class="hex-label">A</td><td>1,500</td><td>2.8</td><td>4,200</td></tr>
+                                <tr><td class="hex-label">B</td><td>800</td><td>4.2</td><td>3,360</td></tr>
+                                <tr><td class="hex-label">C</td><td>1,200</td><td>4.0</td><td>4,800</td></tr>
+                                <tr><td class="hex-label">D</td><td>400</td><td>5.8</td><td>2,320</td></tr>
+                                <tr><td class="hex-label">E</td><td>600</td><td>5.5</td><td>3,300</td></tr>
+                                <tr><td><strong>SUM</strong></td><td><strong>4,500</strong></td><td>-</td><td><strong>17,980</strong></td></tr>
                             </tbody>
                         </table>
-
-                        <div class="formula-compact">&Sigma;(Pop<sub>i</sub> &times; Dist<sub>i</sub>) / &Sigma;Pop<sub>i</sub> = 17,980 / 4,500 = <strong>3.99 km</strong></div>
-
+                        <div class="formula-compact">Sum(Pop_i x Dist_i) / Sum(Pop_i) = 17,980 / 4,500 = <strong>3.99 km</strong></div>
                         <div class="comparison-compact">
+                            <div class="comp-item centroid">
+                                <div class="comp-label">Centroid-Based</div>
+                                <div class="comp-value">5.2 <span class="comp-unit">km</span></div>
+                                <div class="comp-note">Single point, ignores distribution</div>
+                            </div>
                             <div class="comp-item">
                                 <div class="comp-label">Simple Average</div>
                                 <div class="comp-value">4.46 <span class="comp-unit">km</span></div>
@@ -916,333 +273,354 @@
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127811;</div>
                         <h2 class="category-title">Air Quality</h2>
-                        <div class="category-count">8 indicators</div>
+                        <div class="category-count">15 indicators</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
                 </div>
                 <div class="variables-grid">
+                    <!-- NDVI -->
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">NDVI</div>
                         <div class="variable-unit">Normalized Difference Vegetation Index (-1 to 1, unitless)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">0.42 &plusmn; 0.14</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.42 [0.28, 0.54]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 &ndash; 0.71</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.42 [0.35, 0.53] P95: 0.67</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.49 [0.43, 0.55] P95: 0.71</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.25 [0.20, 0.42] P95: 0.71</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.42 [0.28, 0.54] P95: 0.71</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">Landsat Collection 2 Tier 1 Level 2 8-Day NDVI Composite</div>
+                                <div class="dataset-info">Landsat Collection 2 Tier 1 Level 2 8-Day NDVI Composite; MODIS - MOD09GA/Q1</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Computed from Landsat surface reflectance values using spectral bands. NDVI raster values averaged per village boundary during each participant's exposure period.</p>
-                                <div class="formula-display">FORMULA:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NDVI = (NIR - RED) / (NIR + RED)
+                                <p>Residential greenness has been consistently associated with improved pregnancy outcomes and overall population health. NDVI leverages the differential reflectance of vegetation in the visible red (RED) and near-infrared (NIR) spectral bands, with higher values indicating denser and healthier vegetation cover and, indirectly, lower levels of ambient air pollution.</p>
+                                <div class="formula-display">NDVI = (NIR - RED) / (NIR + RED)
 
-Where:
-• NIR = Near-Infrared band (Band 5 for Landsat 8/9)
-• RED = Visible Red band (Band 4 for Landsat 8/9)
-
-DATASET PARAMETERS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Collection: Landsat Collection 2 Tier 1 Level 2
-• Temporal resolution: 8-day composite
-• Spatial resolution: 30m
-• Cloud masking: Applied using QA_PIXEL band
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var landsat = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
-    .filterDate(startDate, endDate)
-    .map(function(img) {
-        var nir = img.select('SR_B5');
-        var red = img.select('SR_B4');
-        return img.addBands(nir.subtract(red)
-            .divide(nir.add(red)).rename('NDVI'));
-    });
-
-var ndvi = landsat.select('NDVI').mean().reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 30
-});
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• -1 to 0:   Water, bare soil, built-up areas
-• 0 to 0.2:  Sparse vegetation, arid land
-• 0.2-0.4:   Moderate vegetation (shrubs, grassland)
-• 0.4-0.6:   Healthy vegetation (agriculture)
-• 0.6-1.0:   Dense vegetation (forests)</div>
+Village-level greenness was quantified by spatially
+averaging NDVI values within each village boundary.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Environmental greenness positively affects pregnancy outcomes. NDVI serves as a proxy measure for air quality, with high values inversely proportional to pollution levels. Exposure to greenness in the vicinity of home is consistently related to improved maternal health outcomes.</p>
+                                <p>Satellite-derived vegetation indices, particularly NDVI, are widely used as proxy measures of environmental quality and exposure to air pollution. Higher values indicate denser and healthier vegetation cover.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (Global High Air Pollutants)</div>
-                        <div class="variable-unit">Total Particulate Matter &lt;2.5&mu;m (&mu;g/m&sup3;)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">13.17 &plusmn; 6.22</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">7.85 [7.00, 17.58]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">4.12 &ndash; 42.93</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">Global High Air Pollutants (GHAP) PM2.5 Concentrations Dataset via Google Earth Engine</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Monthly PM2.5 concentrations extracted from GHAP dataset. Raster values averaged per village boundary to obtain community-level total PM2.5 exposure estimates for each participant's exposure window.</p>
-                                <div class="formula-display">var ghap = ee.ImageCollection("projects/sat-io/open-datasets/GHAP/PM25_mean")
-    .filterDate(startDate, endDate)
-    .mean();
-
-var pm25 = ghap.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 1000
-});</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>PM2.5 exposure is significantly correlated with increased incidence of gestational hypertension and decreased birth weight. This is a quasi-direct air quality measure capturing total atmospheric particulate burden from all sources.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (Non-Fire Smoke)</div>
-                        <div class="variable-unit">Background Particulate Matter (&mu;g/m&sup3;)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">9.84 &plusmn; 4.31</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">8.22 [6.15, 12.76]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">3.28 &ndash; 28.45</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates (NetCDF4 format)</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Non-fire smoke PM2.5 component is spatially and temporally derived from FMI's global smoke PM2.5 dataset distributed as NC4 (NetCDF4) files using nearest-neighbor interpolation. This represents background particulate matter from sources including traffic, industry, dust, and domestic cooking.</p>
-                                <div class="formula-display">Non-Fire PM2.5 = Total PM2.5 (GHAP) - Fire Smoke PM2.5 (FMI)
-
-Source: Finnish Meteorological Institute
-Format: NetCDF4 (.nc4) files
-Resolution: ~10km global grid</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Non-fire smoke PM2.5 allows assessment of chronic background air pollution exposure distinct from seasonal biomass burning events. This enables differentiation of health effects from persistent vs episodic pollution sources.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (Fire Smoke)</div>
-                        <div class="variable-unit">Biomass Burning Particulate Matter (&mu;g/m&sup3;)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">3.33 &plusmn; 4.87</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1.42 [0.28, 4.82]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.02 &ndash; 18.64</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates (NetCDF4 format)</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Fire smoke PM2.5 extracted from Finnish Meteorological Institute's global smoke dataset. Data distributed as NetCDF4 (.nc4) files containing PM2.5 specifically attributable to biomass burning events including agricultural fires, wildfires, and prescribed burns.</p>
-                                <div class="formula-display">Source: Finnish Meteorological Institute (FMI)
-Dataset: Global Smoke PM2.5 Estimates
-Format: NetCDF4 (.nc4)
-Temporal: Daily/Monthly composites
-Processing: Zonal statistics per village boundary</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Seasonal biomass burning is a major contributor to air pollution in Sub-Saharan Africa. Fire smoke PM2.5 has distinct chemical composition (higher organic carbon, PAHs) and potentially different health effects compared to urban pollution sources.</p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- Distance to Highways -->
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Distance to Highways</div>
                         <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">2.35 &plusmn; 2.72</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1.03 [0.40, 5.21]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.05 &ndash; 8.05</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.80 [0.52, 3.21] P95: 7.29</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.01 [0.41, 7.23] P95: 8.10</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.59 [0.59, 4.66] P95: 8.41</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">1.34 [0.52, 3.78] P95: 8.10</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">OpenStreetMap Road Network (highway=motorway, trunk) + WorldPop 100m Population Raster</div>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population raster, Village shapefile</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">PW_EuclHwy = &Sigma;(Pop<sub>i</sub> &times; EuclDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
+                                <p>Residential proximity to major roadways is commonly used as a proxy for traffic-related air pollution exposure. Epidemiological evidence indicates that women residing within close proximity (e.g., less than 200m) to major roads experience an increased risk of adverse pregnancy outcomes, including preterm birth.</p>
+                                <div class="formula-display">Distance_highway = Sum(Population_i x Distance_i) / Sum(Population_i)
 
-CALCULATION STEPS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Extract highways from OSM (motorway + trunk roads)
-2. Tessellate village into 100m grid cells
-3. For each cell centroid:
-   - Calculate EUCLIDEAN (straight-line) distance to nearest highway
-   - Extract population from WorldPop raster
-4. Compute population-weighted average
-
-EUCLIDEAN vs NETWORK DISTANCE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Uses straight-line distance (not road network)
-• Appropriate for air pollution exposure (pollutants
-  disperse through air, not along roads)
-• Faster to compute than network distance
-
-TARGET ROADS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Motorways: High-speed, high-traffic roads
-• Trunk roads: Major inter-city routes
-• These have highest traffic volumes and pollution</div>
+where Distance_i represents the Euclidean distance from
+grid cell i to the nearest highway.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Euclidean distance to highways serves as a proxy for traffic pollution exposure. Women living within 200m of major roads have 1.5x increased risk of preterm birth. Traffic pollutant concentrations decay non-linearly with increasing distance from source.</p>
+                                <p>Pollutants produced by motorized vehicles, such as CO, NOx, HC, SO2, Pb and CO2, have negative impacts on the body. Traffic-related pollutant concentrations exhibit a strong spatial gradient with non-linear decay with increasing distance.</p>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Distance to Major Roads -->
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Distance to Major Roads</div>
                         <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">0.86 &plusmn; 1.31</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.37 [0.29, 0.98]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.02 &ndash; 3.86</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.34 [0.52, 2.70] P95: 4.93</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.95 [0.41, 1.22] P95: 4.95</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.52 [0.47, 2.12] P95: 8.14</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.95 [0.41, 2.67] P95: 6.86</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">OpenStreetMap Road Network (highway=primary, secondary) + WorldPop 100m Population Raster</div>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population data 100m resolution</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">PW_EuclMajorRd = &Sigma;(Pop<sub>i</sub> &times; EuclDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-CALCULATION STEPS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Extract major roads from OSM (primary + secondary)
-2. Tessellate village into 100m grid cells
-3. For each cell:
-   - Calculate EUCLIDEAN distance to nearest major road
-   - Extract population from WorldPop
-4. Compute population-weighted average
-
-TARGET ROADS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Primary roads: Main routes connecting towns
-• Secondary roads: Important local routes
-• More numerous than highways, closer to settlements
-
-DIFFERENCE FROM HIGHWAY DISTANCE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Major roads are more common (shorter distances)
-• Moderate traffic compared to highways
-• Captures local traffic pollution sources</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Proxy for traffic-related air pollution exposure. Complements highway distance by capturing proximity to all major transportation routes affecting local air quality. Major roads have moderate but consistent traffic throughout the day.</p>
+                                <p>Population-weighted Euclidean distance to the nearest major road was computed using the same methodology as for highways, reflecting spatial variation in exposure to traffic-related pollution sources.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Road Network Density</div>
-                        <div class="variable-unit">Population-Weighted (km/km&sup2;)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">8.43 &plusmn; 5.79</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">8.20 [2.09, 16.12]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.12 &ndash; 20.49</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenStreetMap Road Network (all road types) + WorldPop 100m Population Raster</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_RoadDens = &Sigma;(Pop<sub>i</sub> &times; Density<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-Where: Density<sub>i</sub> = RoadLength<sub>i</sub> / Area<sub>i</sub>
-
-CALCULATION STEPS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Tessellate village into 100m grid cells
-2. For each cell:
-   - Create 500m buffer around cell centroid
-   - Sum total road length within buffer (km)
-   - Divide by buffer area (km&sup2;)
-   - Extract population from WorldPop
-3. Compute population-weighted average density
-
-ROADS INCLUDED:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-All driveable road types:
-• Motorways, trunk, primary, secondary, tertiary
-• Residential, unclassified, service roads
-• Tracks (if vehicle-accessible)
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• High density (&gt;15): Urban area, high traffic exposure
-• Medium (5-15): Peri-urban, moderate exposure
-• Low (&lt;5): Rural, isolated from traffic pollution</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Higher road density indicates increased traffic volume and associated vehicular pollution. Pregnant women exposed to traffic pollution have elevated risk of negative birth outcomes. Road density also correlates with urbanization and economic activity.</p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- Elevation -->
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Elevation</div>
                         <div class="variable-unit">Altitude (meters above sea level)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">84.80 &plusmn; 136.75</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">26.55 [16.96, 111.95]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">2.0 &ndash; 184.07</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">188.75 [169.15, 192.22] P95: 199.56</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">19.01 [18.64, 31.69] P95: 44.65</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">26.55 [15.29, 26.55] P95: 35.60</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">26.55 [16.96, 111.95] P95: 184.07</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">MERIT/DEM/v1_0_3: Digital Elevation Model (EGM96 geoid reference)</div>
+                                <div class="dataset-info">MERIT/DEM/v1_0_3: Elevation in meters, referenced to EGM96 geoid model</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Mean elevation computed from DEM raster for each village boundary using zonal statistics.</p>
+                                <p>Village-level altitude was derived by calculating the mean elevation pixel value within each village or neighbourhood boundary.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Atmospheric pressure and air circulation vary by elevation, affecting pollutant transport and concentrations. High altitude exposure is associated with infertility, low birth weight, and elevated pregnancy complication risk due to chronic hypoxia.</p>
+                                <p>Elevation influences atmospheric pressure and air circulation patterns, which can affect the dispersion and concentration of air pollutants. Exposure to high-altitude environments has been associated with adverse reproductive and pregnancy outcomes, including low birth weight.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 GHAP -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (GHAP)</div>
+                        <div class="variable-unit">Global High Air Pollutants (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">7.79 [7.09, 9.30] P95: 12.68</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">7.85 [6.91, 8.84] P95: 10.48</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">21.76 [15.80, 25.85] P95: 46.29</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">7.85 [7.00, 17.58] P95: 42.93</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Global High Air Pollutants (GHAP) PM2.5 Concentrations</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Exposure to fine particulate matter (PM2.5) has been associated with adverse maternal and birth outcomes, including increased risk of gestational hypertension and reduced birth weight. Inhalation of ambient PM2.5 can cross the placenta and has been linked to adverse obstetric and postnatal metabolic health outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 CAMS -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (CAMS)</div>
+                        <div class="variable-unit">Copernicus Atmosphere Monitoring Service (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">15.66 [14.00, 18.16] P95: 22.11</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">12.54 [8.16, 15.42] P95: 23.24</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">55.79 [41.85, 69.93] P95: 113.20</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">16.02 [12.99, 23.24] P95: 79.35</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Copernicus Atmosphere Monitoring Service (CAMS) Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 Non-Fire Smoke -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (Non-Fire Smoke)</div>
+                        <div class="variable-unit">Background Particulate Matter (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.59 [4.32, 10.04] P95: 14.43</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">4.92 [4.10, 6.36] P95: 7.38</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">48.56 [22.98, 72.77] P95: 95.85</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">5.87 [4.53, 11.71] P95: 74.59</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 Fire Smoke -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (Fire Smoke)</div>
+                        <div class="variable-unit">Biomass Burning Particulate Matter (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.07 [0.04, 0.14] P95: 0.40</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.30 [0.04, 0.63] P95: 1.58</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.28 [0.13, 0.68] P95: 1.41</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.12 [0.05, 0.43] P95: 1.06</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AOD Dust -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">AOD (Dust)</div>
+                        <div class="variable-unit">Dust Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.01 [0.004, 0.019] P95: 0.04</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.003 [0.002, 0.004] P95: 0.004</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.19 [0.11, 0.30] P95: 0.41</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.008 [0.003, 0.039] P95: 0.30</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AOD Black Carbon -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">AOD (Black Carbon)</div>
+                        <div class="variable-unit">Black Carbon Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.006 [0.005, 0.009] P95: 0.01</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.004 [0.004, 0.012] P95: 0.02</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.009 [0.006, 0.012] P95: 0.01</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.006 [0.004, 0.010] P95: 0.02</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AOD Total -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">AOD (Total)</div>
+                        <div class="variable-unit">Total Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.19 [0.16, 0.22] P95: 0.24</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.15 [0.13, 0.21] P95: 0.26</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.36 [0.28, 0.46] P95: 0.63</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.19 [0.15, 0.24] P95: 0.46</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CO -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Carbon Monoxide (CO)</div>
+                        <div class="variable-unit">Total Column (g/m&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.77 [0.70, 0.83] P95: 0.89</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.70 [0.68, 0.88] P95: 1.03</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.98 [0.90, 1.05] P95: 1.10</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.82 [0.69, 0.92] P95: 1.07</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>At a threshold of >2 ppm, CO was associated with lower mean birth-weight and higher rates of SGA and PTB. Acute CO poisoning in pregnant women is linked to complications such as preterm birth and miscarriage.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NO2 -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Nitrogen Dioxide (NO2)</div>
+                        <div class="variable-unit">Total Column (mg/m&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.29 [1.15, 1.38] P95: 1.52</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.77 [1.46, 2.29] P95: 2.52</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">2.13 [1.98, 2.23] P95: 2.40</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">1.51 [1.30, 2.09] P95: 2.44</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Short-term exposure to NO2 may induce increased risk of Spontaneous Abortion (SAB) outpatient visits, especially in elder women and cool seasons.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- O3 -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Ozone (O3)</div>
+                        <div class="variable-unit">Total Column (Dobson Units)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">211.2 [207.2, 214.9] P95: 219.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">217.3 [211.5, 224.6] P95: 233.0</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">213.6 [207.0, 220.8] P95: 228.3</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">213.2 [208.6, 218.5] P95: 230.8</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>There is some positive correlation between Ozone (O3) and Preterm Birth which is mostly pronounced during middle pregnancy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Road Network Density -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Road Network Density</div>
+                        <div class="variable-unit">Population-Weighted (km/km&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">8.43 +/- 5.79</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">8.20 [2.09, 16.12]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.12 - 20.49</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population data 100m resolution</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">Road Density_PW = Sum(Population_i x RoadDensity_i) / Sum(Population_i)
+
+where RoadDensity_i represents road length per unit
+area within grid cell i.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Exposure to traffic-related pollution has been associated with increased risk of adverse pregnancy outcomes. Road density is commonly used as a spatial proxy for traffic intensity and associated vehicular emissions.</p>
                             </div>
                         </div>
                     </div>
@@ -1265,59 +643,25 @@ INTERPRETATION:
                         <div class="variable-name">Road Quality Index</div>
                         <div class="variable-unit">RQI (0 to 1, dimensionless)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">0.288 &plusmn; 0.12</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">0.288 +/- 0.12</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.27 [0.20, 0.35]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 &ndash; 0.67</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 0.67</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">Country-specific road datasets with actual speed attributes:<br>
-                                &bull; Kenya: kenya_roads.shp (fclass, maxspeed)<br>
-                                &bull; Gambia: gambia_roads211021.shp (speed_driv, road_class)<br>
-                                &bull; Mozambique: Mozambique_roads211021.shp (speed_driv, CLASS)</div>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population data 100m resolution</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Non-population weighted measure of road infrastructure quality within village boundaries. Uses actual driving speed attributes from high-quality road datasets.</p>
-                                <div class="formula-display">RQI = (Weighted Average Speed) / (Reference Speed)
-    = (&Sigma;(road_length &times; speed)) / (&Sigma;road_length) / 120
+                                <div class="formula-display">RQI = Sum(RoadLength_i x SpeedLimit_i) / Sum(RoadLength_i) / 120
 
-CALCULATION STEPS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Clip road network to village boundary
-2. For each road segment within village:
-   - Get length in kilometers
-   - Get speed from speed_driv attribute (or road class)
-3. Calculate length-weighted average speed
-4. Divide by reference speed (120 km/h) to normalize
-
-SPEED DATA SOURCES:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Kenya:    maxspeed attribute, fallback to fclass-based speeds
-Gambia:   speed_driv attribute, fallback to road_class
-Mozambique: speed_driv attribute, fallback to CLASS
-
-ROAD TYPE EXCLUSIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Excluded from calculation (not vehicle infrastructure):
-• Paths, footways, pedestrian ways
-• Steps, cycleways, bridleways
-• Trails
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• RQI = 1.0: All roads are motorway-quality (120 km/h)
-• RQI = 0.5: Average road speed is 60 km/h
-• RQI = 0.25: Average road speed is 30 km/h
-• Higher RQI = better road infrastructure quality
-
-NOTE: NOT population-weighted (measures infrastructure, not accessibility)</div>
+Lower RQI values indicate poorer road conditions.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Road quality affects travel times and safety when accessing health facilities. Poor quality roads during wet season become flooded and impassable. RQI captures the quality of road infrastructure independent of where people live within the village.</p>
+                                <p>Road quality influences travel speed and accessibility to health facilities, with poorer road conditions associated with longer travel times and reduced access to maternal healthcare services.</p>
                             </div>
                         </div>
                     </div>
@@ -1326,52 +670,9 @@ NOTE: NOT population-weighted (measures infrastructure, not accessibility)</div>
                         <div class="variable-name">Walking Distance to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">4.02 &plusmn; 6.01</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">4.02 +/- 6.01</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.38 [1.52, 4.57]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.45 &ndash; 35.05</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (foot-walking profile) + Village hexagons + Health facility locations + WorldPop 100m</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_WalkDist_Fac = &Sigma;(Pop<sub>i</sub> &times; WalkDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-CALCULATION STEPS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. Village tessellated into H3 hexagons (~100m resolution)
-2. Population assigned to each hexagon from WorldPop raster
-3. For each hexagon centroid, network distance calculated
-   to the participant's enrolled health facility
-4. Final value = population-weighted average of all hexagons
-
-ROUTING PROFILE: foot-walking
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Uses ALL walkable paths including:
-  - Footways, paths, tracks, trails
-  - Residential roads, service roads
-  - Primary, secondary, tertiary roads
-• Network distance (not Euclidean/straight-line)
-• Accounts for actual path availability and road network</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Walking is the primary mode of transport for many pregnant women in rural areas, especially for routine ANC visits. Network distance accounts for actual path availability rather than straight-line distance, providing a more realistic measure of accessibility.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Walking Time to Facility</div>
-                        <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">48.32 &plusmn; 72.18</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">28.50 [18.20, 54.80]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">5.4 &ndash; 420.6</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.45 - 35.05</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1381,31 +682,29 @@ ROUTING PROFILE: foot-walking
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">PW_WalkTime_Fac = &Sigma;(Pop<sub>i</sub> &times; WalkTime<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
+                                <div class="formula-display">PW_WalkDist_Fac = Sum(Pop_i x WalkDist_i) / Sum(Pop_i)
 
-ASSUMPTIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Base walking speed: 5 km/h
-• Speed adjustments for:
-  - Elevation gain/loss (slower uphill)
-  - Surface type (slower on unpaved paths)
-  - Path steepness (gradient penalties)
-
-TIME CALCULATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Time (min) = Distance (km) / Speed (km/h) × 60
-
-Example: 2.5 km at 5 km/h = 30 minutes
-
-ROUTING PROFILE: foot-walking
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Uses ALL walkable paths (footways, tracks, roads)
-• ORS routing engine applies terrain adjustments
-• Returns both distance and estimated duration</div>
+Walking distance calculated via OSRM network routing
+from each H3 hexagon centroid to health facility.</div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Walking Time to Facility</div>
+                        <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">48.32 +/- 72.18</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">28.50 [18.20, 54.80]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">5.4 - 420.6</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Walking time captures accessibility for those without vehicle access. Time-based measure accounts for terrain difficulty and path conditions, providing more realistic estimates than simple distance-based calculations.</p>
+                                <h4>Methodology</h4>
+                                <div class="formula-display">Walking Time (min) = Walking Distance (km) / 5 x 60
+
+Assumes average walking speed of 5 km/h.</div>
                             </div>
                         </div>
                     </div>
@@ -1414,45 +713,15 @@ ROUTING PROFILE: foot-walking
                         <div class="variable-name">Driving Distance to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">5.84 &plusmn; 8.42</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">5.84 +/- 8.42</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">3.45 [2.12, 6.78]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.62 &ndash; 52.4</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.62 - 52.4</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
                                 <div class="dataset-info">OpenRouteService API (driving-car profile) + WorldPop 100m</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_DriveDist_Fac = &Sigma;(Pop<sub>i</sub> &times; DriveDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-ROUTING PROFILE: driving-car
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Uses ONLY vehicle-accessible roads:
-  - Motorways, trunk roads, primary roads
-  - Secondary, tertiary, residential roads
-  - Unclassified roads (if driveable)
-  - Service roads, tracks (if vehicle-accessible)
-
-• EXCLUDES non-driveable paths:
-  - Footways, pedestrian paths
-  - Hiking trails, steps
-  - Cycleways (unless shared with vehicles)
-
-DIFFERENCE FROM WALKING DISTANCE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Driving may be LONGER than walking if:
-  - Direct footpath exists but no road
-  - Road network requires detour
-• Driving may be SHORTER if:
-  - Roads provide more direct route
-  - Walking paths are winding/indirect</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Driving distance is relevant for emergency referrals, ambulance access, and transport by vehicle (taxi, matatu, private car). Network distance accounts for actual road availability and routing constraints.</p>
                             </div>
                         </div>
                     </div>
@@ -1461,51 +730,15 @@ DIFFERENCE FROM WALKING DISTANCE:
                         <div class="variable-name">Driving Time to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">13.97 &plusmn; 45.54</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">13.97 +/- 45.54</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">6.40 [5.25, 12.61]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">1.2 &ndash; 286.4</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">1.2 - 286.4</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (driving-car profile) with road-type speed limits</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_DriveTime_Fac = &Sigma;(Pop<sub>i</sub> &times; DriveTime<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-SPEED ASSUMPTIONS BY ROAD TYPE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Road Type          | Speed (km/h)
--------------------|-------------
-Motorway           | 100-120
-Trunk              | 80-100
-Primary            | 60-80
-Secondary          | 50-60
-Tertiary           | 40-50
-Residential        | 30-40
-Unclassified       | 20-30
-Track              | 15-20
-
-TIME CALCULATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Time = &Sigma;(Segment Distance / Segment Speed) × 60
-
-• Each road segment has assigned speed based on type
-• ORS routing engine calculates optimal route
-• Returns total duration accounting for all segments
-
-KEY ASSUMPTIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• No traffic congestion modeled
-• No wait time (direct door-to-door travel)
-• Dry season road conditions assumed
-• Private vehicle or taxi/ambulance access</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Travel time to nearest facility is a critical determinant of healthcare access. Delays reaching health facilities represent the second of three delays known to elevate risks for adverse maternal outcomes. Most pregnancy-related deaths are preventable with timely access.</p>
+                                <p>Travel time to nearest facility is a critical determinant of healthcare access. Delays reaching health facilities represent the second of three delays known to elevate risks for adverse maternal outcomes.</p>
                             </div>
                         </div>
                     </div>
@@ -1514,47 +747,18 @@ KEY ASSUMPTIONS:
                         <div class="variable-name">Public Transport Distance to Facility</div>
                         <div class="variable-unit">Population-Weighted Total Journey Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">6.12 &plusmn; 9.24</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">6.12 +/- 9.24</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">3.68 [2.24, 7.15]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.58 &ndash; 58.2</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.58 - 58.2</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API + OSM Road Network (primary/secondary roads only)</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">PW_PubTrans_Dist_Fac = &Sigma;(Pop<sub>i</sub> &times; TotalDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
+                                <div class="formula-display">TotalDist = WalkToPickup + InVehicleDist
 
-Where TotalDist = WalkToPickup + InVehicleDist
-
-DISTANCE COMPONENTS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. WALK TO PICKUP (WalkToPickup)
-   • Walking distance from hexagon centroid to nearest
-     public transport route (primary/secondary road)
-   • Uses foot-walking profile for this segment
-
-2. IN-VEHICLE DISTANCE (InVehicleDist)
-   • Distance traveled on public transport vehicle
-   • Routes ONLY along main roads where matatus/buses operate:
-     - Primary roads
-     - Secondary roads
-     - Trunk roads (where available)
-   • EXCLUDES residential, unclassified, minor roads
-
-DIFFERENCE FROM DRIVING DISTANCE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Driving uses ALL driveable roads (direct routes)
-• Public transport ONLY uses main roads (may be longer)
-• Public transport includes walk-to-pickup component</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Public transport (matatus, buses, shared taxis) is the most common motorized transport for rural populations who don't own vehicles. The total distance includes walking to where transport is available plus the vehicle travel distance.</p>
+Public transport only operates on main roads
+(primary/secondary).</div>
                             </div>
                         </div>
                     </div>
@@ -1563,57 +767,18 @@ DIFFERENCE FROM DRIVING DISTANCE:
                         <div class="variable-name">Public Transport Time to Facility</div>
                         <div class="variable-unit">Population-Weighted Total Journey Time (minutes)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">24.56 &plusmn; 38.72</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">24.56 +/- 38.72</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">14.80 [9.45, 28.60]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">2.8 &ndash; 245.8</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">2.8 - 245.8</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API + OSM Road Network + Simulated Wait Times</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Public transport time captures the complete journey experience, which differs substantially from private vehicle travel. The total time is composed of three components:</p>
-                                <div class="formula-display">PW_PubTrans_Time = &Sigma;(Pop<sub>i</sub> &times; TotalTime<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
+                                <div class="formula-display">TotalTime = WalkTime + WaitTime + VehicleTime
 
-Where TotalTime = WalkToPickup + WaitTime + InVehicleTime
-
-COMPONENT BREAKDOWN:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. WALK TO PICKUP POINT (WalkToPickup)
-   • Walking distance from hexagon centroid to nearest
-     public transport route (primary/secondary roads)
-   • Walking speed: 5 km/h
-   • Public transport (matatus, buses) only operates on
-     main roads, not minor/residential roads
-
-2. SIMULATED WAIT TIME (WaitTime)
-   • Average wait time for public transport arrival
-   • Estimated: 15-30 minutes (varies by location)
-   • Rural areas: longer waits due to lower frequency
-   • Peri-urban: shorter waits, more frequent service
-
-3. IN-VEHICLE TRAVEL TIME (InVehicleTime)
-   • Travel along public transport route to facility
-   • Speed: 30-50 km/h (slower than private vehicle)
-   • Accounts for: passenger stops, boarding/alighting,
-     indirect routes following main roads only
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-KEY DIFFERENCES FROM DRIVING TIME:
-• Driving uses ALL driveable roads (including minor roads)
-• Public transport ONLY uses main roads (primary/secondary)
-• Driving has no wait time component
-• Driving speed: 40-80 km/h (faster, no stops)
-• Public transport requires walking to pickup point first</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Public transport (matatus, shared taxis, buses) is the most common motorized transport for rural populations who don't own vehicles. The total journey time includes walking to where transport is available, waiting for a vehicle, and the in-vehicle travel - all of which make public transport substantially longer than private vehicle travel. This metric captures the realistic travel experience for most pregnant women in the study area.</p>
+WaitTime: Fixed 20 minutes for public transport delays
+WalkSpeed: 5 km/h to reach pickup point</div>
                             </div>
                         </div>
                     </div>
@@ -1622,42 +787,15 @@ KEY DIFFERENCES FROM DRIVING TIME:
                         <div class="variable-name">Walking Isolation (Major Roads)</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">1.48 &plusmn; 3.35</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">1.48 +/- 3.35</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.60 [0.42, 1.24]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 &ndash; 7.11</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 7.11</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (foot-walking) + OSM road network + WorldPop 100m</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_WalkIso_MajorRd = &Sigma;(Pop<sub>i</sub> &times; WalkDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-TARGET ROADS (Major Roads):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Primary roads (highway=primary)
-• Secondary roads (highway=secondary)
-• These are main transport arteries where public
-  transport and taxis typically operate
-
-ROUTING:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Profile: foot-walking
-• Walking speed: 5 km/h
-• Uses all walkable paths to reach major road
-• Network distance (not Euclidean)
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Higher values = more isolated from transport
-• Low values = good access to public transport routes</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Walking distance to major roads is a proxy for isolation from transport networks. The longer the walking distance, the more isolated the woman's residence from motorized transport options (matatus, buses, taxis).</p>
+                                <p>Walking distance to major roads is a proxy for isolation from transport networks. Difficult access to roads is a known barrier to healthcare utilization.</p>
                             </div>
                         </div>
                     </div>
@@ -1666,42 +804,15 @@ INTERPRETATION:
                         <div class="variable-name">Walking Isolation (Highways)</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">3.82 &plusmn; 4.56</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">3.82 +/- 4.56</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.14 [0.92, 5.28]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.15 &ndash; 18.42</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.15 - 18.42</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (foot-walking) + OSM (motorway, trunk) + WorldPop 100m</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_WalkIso_Hwy = &Sigma;(Pop<sub>i</sub> &times; WalkDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-TARGET ROADS (Highways):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Motorways (highway=motorway)
-• Trunk roads (highway=trunk)
-• These are high-capacity roads for long-distance travel
-• Often have bus services to urban centers/hospitals
-
-ROUTING:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Profile: foot-walking
-• Walking speed: 5 km/h
-• Network distance from hexagon to nearest highway
-
-DIFFERENCE FROM MAJOR ROADS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Highways are fewer but connect to urban centers
-• Major roads are more numerous, local transport
-• Highway isolation typically greater than major road</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Walking distance to highways captures isolation from long-distance transport. Highways typically have inter-city bus services connecting rural areas to urban referral hospitals and tertiary health facilities.</p>
+                                <p>Walking distance to highways captures isolation from long-distance transport. Highways typically have inter-city bus services connecting to urban referral hospitals.</p>
                             </div>
                         </div>
                     </div>
@@ -1710,38 +821,15 @@ DIFFERENCE FROM MAJOR ROADS:
                         <div class="variable-name">Driving Isolation (Major Roads)</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">0.92 &plusmn; 1.84</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">0.92 +/- 1.84</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.45 [0.28, 0.94]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.05 &ndash; 5.86</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.05 - 5.86</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (driving-car) + OSM driveable roads + WorldPop 100m</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_DriveIso_MajorRd = &Sigma;(Pop<sub>i</sub> &times; DriveDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-TARGET: Nearest primary or secondary road
-ROUTING: driving-car profile (vehicle-accessible roads only)
-
-SPEED ASSUMPTIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Residential roads: 30-40 km/h
-• Tertiary roads: 40-50 km/h
-• Tracks/unclassified: 15-30 km/h
-
-WHY DRIVING &lt; WALKING ISOLATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Driving uses roads that connect to major roads
-• Walking may use indirect footpaths
-• Most settlements have some road access</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Driving isolation captures vehicular accessibility to major transport corridors, relevant for emergency referrals and ambulance access during obstetric emergencies.</p>
+                                <p>Driving isolation captures vehicular accessibility to major transport corridors, relevant for emergency referrals and ambulance access.</p>
                             </div>
                         </div>
                     </div>
@@ -1750,39 +838,15 @@ WHY DRIVING &lt; WALKING ISOLATION:
                         <div class="variable-name">Driving Isolation (Highways)</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">2.58 &plusmn; 3.12</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">2.58 +/- 3.12</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1.42 [0.58, 3.86]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 &ndash; 12.64</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 12.64</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (driving-car) + OSM (motorway, trunk) + WorldPop 100m</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">PW_DriveIso_Hwy = &Sigma;(Pop<sub>i</sub> &times; DriveDist<sub>i</sub>) / &Sigma;Pop<sub>i</sub>
-
-TARGET: Nearest motorway or trunk road
-ROUTING: driving-car profile
-
-CALCULATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. For each hexagon, find nearest highway (motorway/trunk)
-2. Calculate driving distance via road network
-3. Weight by population in each hexagon
-4. Sum weighted distances / total population
-
-USE CASE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Measures connectivity to national road network
-• Important for emergency transfers to urban hospitals
-• Highways provide fastest routes to referral centers</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Driving isolation from highways indicates connectivity to regional/national transport networks for accessing higher-level health facilities (referral hospitals, tertiary centers) during pregnancy complications.</p>
+                                <p>Driving isolation from highways indicates connectivity to regional/national transport networks for accessing higher-level health facilities during pregnancy complications.</p>
                             </div>
                         </div>
                     </div>
@@ -1796,85 +860,136 @@ USE CASE:
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127777;</div>
                         <h2 class="category-title">Temperature</h2>
-                        <div class="category-count">2 indicators</div>
+                        <div class="category-count">6 indicators (3 tiers)</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
                 </div>
                 <div class="variables-grid">
+                    <!-- TIER 1: Physiologically Relevant Heat Stress -->
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Ambient Temperature</div>
-                        <div class="variable-unit">Mean Air Temperature at 2m (&#176;C)</div>
+                        <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
+                        <div class="variable-name">Wet Bulb Temperature</div>
+                        <div class="variable-unit">Heat Stress Index (C)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">27.48 &plusmn; 2.83</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">26.93 [23.27, 31.43]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">19.8 &ndash; 36.29</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">21.58 [19.90, 22.30] P95: 23.25</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">17.04 [16.88, 17.20] P95: 17.45</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">14.74 [12.87, 15.53] P95: 16.23</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">17.04 [14.88, 19.75] P95: 22.67</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">ERA5-Land Hourly (ECMWF/ERA5_LAND/HOURLY) - temperature_2m band</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Daily temperature statistics calculated from hourly ERA5-Land reanalysis data. For each village and date, mean, max, and percentiles (p50, p75, p95, p99) computed from 24 hourly observations. Values extracted per village geometry.</p>
-                                <div class="formula-display">var dataset = ee.ImageCollection("ECMWF/ERA5_LAND/HOURLY")
-    .select('temperature_2m');
-
-var statsReducer = ee.Reducer.mean()
-    .combine(ee.Reducer.max(), null, true)
-    .combine(ee.Reducer.percentile([50, 75, 95, 99]), null, true);
-
-// For each day and village:
-var dailyStats = dailyData.reduce(statsReducer).reduceRegion({
-    reducer: ee.Reducer.first(),
-    geometry: village.geometry(),
-    scale: 1000
-});
-
-// Temperature in Kelvin, convert to Celsius:
-// T(°C) = T(K) - 273.15</div>
+                                <div class="dataset-info">MERRA-2 (NASA/GSFC/MERRA/slv/2) - T2MWET band</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Birth weight and length have seasonal fluctuations due to temperature variations. Extreme heat exposure during pregnancy affects fetal development through thermoregulatory stress and reduced placental blood flow.</p>
+                                <p>Wet bulb temperature is a superior heat stress metric as it accounts for the body's inability to cool through sweating in humid conditions. Values above 32C are dangerous; above 35C is lethal for prolonged exposure. Pregnant women are especially vulnerable to heat stress.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Wet Bulb Temperature</div>
-                        <div class="variable-unit">Heat Stress Index (&#176;C)</div>
+                        <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
+                        <div class="variable-name">Extreme Hot Days</div>
+                        <div class="variable-unit">Percentage of Pregnancy (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">22.84 &plusmn; 2.15</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">22.56 [20.88, 24.72]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">16.4 &ndash; 28.9</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.0 [2.9, 6.7] P95: 8.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">4.2 [3.7, 6.6] P95: 7.7</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">4.1 [2.8, 7.2] P95: 9.6</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">4.5 [3.3, 6.7] P95: 8.7</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Percentage of pregnancy days exposed to extreme heat conditions. Extreme heat exposure during pregnancy affects fetal development through thermoregulatory stress and reduced placental blood flow.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
+                        <div class="variable-name">Heatwave Days</div>
+                        <div class="variable-unit">Percentage of Pregnancy (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 1.5] P95: 4.8</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.0 [0.0, 0.0] P95: 2.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.0 [0.0, 0.8] P95: 4.9</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.0 [0.0, 0.6] P95: 4.4</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Prolonged heat exposure during heatwave events poses significant risks to maternal and fetal health. Heatwaves are defined as consecutive days exceeding the local 95th percentile temperature threshold.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TIER 2: Ambient Air Temperature -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-2">Tier 2 - Ambient Air</span>
+                        <div class="variable-name">Ambient Temperature</div>
+                        <div class="variable-unit">Mean Air Temperature at 2m (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.76 [25.56, 26.00] P95: 26.29</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">23.32 [23.17, 23.66] P95: 23.98</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">27.69 [27.49, 27.94] P95: 28.32</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">25.65 [23.57, 26.28] P95: 27.97</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">MERRA-2 (NASA/GSFC/MERRA/slv/2) - T2MWET band (Wet Bulb Temperature at 2m)</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Wet bulb temperature represents the lowest temperature achievable through evaporative cooling. Extracted directly from MERRA-2 T2MWET variable alongside T2M (dry bulb temperature).</p>
-                                <div class="formula-display">var dataset = ee.ImageCollection("NASA/GSFC/MERRA/slv/2")
-    .select(['T2M', 'T2MWET']);
-
-// Daily statistics for each village:
-var statsReducer = ee.Reducer.mean()
-    .combine(ee.Reducer.max(), null, true)
-    .combine(ee.Reducer.percentile([50, 75, 95, 99]), null, true);
-
-// Output includes:
-// T2MWET_mean, T2MWET_max, T2MWET_p50, T2MWET_p75, T2MWET_p95, T2MWET_p99
-
-// Temperature in Kelvin, convert: T(°C) = T(K) - 273.15</div>
+                                <div class="dataset-info">ERA5-Land Hourly (ECMWF/ERA5_LAND/HOURLY)</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Wet bulb temperature is a superior heat stress metric as it accounts for the body's inability to cool through sweating in humid conditions. Values above 32&#176;C are dangerous; above 35&#176;C is lethal for prolonged exposure. Pregnant women are especially vulnerable to heat stress due to increased metabolic demands.</p>
+                                <p>Low temperature and low humidity are protective against preterm birth, whereas high temperature increases risk. Evidence shows that estimated health effects are sensitive to the choice of temperature metric.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-2">Tier 2 - Ambient Air</span>
+                        <div class="variable-name">Diurnal Temperature</div>
+                        <div class="variable-unit">Daily Temperature Range (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">6.67 [5.63, 7.96] P95: 10.30</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">8.93 [6.42, 11.78] P95: 14.93</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">12.52 [8.18, 14.53] P95: 16.60</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">7.73 [6.05, 10.80] P95: 15.17</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Preconceptional and prenatal exposure to Diurnal Temperature Variations (DTV) are significantly associated with childhood pneumonia and adverse pregnancy outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TIER 3: Surface Derived Temperature -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-3">Tier 3 - Surface Derived</span>
+                        <div class="variable-name">Land Surface Temperature</div>
+                        <div class="variable-unit">Surface Temperature (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">26.93 [25.14, 28.89] P95: 30.36</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">24.18 [21.40, 26.55] P95: 27.86</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">30.58 [28.60, 33.96] P95: 36.95</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">26.93 [23.27, 31.43] P95: 36.29</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Landsat 7, Landsat 8, MODIS</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Land surface temperature captures the actual thermal environment experienced at ground level, which can differ significantly from air temperature, especially in urban heat islands.</p>
                             </div>
                         </div>
                     </div>
@@ -1897,56 +1012,23 @@ var statsReducer = ee.Reducer.mean()
                         <div class="variable-name">Mean Monthly Precipitation</div>
                         <div class="variable-unit">PERSIANN-CDR Daily Rainfall (mm)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">4.88 &plusmn; 6.68</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">4.88 +/- 6.68</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.02 [0.36, 7.49]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.0 &ndash; 22.02</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.0 - 22.02</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">PERSIANN-CDR (NOAA/PERSIANN-CDR) - Precipitation Climate Data Record</div>
+                                <div class="dataset-info">PERSIANN-CDR (Precipitation Estimation from Remotely Sensed Information using Artificial Neural Networks - Climate Data Record)</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Daily precipitation estimates from PERSIANN-CDR satellite-based climate data record. Values extracted per village boundary and aggregated to monthly/seasonal means using zonal statistics.</p>
-                                <div class="formula-display">DATASET PARAMETERS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Dataset: NOAA/PERSIANN-CDR
-• Full name: Precipitation Estimation from Remotely
-  Sensed Information using Artificial Neural Networks
-  - Climate Data Record
-• Temporal resolution: Daily
-• Spatial resolution: 0.25° (~25km)
-• Unit: mm/day
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var persiann = ee.ImageCollection("NOAA/PERSIANN-CDR")
-    .filterDate(startDate, endDate)
-    .select('precipitation');
-
-var monthlyPrecip = persiann.mean().reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 25000  // ~25km resolution
-});
-
-TEMPORAL AGGREGATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Daily values averaged over exposure period
-• Captures seasonal patterns (wet/dry seasons)
-• Can identify extreme rainfall events
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• &lt;2 mm/day: Dry conditions
-• 2-10 mm/day: Moderate rainfall
-• &gt;10 mm/day: Heavy rainfall (potential flooding)</div>
+                                <p>Monthly precipitation values were spatially averaged at the village or neighbourhood level.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Rainfall affects food availability, disease transmission (waterborne and vector-borne), and access to healthcare during wet seasons when roads become impassable.</p>
+                                <p>Seasonal variations in precipitation have been associated with fluctuations in birth outcomes, including birth weight and length. Rainfall affects food availability, disease transmission, and access to healthcare during wet seasons.</p>
                             </div>
                         </div>
                     </div>
@@ -1969,29 +1051,27 @@ INTERPRETATION:
                         <div class="variable-name">Mean Monthly Relative Humidity</div>
                         <div class="variable-unit">Percentage (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">67.00 &plusmn; 13.14</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">67.00 +/- 13.14</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">71.21 [49.82, 78.73]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">28.5 &ndash; 85.19</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">28.5 - 85.19</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">ERA5-Land Hourly (ECMWF/ERA5_LAND/HOURLY) - Derived from temperature_2m and dewpoint_temperature_2m</div>
+                                <div class="dataset-info">ECMWF/ERA5_LAND/HOURLY</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">Saturation vapor pressure: e_s(T) = exp((17.625 &times; T) / (243.04 + T))
-Relative Humidity: RH = 100 &times; (e_s(T_dew) / e_s(T_air))
+                                <div class="formula-display">RH calculated using Magnus-Tetens approximation:
+e_s(T) = exp((a * T)/(b + T))
+RH = 100 x (e_s(T_dew) / e_s(T_air))
 
-Using Magnus-Tetens approximation with:
-  a = 17.625, b = 243.04
-  T = Air Temperature (&#176;C)
-  T_dew = Dew Point Temperature (&#176;C)</div>
+where a=17.625, b=243.04</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Low humidity is protective against preterm birth, while high humidity is a risk factor. Humidity affects thermal comfort, disease transmission, and food storage/safety.</p>
+                                <p>Low relative humidity has been associated with reduced risk of preterm birth, whereas high relative humidity increases risk. Humidity affects thermal comfort, disease transmission, and food storage/safety.</p>
                             </div>
                         </div>
                     </div>
@@ -2014,42 +1094,15 @@ Using Magnus-Tetens approximation with:
                         <div class="variable-name">Soil Nitrogen (N)</div>
                         <div class="variable-unit">Total Nitrogen (g/kg)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">57.94 &plusmn; 7.64</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">57.94 +/- 7.64</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">53.84 [50.61, 67.45]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">38.2 &ndash; 80.30</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">38.2 - 80.30</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
                                 <div class="dataset-info">ISDASOIL/Africa/v1/nitrogen_total (iSDAsoil 30m Resolution)</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Total nitrogen extracted from iSDAsoil Africa dataset at 30m resolution. Raster values averaged per village boundary using zonal statistics.</p>
-                                <div class="formula-display">EXTRACTION PARAMETERS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Dataset: ISDASOIL/Africa/v1/nitrogen_total
-• Depth layer: 0-20cm (topsoil)
-• Resolution: 30m
-• Unit: g/kg (grams per kilogram of soil)
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var isdasoil = ee.Image("ISDASOIL/Africa/v1/nitrogen_total")
-    .select('mean_0_20');  // 0-20cm depth
-
-var nitrogen = isdasoil.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 30
-});
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Low: &lt;30 g/kg (nutrient-poor soil)
-• Medium: 30-60 g/kg
-• High: &gt;60 g/kg (fertile soil)</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
@@ -2062,43 +1115,15 @@ INTERPRETATION:
                         <div class="variable-name">Soil Phosphorus (P)</div>
                         <div class="variable-unit">Extractable Phosphorus (ppm)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">24.23 &plusmn; 0.86</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">24.23 +/- 0.86</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">24.26 [23.56, 24.97]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">21.8 &ndash; 25.75</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">21.8 - 25.75</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">ISDASOIL/Africa/v1/phosphorus_extractable (iSDAsoil 30m Resolution)</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Extractable phosphorus (Mehlich-3) extracted from iSDAsoil Africa dataset at 30m resolution. Raster values averaged per village boundary using zonal statistics.</p>
-                                <div class="formula-display">EXTRACTION PARAMETERS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Dataset: ISDASOIL/Africa/v1/phosphorus_extractable
-• Extraction method: Mehlich-3 (plant-available P)
-• Depth layer: 0-20cm (topsoil)
-• Resolution: 30m
-• Unit: ppm (parts per million)
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var isdasoil = ee.Image("ISDASOIL/Africa/v1/phosphorus_extractable")
-    .select('mean_0_20');  // 0-20cm depth
-
-var phosphorus = isdasoil.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 30
-});
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Low: &lt;15 ppm (deficient)
-• Medium: 15-30 ppm (adequate)
-• High: &gt;30 ppm (sufficient)</div>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/phosphorus_extractable</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
@@ -2111,43 +1136,15 @@ INTERPRETATION:
                         <div class="variable-name">Soil Potassium (K)</div>
                         <div class="variable-unit">Extractable Potassium (ppm)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">44.76 &plusmn; 1.59</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">44.76 +/- 1.59</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">45.30 [43.00, 47.09]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">40.1 &ndash; 49.22</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">40.1 - 49.22</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">ISDASOIL/Africa/v1/potassium_extractable (iSDAsoil 30m Resolution)</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Extractable potassium (Mehlich-3) extracted from iSDAsoil Africa dataset at 30m resolution. Raster values averaged per village boundary using zonal statistics.</p>
-                                <div class="formula-display">EXTRACTION PARAMETERS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Dataset: ISDASOIL/Africa/v1/potassium_extractable
-• Extraction method: Mehlich-3 (plant-available K)
-• Depth layer: 0-20cm (topsoil)
-• Resolution: 30m
-• Unit: ppm (parts per million)
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var isdasoil = ee.Image("ISDASOIL/Africa/v1/potassium_extractable")
-    .select('mean_0_20');  // 0-20cm depth
-
-var potassium = isdasoil.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 30
-});
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Low: &lt;40 ppm (deficient)
-• Medium: 40-80 ppm (adequate)
-• High: &gt;80 ppm (sufficient)</div>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/potassium_extractable</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
@@ -2160,49 +1157,15 @@ INTERPRETATION:
                         <div class="variable-name">Soil Calcium (Ca)</div>
                         <div class="variable-unit">Extractable Calcium (ppm)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean &plusmn; SD</span><span class="stats-value">1842.5 &plusmn; 486.2</span></div>
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">1842.5 +/- 486.2</span></div>
                             <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1756.4 [1485.2, 2124.8]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">624.8 &ndash; 3842.6</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">624.8 - 3842.6</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">ISDASOIL/Africa/v1/calcium_extractable (iSDAsoil 30m Resolution) - Ca_mean column</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <p>Extractable calcium (Mehlich-3) extracted from iSDAsoil Africa dataset at 30m resolution. Raster values averaged per village boundary using zonal statistics.</p>
-                                <div class="formula-display">EXTRACTION PARAMETERS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Dataset: ISDASOIL/Africa/v1/calcium_extractable
-• Output column: Ca_mean
-• Extraction method: Mehlich-3 (plant-available Ca)
-• Depth layer: 0-20cm (topsoil)
-• Resolution: 30m
-• Unit: ppm (parts per million)
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var isdasoil = ee.Image("ISDASOIL/Africa/v1/calcium_extractable")
-    .select('mean_0_20');  // 0-20cm depth
-
-var calcium = isdasoil.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: village.geometry(),
-    scale: 30
-});
-
-INTERPRETATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Low: &lt;800 ppm (Ca-deficient soil)
-• Medium: 800-2000 ppm (adequate)
-• High: &gt;2000 ppm (calcium-rich)
-
-FOOD-HEALTH PATHWAY:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Soil Ca → Crop Ca content → Dietary Ca intake →
-Maternal Ca status → Fetal development</div>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/calcium_extractable</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
@@ -2237,48 +1200,18 @@ Maternal Ca status → Fetal development</div>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">Global Human Settlement Layer (JRC/GHSL/P2023A/GHS_SMOD/2025) - smod_code band<br>Resolution: 1km grid cells</div>
+                                <div class="dataset-info">Global Human Settlement Layer (JRC/GHSL/P2023A/GHS_SMOD/2025)</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>GHSL Settlement Model Grid (SMOD) uses population density and built-up area to classify land. Since this is categorical data (not continuous), we use the MODE (most frequent value) rather than mean.</p>
-                                <div class="formula-display">CALCULATION STEPS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Load GHSL SMOD layer for target year (2025)
-2. Clip to village boundary
-3. Calculate MODE (most frequent pixel value)
-4. Classify based on SMOD code
-
-WHY MODE (not mean):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• SMOD codes are categorical, not continuous
-• Mean of categories is meaningless (e.g., mean of
-  "Urban" and "Rural" = ???)
-• Mode gives the dominant settlement type
-
-GOOGLE EARTH ENGINE CODE:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-var ghsl = ee.Image("JRC/GHSL/P2023A/GHS_SMOD/2025")
-    .select('smod_code');
-
-var modeValue = ghsl.reduceRegion({
-    reducer: ee.Reducer.mode(),
-    geometry: village.geometry(),
-    scale: 100,
-    maxPixels: 1e8
-});
-
-CLASSIFICATION SCHEME:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-smod_code 22-30: URBAN (cities, dense urban clusters)
-smod_code 14-21: PERI-URBAN (suburbs, semi-dense areas)
-smod_code 11-13: RURAL (villages, low-density areas)
-
-OUTPUT COLUMN: overall_village_class</div>
+                                <div class="formula-display">Classification based on MODE (most frequent value):
+- smod_code 22-30: URBAN
+- smod_code 14-21: PERI-URBAN
+- smod_code 11-13: RURAL</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Urbanization level affects access to healthcare, infrastructure quality, environmental exposures, and socioeconomic opportunities. Urban areas typically have better health facility access but higher pollution; rural areas face isolation but may have cleaner environments. Classification helps stratify analysis by settlement type.</p>
+                                <p>The ongoing urbanization worldwide is leading to an increasing number of pregnant women being exposed to higher levels of urban-related environmental hazards such as air pollution and noise, and at the same time, having less contact with natural environments. The urban environment during pregnancy may influence child's respiratory health.</p>
                             </div>
                         </div>
                     </div>
@@ -2306,16 +1239,12 @@ OUTPUT COLUMN: overall_village_class</div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">(Total women who know and participate in community groups / Population) &times; 100</div>
+                                <p>Proportion of pregnant women who are aware of and actively participate in community groups or organisations that provide support for pregnancy-related problems.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Captures engagement in community-level health promotion programs, reflecting processes through which societies combat poverty and social exclusion during pregnancy.</p>
+                                <p>This indicator captures social inclusion during pregnancy by reflecting engagement in community-based support and health promotion structures that help reduce social exclusion during the prenatal period.</p>
                             </div>
                         </div>
                     </div>
@@ -2329,17 +1258,8 @@ OUTPUT COLUMN: overall_village_class</div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total aware they received help from community / Population) &times; 100
-"Don't know" responses reclassified to "No"</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Bonding social capital (strong ties of trust with neighbors, family, friends) acts through psychosocial support mechanisms to improve pregnancy health.</p>
+                                <p>Bonding social capital (strong ties of trust with neighbours, family, friends) acts through psychosocial support mechanisms to improve pregnancy health.</p>
                             </div>
                         </div>
                     </div>
@@ -2353,16 +1273,8 @@ OUTPUT COLUMN: overall_village_class</div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total who are primary financial decision makers / Population) &times; 100</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Women who make household financial decisions have greater chances of receiving antenatal and delivery care.</p>
+                                <p>Women who make household financial decisions have greater chances of receiving antenatal and delivery care. The indicator reflects women's financial autonomy, a key dimension of gender power relations.</p>
                             </div>
                         </div>
                     </div>
@@ -2375,14 +1287,6 @@ OUTPUT COLUMN: overall_village_class</div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total who are primary financial decision makers for pregnancy / Population) &times; 100</div>
-                            </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
                                 <p>Women with financial autonomy on pregnancy-related issues have greater uptake of antenatal care and positive birth outcomes.</p>
@@ -2399,14 +1303,6 @@ OUTPUT COLUMN: overall_village_class</div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total participants living with partners / Population) &times; 100</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
                                 <p>Pregnant women with involved partners are more likely to receive prenatal care. Lack of partner involvement is associated with higher neonatal mortality and adverse birth outcomes.</p>
                             </div>
@@ -2421,14 +1317,6 @@ OUTPUT COLUMN: overall_village_class</div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total who received emotional support / Population) &times; 100</div>
-                            </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
                                 <p>Low social support is associated with depression, anxiety, and may indirectly raise risk for adverse birth outcomes through stress-related pathways.</p>
@@ -2445,14 +1333,6 @@ OUTPUT COLUMN: overall_village_class</div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total who received transport support / Population) &times; 100</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
                                 <p>Emergency maternal transport services are essential for improving outcomes. Transportation barriers produce delays contributing to poor perinatal outcomes.</p>
                             </div>
@@ -2468,14 +1348,6 @@ OUTPUT COLUMN: overall_village_class</div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">PRECISE Questionnaire Survey Data</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Methodology</h4>
-                                <div class="formula-display">(Total who received financial support / Population) &times; 100</div>
-                            </div>
-                            <div class="detail-section">
                                 <h4>Rationale</h4>
                                 <p>Financial constraints significantly hinder women's access to antenatal care in low- and middle-income countries.</p>
                             </div>
@@ -2488,15 +1360,21 @@ OUTPUT COLUMN: overall_village_class</div>
         <!-- REFERENCES -->
         <div class="references-section">
             <h2>References</h2>
-            <div class="reference-item"><span class="reference-number">24.</span> Lee KJ, Moon H, Yun HR, et al. Greenness, civil environment, and pregnancy outcomes. Environ Health. 2020;19(1):91.</div>
-            <div class="reference-item"><span class="reference-number">29.</span> Barnett AG, et al. Increased traffic exposure and negative birth outcomes. Environ Health. 2011;10(1):26.</div>
-            <div class="reference-item"><span class="reference-number">31.</span> Yorifuji T, et al. Residential proximity to major roads and adverse birth outcomes. Environ Health. 2013;12(1):34.</div>
+            <div class="reference-item"><span class="reference-number">24.</span> Rapang A, et al. The Effect of Exposure to Carbon Monoxide Gas in Pregnant Women. J INFO Kesehat. 2023;21(4):713-20.</div>
+            <div class="reference-item"><span class="reference-number">25.</span> Zhong K, et al. Susceptible window identification of maternal ozone exposure and preterm birth. Int Health. 2025.</div>
+            <div class="reference-item"><span class="reference-number">26.</span> Aguilera J, et al. Air pollution and pregnancy. Semin Perinatol. 2023;47(8):151838.</div>
+            <div class="reference-item"><span class="reference-number">27.</span> Kaur K, et al. PM2.5 exposure during pregnancy and placental lipid metabolic genes. Environ Res. 2022;211:113066.</div>
+            <div class="reference-item"><span class="reference-number">28.</span> Galka K, et al. Carbon monoxide levels and adverse pregnancy outcomes. Acta Obstet Gynecol Scand. 2025;104(12):2237-43.</div>
+            <div class="reference-item"><span class="reference-number">29.</span> Place E, et al. Carbon monoxide exposure in pregnant women in the UK. BMC Pregnancy Childbirth. 2025;25(1):1063.</div>
+            <div class="reference-item"><span class="reference-number">30.</span> Liang Z, et al. Nitrogen dioxide exposure and spontaneous abortion risk. Ecotoxicol Environ Saf. 2021;224:112633.</div>
+            <div class="reference-item"><span class="reference-number">31.</span> Abellan A, et al. Urban environment during pregnancy and lung function in children. Environ Pollut. 2024;344:123345.</div>
+            <div class="reference-item"><span class="reference-number">32.</span> Girardi G, et al. Social determinants of health in pregnant individuals. Int J Equity Health. 2023;22(1):186.</div>
+            <div class="reference-item"><span class="reference-number">33.</span> Scholmerich VLN, et al. Neighborhood Social Capital and Pregnancy Outcomes. PLoS ONE. 2014;9(5):e95873.</div>
             <div class="reference-item"><span class="reference-number">36.</span> Li F, et al. Effects of PM2.5 exposure on perinatal complications. BMC Pregnancy Childbirth. 2025;25(1):686.</div>
-            <div class="reference-item"><span class="reference-number">39.</span> Gage AJ, Guirlène Calixte M. Physical accessibility of maternal health services in rural Haiti. Popul Stud. 2006;60(3):271-88.</div>
+            <div class="reference-item"><span class="reference-number">39.</span> Gage AJ, Guirlene Calixte M. Physical accessibility of maternal health services. Popul Stud. 2006;60(3):271-88.</div>
             <div class="reference-item"><span class="reference-number">40.</span> Rylander C, et al. Climate change and maternal and pregnancy outcomes. Glob Health Action. 2013;6(1):1-9.</div>
             <div class="reference-item"><span class="reference-number">42.</span> Wu Y, et al. Temperature and humidity effects on preterm birth. Front Public Health. 2023;11:1101283.</div>
             <div class="reference-item"><span class="reference-number">43.</span> Olapoju OM. Transport barriers for pregnant women. Discov Health Syst. 2025;4(1):17.</div>
-            <div class="reference-item"><span class="reference-number">45.</span> Girardi G, et al. Social determinants of health in pregnant individuals. Int J Equity Health. 2023;22(1):186.</div>
         </div>
 
         <footer>
@@ -2507,7 +1385,7 @@ OUTPUT COLUMN: overall_village_class</div>
                 </div>
                 <div class="footer-section">
                     <h3>Affiliations</h3>
-                    <p>PRECISE Network | Midlands State University (Zimbabwe) | King's College London | Imperial College London | University of British Columbia</p>
+                    <p>PRECISE Network | Midlands State University (Zimbabwe) | Centre for Sexual Health HIV and AIDS Research Zimbabwe (CeSHHAR Zimbabwe) | King's College London | Imperial College London | University of British Columbia</p>
                 </div>
                 <div class="footer-section">
                     <h3>Funding</h3>
@@ -2529,7 +1407,6 @@ OUTPUT COLUMN: overall_village_class</div>
             card.classList.toggle('expanded');
         }
 
-        // Auto-open first category on load
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 const firstCategory = document.querySelector('.category-header');
@@ -2539,12 +1416,7 @@ OUTPUT COLUMN: overall_village_class</div>
             }, 400);
         });
 
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
