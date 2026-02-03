@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental & Social Determinants of Maternal Health | PRECISE Network</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --copper: #B87333;
+            --copper-light: #D4956A;
+            --teal-deep: #1A535C;
+            --teal-mid: #4ECDC4;
+            --sage: #6B8E6B;
+            --slate: #3D5A73;
+            --coral: #E07A5F;
+            --sand: #F4E9D8;
+            --charcoal: #2D3436;
+            --cream: #FFFBF5;
+            --ivory: #FDFCFA;
+            --mist: #E8EEF2;
+            --gold: #D4AF37;
+            --burgundy: #722F37;
+            --forest: #2D5016;
+            --lavender: #7B6BA8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: var(--cream); color: var(--charcoal); line-height: 1.7; font-weight: 400; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); opacity: 0.015; pointer-events: none; z-index: 0; }
+        .container { max-width: 1500px; margin: 0 auto; background: var(--ivory); position: relative; z-index: 1; box-shadow: 0 0 80px rgba(45, 52, 54, 0.08); }
+        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--copper) 0%, var(--copper) 20%, var(--teal-deep) 20%, var(--teal-deep) 40%, var(--coral) 40%, var(--coral) 60%, var(--sage) 60%, var(--sage) 80%, var(--lavender) 80%, var(--lavender) 100%); }
+        header { padding: 5rem 4rem 4rem; background: linear-gradient(180deg, var(--ivory) 0%, var(--sand) 100%); position: relative; overflow: hidden; }
+        header::after { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; border: 2px solid var(--copper); border-radius: 50%; opacity: 0.08; }
+        .header-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--copper); font-weight: 600; margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 1rem; }
+        .header-label::before { content: ''; display: inline-block; width: 40px; height: 2px; background: var(--copper); }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 3.8rem; font-weight: 700; color: var(--charcoal); line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; letter-spacing: -0.02em; }
+        header h1 span { color: var(--copper); }
+        .header-subtitle { font-size: 1.2rem; font-weight: 300; color: var(--slate); max-width: 650px; line-height: 1.8; }
+        .header-meta { display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid rgba(184, 115, 51, 0.2); }
+        .meta-item { display: flex; flex-direction: column; gap: 0.4rem; }
+        .meta-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--slate); }
+        .meta-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--charcoal); }
+        main { padding: 4rem; }
+        .category-section { margin-bottom: 4rem; opacity: 0; transform: translateY(30px); animation: fadeSlideIn 0.7s ease forwards; }
+        @keyframes fadeSlideIn { to { opacity: 1; transform: translateY(0); } }
+        .category-section:nth-child(1) { animation-delay: 0.1s; }
+        .category-section:nth-child(2) { animation-delay: 0.15s; }
+        .category-section:nth-child(3) { animation-delay: 0.2s; }
+        .category-section:nth-child(4) { animation-delay: 0.25s; }
+        .category-section:nth-child(5) { animation-delay: 0.3s; }
+        .category-section:nth-child(6) { animation-delay: 0.35s; }
+        .category-section:nth-child(7) { animation-delay: 0.4s; }
+        .category-section:nth-child(8) { animation-delay: 0.45s; }
+        .category-header { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; cursor: pointer; padding: 1.75rem 2rem; background: var(--sand); border-left: 5px solid; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .category-header:hover { background: var(--ivory); box-shadow: 0 8px 30px rgba(45, 52, 54, 0.06); transform: translateX(8px); }
+        .category-number { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; line-height: 1; opacity: 0.15; min-width: 90px; }
+        .category-title-wrapper { flex: 1; }
+        .category-icon { font-size: 1.3rem; margin-bottom: 0.25rem; opacity: 0.8; }
+        .category-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: var(--charcoal); margin: 0; letter-spacing: -0.01em; }
+        .category-count { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); margin-top: 0.35rem; letter-spacing: 0.08em; text-transform: uppercase; }
+        .toggle-indicator { font-size: 1.2rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); color: var(--slate); opacity: 0.5; }
+        .category-header.active .toggle-indicator { transform: rotate(180deg); }
+        .cat-air { border-color: var(--teal-deep); }
+        .cat-air .category-number { color: var(--teal-deep); }
+        .cat-anc { border-color: var(--coral); }
+        .cat-anc .category-number { color: var(--coral); }
+        .cat-temp { border-color: var(--copper); }
+        .cat-temp .category-number { color: var(--copper); }
+        .cat-precip { border-color: var(--slate); }
+        .cat-precip .category-number { color: var(--slate); }
+        .cat-humid { border-color: var(--sage); }
+        .cat-humid .category-number { color: var(--sage); }
+        .cat-soil { border-color: var(--forest); }
+        .cat-soil .category-number { color: var(--forest); }
+        .cat-social { border-color: var(--burgundy); }
+        .cat-social .category-number { color: var(--burgundy); }
+        .cat-urban { border-color: var(--lavender); }
+        .cat-urban .category-number { color: var(--lavender); }
+        .variables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 1.5rem; max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease; opacity: 0; }
+        .variables-grid.active { max-height: 25000px; opacity: 1; margin-bottom: 2rem; }
+        .variable-card { background: white; border: 1px solid rgba(45, 52, 54, 0.08); padding: 2rem; cursor: pointer; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .variable-card::before { content: ''; position: absolute; top: 0; left: 0; width: 0; height: 100%; background: currentColor; opacity: 0.08; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .variable-card:hover { border-color: rgba(45, 52, 54, 0.15); box-shadow: 0 12px 40px rgba(45, 52, 54, 0.08); transform: translateY(-3px); }
+        .variable-card:hover::before { width: 4px; }
+        .cat-air .variable-card { color: var(--teal-deep); }
+        .cat-anc .variable-card { color: var(--coral); }
+        .cat-temp .variable-card { color: var(--copper); }
+        .cat-precip .variable-card { color: var(--slate); }
+        .cat-humid .variable-card { color: var(--sage); }
+        .cat-soil .variable-card { color: var(--forest); }
+        .cat-social .variable-card { color: var(--burgundy); }
+        .cat-urban .variable-card { color: var(--lavender); }
+        .variable-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.4rem; line-height: 1.3; }
+        .variable-unit { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); letter-spacing: 0.03em; margin-bottom: 1.25rem; }
+        .stats-display { background: var(--mist); padding: 1.25rem; margin-bottom: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 2; color: var(--charcoal); }
+        .stats-display div { display: flex; justify-content: space-between; align-items: center; padding: 0.15rem 0; border-bottom: 1px solid rgba(45, 52, 54, 0.05); }
+        .stats-display div:last-child { border-bottom: none; }
+        .stats-label { color: var(--slate); font-weight: 400; }
+        .stats-value { font-weight: 600; color: var(--charcoal); }
+        .expand-btn { display: inline-flex; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: currentColor; text-transform: uppercase; letter-spacing: 0.12em; border: none; background: none; cursor: pointer; padding: 0.6rem 0; transition: all 0.3s ease; font-weight: 500; }
+        .expand-btn:hover { opacity: 0.7; transform: translateX(4px); }
+        .expand-btn::after { content: '\2193'; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .variable-card.expanded .expand-btn::after { transform: rotate(180deg); }
+        .variable-details { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 1.5rem; }
+        .variable-card.expanded .variable-details { max-height: 3000px; }
+        .detail-section { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid rgba(45, 52, 54, 0.08); }
+        .detail-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        .detail-section h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em; color: currentColor; margin-bottom: 0.75rem; font-weight: 600; }
+        .detail-section p { font-size: 0.95rem; line-height: 1.8; color: var(--slate); }
+        .dataset-info { background: var(--sand); padding: 0.85rem 1.15rem; border-left: 3px solid currentColor; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--charcoal); margin-top: 0.5rem; }
+        .formula-display { background: var(--charcoal); color: var(--sand); padding: 1.25rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; margin-top: 0.75rem; white-space: pre-wrap; overflow-x: auto; }
+        .methodology-sidebar { background: var(--sand); border: 1px solid rgba(184, 115, 51, 0.2); padding: 2.5rem; margin-bottom: 3rem; }
+        .methodology-sidebar h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+        .methodology-sidebar h3::before { content: ''; display: inline-block; width: 4px; height: 24px; background: var(--teal-deep); }
+        .methodology-intro { font-size: 0.95rem; color: var(--slate); margin-bottom: 2rem; line-height: 1.7; }
+        .methodology-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 2.5rem; align-items: start; }
+        .hex-visual { background: white; border: 1px solid rgba(45, 52, 54, 0.1); padding: 1.5rem; }
+        .hex-visual svg { width: 100%; height: auto; max-height: 280px; }
+        .hex-visual-caption { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); text-align: center; margin-top: 1rem; letter-spacing: 0.05em; }
+        .methodology-right { display: flex; flex-direction: column; gap: 1.5rem; }
+        .calc-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; background: white; }
+        .calc-table th { background: var(--teal-deep); color: white; padding: 0.75rem 0.5rem; text-align: center; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.65rem; }
+        .calc-table td { padding: 0.6rem 0.5rem; text-align: center; border-bottom: 1px solid rgba(45, 52, 54, 0.08); }
+        .calc-table tr:last-child td { background: var(--gold); font-weight: 700; color: var(--charcoal); }
+        .calc-table .hex-label { font-weight: 600; color: var(--teal-deep); }
+        .formula-compact { background: var(--charcoal); color: var(--teal-mid); padding: 1rem 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; text-align: center; letter-spacing: 0.02em; }
+        .comparison-compact { display: flex; gap: 1rem; }
+        .comp-item { flex: 1; background: white; border: 1px solid rgba(45, 52, 54, 0.1); padding: 1rem; text-align: center; }
+        .comp-item.weighted { border-color: var(--teal-mid); background: rgba(78, 205, 196, 0.05); }
+        .comp-item.centroid { border-color: var(--coral); background: rgba(224, 122, 95, 0.05); }
+        .comp-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .comp-value { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); }
+        .comp-item.weighted .comp-value { color: var(--teal-deep); }
+        .comp-item.centroid .comp-value { color: var(--coral); }
+        .comp-unit { font-size: 0.9rem; font-weight: 400; }
+        .comp-note { font-size: 0.7rem; color: var(--slate); margin-top: 0.3rem; }
+        .tier-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.25rem 0.5rem; border-radius: 3px; display: inline-block; margin-bottom: 0.5rem; }
+        .tier-1 { background: #e74c3c; color: white; }
+        .tier-2 { background: #f39c12; color: white; }
+        .tier-3 { background: #3498db; color: white; }
+        .references-section { margin-top: 5rem; padding: 4rem; background: var(--sand); border-top: 1px solid rgba(184, 115, 51, 0.2); }
+        .references-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 2.5rem; }
+        .reference-item { font-size: 0.88rem; line-height: 1.8; color: var(--slate); margin-bottom: 1rem; padding-left: 2.5rem; position: relative; }
+        .reference-number { position: absolute; left: 0; font-weight: 600; color: var(--copper); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        footer { padding: 4rem; background: var(--charcoal); color: var(--sand); }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; }
+        .footer-section h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 1rem; color: var(--copper-light); }
+        .footer-section p { font-size: 0.9rem; line-height: 1.7; opacity: 0.8; }
+        @media (max-width: 900px) {
+            header { padding: 3rem 2rem; }
+            header h1 { font-size: 2.4rem; }
+            main { padding: 2rem; }
+            .methodology-grid { grid-template-columns: 1fr; }
+            .category-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .category-number { font-size: 2.5rem; min-width: auto; }
+            .variables-grid { grid-template-columns: 1fr; }
+            .references-section, footer { padding: 3rem 2rem; }
+            .comparison-compact { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-label">PRECISE Network Research</div>
+            <h1>Environmental & Social Determinants of <span>Maternal Health</span></h1>
+            <p class="header-subtitle">Comprehensive geospatial analysis of environmental exposures and their impact on maternal and placental outcomes across three Sub-Saharan African nations.</p>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Study Sites</div>
+                    <div class="meta-value">Kenya, Mozambique, The Gambia</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Participants</div>
+                    <div class="meta-value">6,525 pregnant women</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Villages</div>
+                    <div class="meta-value">733 communities</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Indicators</div>
+                    <div class="meta-value">8 categories, 28+ variables</div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- POPULATION WEIGHTING METHODOLOGY -->
+            <div class="methodology-sidebar">
+                <h3>Population-Weighted Methodology Example</h3>
+                <p class="methodology-intro">Environmental exposures are calculated using Carto's H3 hexagonal tessellation to account for heterogeneous population distribution within village boundaries. Each metric is weighted by the population residing in each grid cell, ensuring that densely populated areas have proportionally greater influence on the village-level estimate.</p>
+                <div class="methodology-grid">
+                    <div class="hex-visual">
+                        <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 20 130 Q 20 50 70 35 Q 140 10 190 50 Q 220 70 220 130 Q 220 200 170 220 Q 100 250 50 210 Q 20 185 20 130 Z" fill="rgba(78,205,196,0.08)" stroke="#4ECDC4" stroke-width="1.5" stroke-dasharray="6,3"/>
+                            <polygon points="60,130 75,115 100,115 115,130 100,145 75,145" fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
+                            <text x="87" y="125" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">D</text>
+                            <text x="87" y="138" text-anchor="middle" fill="#1A535C" font-size="8">400 | 5.8km</text>
+                            <polygon points="60,80 75,65 100,65 115,80 100,95 75,95" fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
+                            <text x="87" y="75" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">E</text>
+                            <text x="87" y="88" text-anchor="middle" fill="#1A535C" font-size="8">600 | 5.5km</text>
+                            <polygon points="105,175 120,160 145,160 160,175 145,190 120,190" fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
+                            <text x="132" y="170" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">B</text>
+                            <text x="132" y="183" text-anchor="middle" fill="#1A535C" font-size="8">800 | 4.2km</text>
+                            <polygon points="105,105 120,90 145,90 160,105 145,120 120,120" fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
+                            <text x="132" y="100" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">C</text>
+                            <text x="132" y="113" text-anchor="middle" fill="#1A535C" font-size="8">1,200 | 4.0km</text>
+                            <polygon points="150,138 165,123 190,123 205,138 190,153 165,153" fill="#CD853F" stroke="#2D3436" stroke-width="1"/>
+                            <text x="177" y="133" text-anchor="middle" fill="white" font-size="11" font-weight="bold">A</text>
+                            <text x="177" y="146" text-anchor="middle" fill="white" font-size="8">1,500 | 2.8km</text>
+                            <circle cx="120" cy="130" r="8" fill="#E07A5F" stroke="#722F37" stroke-width="1.5"/>
+                            <text x="120" y="134" text-anchor="middle" fill="white" font-size="8" font-weight="bold">C</text>
+                            <text x="120" y="155" text-anchor="middle" fill="#722F37" font-size="7">Centroid</text>
+                            <line x1="120" y1="130" x2="270" y2="130" stroke="#E07A5F" stroke-width="1.2" stroke-dasharray="4,2"/>
+                            <line x1="87" y1="130" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
+                            <line x1="87" y1="80" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
+                            <line x1="132" y1="175" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
+                            <line x1="132" y1="105" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
+                            <line x1="177" y1="138" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
+                            <polygon points="270,115 285,130 270,145 255,130" fill="#4ECDC4" stroke="#1A535C" stroke-width="1.5"/>
+                            <text x="270" y="134" text-anchor="middle" fill="#1A535C" font-size="12" font-weight="bold">+</text>
+                            <text x="270" y="160" text-anchor="middle" fill="#1A535C" font-size="8" font-weight="600">Facility</text>
+                            <rect x="240" y="20" width="12" height="10" fill="#FFE4B5" stroke="#2D3436" stroke-width="0.5"/>
+                            <text x="256" y="28" fill="#2D3436" font-size="7">Low Pop</text>
+                            <rect x="240" y="34" width="12" height="10" fill="#FFA07A" stroke="#2D3436" stroke-width="0.5"/>
+                            <text x="256" y="42" fill="#2D3436" font-size="7">Med Pop</text>
+                            <rect x="240" y="48" width="12" height="10" fill="#CD853F" stroke="#2D3436" stroke-width="0.5"/>
+                            <text x="256" y="56" fill="#2D3436" font-size="7">High Pop</text>
+                        </svg>
+                        <div class="hex-visual-caption">H3 Hexagons with Population &amp; Distance to Facility</div>
+                    </div>
+                    <div class="methodology-right">
+                        <table class="calc-table">
+                            <thead><tr><th>Hex</th><th>Population</th><th>Distance (km)</th><th>Pop x Dist</th></tr></thead>
+                            <tbody>
+                                <tr><td class="hex-label">A</td><td>1,500</td><td>2.8</td><td>4,200</td></tr>
+                                <tr><td class="hex-label">B</td><td>800</td><td>4.2</td><td>3,360</td></tr>
+                                <tr><td class="hex-label">C</td><td>1,200</td><td>4.0</td><td>4,800</td></tr>
+                                <tr><td class="hex-label">D</td><td>400</td><td>5.8</td><td>2,320</td></tr>
+                                <tr><td class="hex-label">E</td><td>600</td><td>5.5</td><td>3,300</td></tr>
+                                <tr><td><strong>SUM</strong></td><td><strong>4,500</strong></td><td>-</td><td><strong>17,980</strong></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="formula-compact">Sum(Pop_i x Dist_i) / Sum(Pop_i) = 17,980 / 4,500 = <strong>3.99 km</strong></div>
+                        <div class="comparison-compact">
+                            <div class="comp-item centroid">
+                                <div class="comp-label">Centroid-Based</div>
+                                <div class="comp-value">5.2 <span class="comp-unit">km</span></div>
+                                <div class="comp-note">Single point, ignores distribution</div>
+                            </div>
+                            <div class="comp-item">
+                                <div class="comp-label">Simple Average</div>
+                                <div class="comp-value">4.46 <span class="comp-unit">km</span></div>
+                                <div class="comp-note">(2.8+4.2+4.0+5.8+5.5)/5</div>
+                            </div>
+                            <div class="comp-item weighted">
+                                <div class="comp-label">Population-Weighted</div>
+                                <div class="comp-value">3.99 <span class="comp-unit">km</span></div>
+                                <div class="comp-note">More people live closer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. AIR QUALITY -->
+            <div class="category-section cat-air">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">01</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127811;</div>
+                        <h2 class="category-title">Air Quality</h2>
+                        <div class="category-count">15 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <!-- NDVI -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">NDVI</div>
+                        <div class="variable-unit">Normalized Difference Vegetation Index (-1 to 1, unitless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.42 [0.35, 0.53] P95: 0.67</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.49 [0.43, 0.55] P95: 0.71</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.25 [0.20, 0.42] P95: 0.71</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.42 [0.28, 0.54] P95: 0.71</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Landsat Collection 2 Tier 1 Level 2 8-Day NDVI Composite; MODIS - MOD09GA/Q1</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Residential greenness has been consistently associated with improved pregnancy outcomes and overall population health. NDVI leverages the differential reflectance of vegetation in the visible red (RED) and near-infrared (NIR) spectral bands, with higher values indicating denser and healthier vegetation cover and, indirectly, lower levels of ambient air pollution.</p>
+                                <div class="formula-display">NDVI = (NIR - RED) / (NIR + RED)
+
+Village-level greenness was quantified by spatially
+averaging NDVI values within each village boundary.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Satellite-derived vegetation indices, particularly NDVI, are widely used as proxy measures of environmental quality and exposure to air pollution. Higher values indicate denser and healthier vegetation cover.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distance to Highways -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Distance to Highways</div>
+                        <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.80 [0.52, 3.21] P95: 7.29</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.01 [0.41, 7.23] P95: 8.10</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.59 [0.59, 4.66] P95: 8.41</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">1.34 [0.52, 3.78] P95: 8.10</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population raster, Village shapefile</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Residential proximity to major roadways is commonly used as a proxy for traffic-related air pollution exposure. Epidemiological evidence indicates that women residing within close proximity (e.g., less than 200m) to major roads experience an increased risk of adverse pregnancy outcomes, including preterm birth.</p>
+                                <div class="formula-display">Distance_highway = Sum(Population_i x Distance_i) / Sum(Population_i)
+
+where Distance_i represents the Euclidean distance from
+grid cell i to the nearest highway.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Pollutants produced by motorized vehicles, such as CO, NOx, HC, SO2, Pb and CO2, have negative impacts on the body. Traffic-related pollutant concentrations exhibit a strong spatial gradient with non-linear decay with increasing distance.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distance to Major Roads -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Distance to Major Roads</div>
+                        <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.34 [0.52, 2.70] P95: 4.93</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.95 [0.41, 1.22] P95: 4.95</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.52 [0.47, 2.12] P95: 8.14</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.95 [0.41, 2.67] P95: 6.86</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population data 100m resolution</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Population-weighted Euclidean distance to the nearest major road was computed using the same methodology as for highways, reflecting spatial variation in exposure to traffic-related pollution sources.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Elevation -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Elevation</div>
+                        <div class="variable-unit">Altitude (meters above sea level)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">188.75 [169.15, 192.22] P95: 199.56</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">19.01 [18.64, 31.69] P95: 44.65</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">26.55 [15.29, 26.55] P95: 35.60</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">26.55 [16.96, 111.95] P95: 184.07</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">MERIT/DEM/v1_0_3: Elevation in meters, referenced to EGM96 geoid model</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Village-level altitude was derived by calculating the mean elevation pixel value within each village or neighbourhood boundary.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Elevation influences atmospheric pressure and air circulation patterns, which can affect the dispersion and concentration of air pollutants. Exposure to high-altitude environments has been associated with adverse reproductive and pregnancy outcomes, including low birth weight.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 GHAP -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (GHAP)</div>
+                        <div class="variable-unit">Global High Air Pollutants (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">7.79 [7.09, 9.30] P95: 12.68</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">7.85 [6.91, 8.84] P95: 10.48</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">21.76 [15.80, 25.85] P95: 46.29</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">7.85 [7.00, 17.58] P95: 42.93</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Global High Air Pollutants (GHAP) PM2.5 Concentrations</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Exposure to fine particulate matter (PM2.5) has been associated with adverse maternal and birth outcomes, including increased risk of gestational hypertension and reduced birth weight. Inhalation of ambient PM2.5 can cross the placenta and has been linked to adverse obstetric and postnatal metabolic health outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 CAMS -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (CAMS)</div>
+                        <div class="variable-unit">Copernicus Atmosphere Monitoring Service (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">15.66 [14.00, 18.16] P95: 22.11</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">12.54 [8.16, 15.42] P95: 23.24</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">55.79 [41.85, 69.93] P95: 113.20</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">16.02 [12.99, 23.24] P95: 79.35</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Copernicus Atmosphere Monitoring Service (CAMS) Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 Non-Fire Smoke -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (Non-Fire Smoke)</div>
+                        <div class="variable-unit">Background Particulate Matter (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.59 [4.32, 10.04] P95: 14.43</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">4.92 [4.10, 6.36] P95: 7.38</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">48.56 [22.98, 72.77] P95: 95.85</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">5.87 [4.53, 11.71] P95: 74.59</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM2.5 Fire Smoke -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">PM2.5 (Fire Smoke)</div>
+                        <div class="variable-unit">Biomass Burning Particulate Matter (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.07 [0.04, 0.14] P95: 0.40</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.30 [0.04, 0.63] P95: 1.58</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.28 [0.13, 0.68] P95: 1.41</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.12 [0.05, 0.43] P95: 1.06</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AOD Dust -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">AOD (Dust)</div>
+                        <div class="variable-unit">Dust Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.01 [0.004, 0.019] P95: 0.04</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.003 [0.002, 0.004] P95: 0.004</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.19 [0.11, 0.30] P95: 0.41</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.008 [0.003, 0.039] P95: 0.30</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AOD Black Carbon -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">AOD (Black Carbon)</div>
+                        <div class="variable-unit">Black Carbon Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.006 [0.005, 0.009] P95: 0.01</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.004 [0.004, 0.012] P95: 0.02</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.009 [0.006, 0.012] P95: 0.01</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.006 [0.004, 0.010] P95: 0.02</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AOD Total -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">AOD (Total)</div>
+                        <div class="variable-unit">Total Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.19 [0.16, 0.22] P95: 0.24</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.15 [0.13, 0.21] P95: 0.26</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.36 [0.28, 0.46] P95: 0.63</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.19 [0.15, 0.24] P95: 0.46</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CO -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Carbon Monoxide (CO)</div>
+                        <div class="variable-unit">Total Column (g/m&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.77 [0.70, 0.83] P95: 0.89</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.70 [0.68, 0.88] P95: 1.03</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.98 [0.90, 1.05] P95: 1.10</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.82 [0.69, 0.92] P95: 1.07</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>At a threshold of >2 ppm, CO was associated with lower mean birth-weight and higher rates of SGA and PTB. Acute CO poisoning in pregnant women is linked to complications such as preterm birth and miscarriage.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NO2 -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Nitrogen Dioxide (NO2)</div>
+                        <div class="variable-unit">Total Column (mg/m&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.29 [1.15, 1.38] P95: 1.52</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.77 [1.46, 2.29] P95: 2.52</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">2.13 [1.98, 2.23] P95: 2.40</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">1.51 [1.30, 2.09] P95: 2.44</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Short-term exposure to NO2 may induce increased risk of Spontaneous Abortion (SAB) outpatient visits, especially in elder women and cool seasons.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- O3 -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Ozone (O3)</div>
+                        <div class="variable-unit">Total Column (Dobson Units)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">211.2 [207.2, 214.9] P95: 219.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">217.3 [211.5, 224.6] P95: 233.0</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">213.6 [207.0, 220.8] P95: 228.3</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">213.2 [208.6, 218.5] P95: 230.8</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>There is some positive correlation between Ozone (O3) and Preterm Birth which is mostly pronounced during middle pregnancy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Road Network Density -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Road Network Density</div>
+                        <div class="variable-unit">Population-Weighted (km/km&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">8.43 +/- 5.79</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">8.20 [2.09, 16.12]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.12 - 20.49</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population data 100m resolution</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">Road Density_PW = Sum(Population_i x RoadDensity_i) / Sum(Population_i)
+
+where RoadDensity_i represents road length per unit
+area within grid cell i.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Exposure to traffic-related pollution has been associated with increased risk of adverse pregnancy outcomes. Road density is commonly used as a spatial proxy for traffic intensity and associated vehicular emissions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ANC SEEKING BEHAVIOUR & ACCESS TO CARE -->
+            <div class="category-section cat-anc">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">02</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127973;</div>
+                        <h2 class="category-title">ANC Seeking Behaviour & Access to Care</h2>
+                        <div class="category-count">11 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Road Quality Index</div>
+                        <div class="variable-unit">RQI (0 to 1, dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">0.288 +/- 0.12</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.27 [0.20, 0.35]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 0.67</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road dataset, WorldPop population data 100m resolution</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">RQI = Sum(RoadLength_i x SpeedLimit_i) / Sum(RoadLength_i) / 120
+
+Lower RQI values indicate poorer road conditions.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Road quality influences travel speed and accessibility to health facilities, with poorer road conditions associated with longer travel times and reduced access to maternal healthcare services.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Walking Distance to Facility</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">4.02 +/- 6.01</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.38 [1.52, 4.57]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.45 - 35.05</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OpenRouteService API (foot-walking profile) + WorldPop 100m</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">PW_WalkDist_Fac = Sum(Pop_i x WalkDist_i) / Sum(Pop_i)
+
+Walking distance calculated via OSRM network routing
+from each H3 hexagon centroid to health facility.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Walking Time to Facility</div>
+                        <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">48.32 +/- 72.18</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">28.50 [18.20, 54.80]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">5.4 - 420.6</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">Walking Time (min) = Walking Distance (km) / 5 x 60
+
+Assumes average walking speed of 5 km/h.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Driving Distance to Facility</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">5.84 +/- 8.42</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">3.45 [2.12, 6.78]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.62 - 52.4</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OpenRouteService API (driving-car profile) + WorldPop 100m</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Driving Time to Facility</div>
+                        <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">13.97 +/- 45.54</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">6.40 [5.25, 12.61]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">1.2 - 286.4</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Travel time to nearest facility is a critical determinant of healthcare access. Delays reaching health facilities represent the second of three delays known to elevate risks for adverse maternal outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Public Transport Distance to Facility</div>
+                        <div class="variable-unit">Population-Weighted Total Journey Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">6.12 +/- 9.24</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">3.68 [2.24, 7.15]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.58 - 58.2</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">TotalDist = WalkToPickup + InVehicleDist
+
+Public transport only operates on main roads
+(primary/secondary).</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Public Transport Time to Facility</div>
+                        <div class="variable-unit">Population-Weighted Total Journey Time (minutes)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">24.56 +/- 38.72</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">14.80 [9.45, 28.60]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">2.8 - 245.8</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">TotalTime = WalkTime + WaitTime + VehicleTime
+
+WaitTime: Fixed 20 minutes for public transport delays
+WalkSpeed: 5 km/h to reach pickup point</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Walking Isolation (Major Roads)</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">1.48 +/- 3.35</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.60 [0.42, 1.24]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 7.11</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Walking distance to major roads is a proxy for isolation from transport networks. Difficult access to roads is a known barrier to healthcare utilization.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Walking Isolation (Highways)</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">3.82 +/- 4.56</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.14 [0.92, 5.28]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.15 - 18.42</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Walking distance to highways captures isolation from long-distance transport. Highways typically have inter-city bus services connecting to urban referral hospitals.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Driving Isolation (Major Roads)</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">0.92 +/- 1.84</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.45 [0.28, 0.94]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.05 - 5.86</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Driving isolation captures vehicular accessibility to major transport corridors, relevant for emergency referrals and ambulance access.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Driving Isolation (Highways)</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">2.58 +/- 3.12</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1.42 [0.58, 3.86]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 12.64</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Driving isolation from highways indicates connectivity to regional/national transport networks for accessing higher-level health facilities during pregnancy complications.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. TEMPERATURE -->
+            <div class="category-section cat-temp">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">03</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127777;</div>
+                        <h2 class="category-title">Temperature</h2>
+                        <div class="category-count">6 indicators (3 tiers)</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <!-- TIER 1: Physiologically Relevant Heat Stress -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
+                        <div class="variable-name">Wet Bulb Temperature</div>
+                        <div class="variable-unit">Heat Stress Index (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">21.58 [19.90, 22.30] P95: 23.25</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">17.04 [16.88, 17.20] P95: 17.45</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">14.74 [12.87, 15.53] P95: 16.23</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">17.04 [14.88, 19.75] P95: 22.67</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">MERRA-2 (NASA/GSFC/MERRA/slv/2) - T2MWET band</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Wet bulb temperature is a superior heat stress metric as it accounts for the body's inability to cool through sweating in humid conditions. Values above 32C are dangerous; above 35C is lethal for prolonged exposure. Pregnant women are especially vulnerable to heat stress.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
+                        <div class="variable-name">Extreme Hot Days</div>
+                        <div class="variable-unit">Percentage of Pregnancy (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.0 [2.9, 6.7] P95: 8.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">4.2 [3.7, 6.6] P95: 7.7</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">4.1 [2.8, 7.2] P95: 9.6</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">4.5 [3.3, 6.7] P95: 8.7</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Percentage of pregnancy days exposed to extreme heat conditions. Extreme heat exposure during pregnancy affects fetal development through thermoregulatory stress and reduced placental blood flow.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
+                        <div class="variable-name">Heatwave Days</div>
+                        <div class="variable-unit">Percentage of Pregnancy (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 1.5] P95: 4.8</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.0 [0.0, 0.0] P95: 2.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.0 [0.0, 0.8] P95: 4.9</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">0.0 [0.0, 0.6] P95: 4.4</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Prolonged heat exposure during heatwave events poses significant risks to maternal and fetal health. Heatwaves are defined as consecutive days exceeding the local 95th percentile temperature threshold.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TIER 2: Ambient Air Temperature -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-2">Tier 2 - Ambient Air</span>
+                        <div class="variable-name">Ambient Temperature</div>
+                        <div class="variable-unit">Mean Air Temperature at 2m (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.76 [25.56, 26.00] P95: 26.29</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">23.32 [23.17, 23.66] P95: 23.98</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">27.69 [27.49, 27.94] P95: 28.32</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">25.65 [23.57, 26.28] P95: 27.97</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ERA5-Land Hourly (ECMWF/ERA5_LAND/HOURLY)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Low temperature and low humidity are protective against preterm birth, whereas high temperature increases risk. Evidence shows that estimated health effects are sensitive to the choice of temperature metric.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-2">Tier 2 - Ambient Air</span>
+                        <div class="variable-name">Diurnal Temperature</div>
+                        <div class="variable-unit">Daily Temperature Range (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">6.67 [5.63, 7.96] P95: 10.30</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">8.93 [6.42, 11.78] P95: 14.93</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">12.52 [8.18, 14.53] P95: 16.60</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">7.73 [6.05, 10.80] P95: 15.17</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Preconceptional and prenatal exposure to Diurnal Temperature Variations (DTV) are significantly associated with childhood pneumonia and adverse pregnancy outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TIER 3: Surface Derived Temperature -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="tier-label tier-3">Tier 3 - Surface Derived</span>
+                        <div class="variable-name">Land Surface Temperature</div>
+                        <div class="variable-unit">Surface Temperature (C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">26.93 [25.14, 28.89] P95: 30.36</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">24.18 [21.40, 26.55] P95: 27.86</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">30.58 [28.60, 33.96] P95: 36.95</span></div>
+                            <div><span class="stats-label">Overall</span><span class="stats-value">26.93 [23.27, 31.43] P95: 36.29</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Landsat 7, Landsat 8, MODIS</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Land surface temperature captures the actual thermal environment experienced at ground level, which can differ significantly from air temperature, especially in urban heat islands.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. PRECIPITATION -->
+            <div class="category-section cat-precip">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">04</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127783;</div>
+                        <h2 class="category-title">Precipitation</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Mean Monthly Precipitation</div>
+                        <div class="variable-unit">PERSIANN-CDR Daily Rainfall (mm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">4.88 +/- 6.68</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.02 [0.36, 7.49]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">0.0 - 22.02</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">PERSIANN-CDR (Precipitation Estimation from Remotely Sensed Information using Artificial Neural Networks - Climate Data Record)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Monthly precipitation values were spatially averaged at the village or neighbourhood level.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Seasonal variations in precipitation have been associated with fluctuations in birth outcomes, including birth weight and length. Rainfall affects food availability, disease transmission, and access to healthcare during wet seasons.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. RELATIVE HUMIDITY -->
+            <div class="category-section cat-humid">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">05</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#128167;</div>
+                        <h2 class="category-title">Relative Humidity</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Mean Monthly Relative Humidity</div>
+                        <div class="variable-unit">Percentage (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">67.00 +/- 13.14</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">71.21 [49.82, 78.73]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">28.5 - 85.19</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF/ERA5_LAND/HOURLY</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">RH calculated using Magnus-Tetens approximation:
+e_s(T) = exp((a * T)/(b + T))
+RH = 100 x (e_s(T_dew) / e_s(T_air))
+
+where a=17.625, b=243.04</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Low relative humidity has been associated with reduced risk of preterm birth, whereas high relative humidity increases risk. Humidity affects thermal comfort, disease transmission, and food storage/safety.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. MACRONUTRIENTS -->
+            <div class="category-section cat-soil">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">06</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127793;</div>
+                        <h2 class="category-title">Macronutrients (Soil Quality)</h2>
+                        <div class="category-count">4 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Nitrogen (N)</div>
+                        <div class="variable-unit">Total Nitrogen (g/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">57.94 +/- 7.64</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">53.84 [50.61, 67.45]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">38.2 - 80.30</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/nitrogen_total (iSDAsoil 30m Resolution)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Soil nitrogen is essential for plant protein synthesis and crop productivity. Low soil nitrogen contributes to food insecurity and maternal malnutrition.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Phosphorus (P)</div>
+                        <div class="variable-unit">Extractable Phosphorus (ppm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">24.23 +/- 0.86</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">24.26 [23.56, 24.97]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">21.8 - 25.75</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/phosphorus_extractable</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Phosphorus is essential for root development and crop yield. Deficient soils produce lower crop yields affecting household food security.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Potassium (K)</div>
+                        <div class="variable-unit">Extractable Potassium (ppm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">44.76 +/- 1.59</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">45.30 [43.00, 47.09]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">40.1 - 49.22</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/potassium_extractable</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Potassium regulates water uptake and disease resistance in plants, affecting agricultural productivity and food security.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Soil Calcium (Ca)</div>
+                        <div class="variable-unit">Extractable Calcium (ppm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">1842.5 +/- 486.2</span></div>
+                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1756.4 [1485.2, 2124.8]</span></div>
+                            <div><span class="stats-label">Range</span><span class="stats-value">624.8 - 3842.6</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/calcium_extractable</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Soil calcium affects food crop mineral content. Calcium is critical during pregnancy for fetal bone development, blood clotting, and muscle function. Maternal calcium deficiency is associated with preeclampsia and low birth weight.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. URBANIZATION -->
+            <div class="category-section cat-urban">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">07</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127961;</div>
+                        <h2 class="category-title">Urbanization</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Settlement Classification</div>
+                        <div class="variable-unit">Degree of Urbanization (categorical)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Most Frequent</span><span class="stats-value">Rural (68.4%)</span></div>
+                            <div><span class="stats-label">Peri-Urban</span><span class="stats-value">24.2%</span></div>
+                            <div><span class="stats-label">Urban</span><span class="stats-value">7.4%</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Global Human Settlement Layer (JRC/GHSL/P2023A/GHS_SMOD/2025)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <div class="formula-display">Classification based on MODE (most frequent value):
+- smod_code 22-30: URBAN
+- smod_code 14-21: PERI-URBAN
+- smod_code 11-13: RURAL</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>The ongoing urbanization worldwide is leading to an increasing number of pregnant women being exposed to higher levels of urban-related environmental hazards such as air pollution and noise, and at the same time, having less contact with natural environments. The urban environment during pregnancy may influence child's respiratory health.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. SOCIO-DEMOGRAPHIC -->
+            <div class="category-section cat-social">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">08</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#128101;</div>
+                        <h2 class="category-title">Socio-Demographic Indicators</h2>
+                        <div class="category-count">8 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Social Inclusion</div>
+                        <div class="variable-unit">Community Group Participation (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">7.5% (n=338/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Proportion of pregnant women who are aware of and actively participate in community groups or organisations that provide support for pregnancy-related problems.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>This indicator captures social inclusion during pregnancy by reflecting engagement in community-based support and health promotion structures that help reduce social exclusion during the prenatal period.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Community Help</div>
+                        <div class="variable-unit">Bonding Social Capital (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">62.6% have community help</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Bonding social capital (strong ties of trust with neighbours, family, friends) acts through psychosocial support mechanisms to improve pregnancy health.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">General Financial Autonomy</div>
+                        <div class="variable-unit">Household Decision-Making (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">11.7% have autonomy</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Women who make household financial decisions have greater chances of receiving antenatal and delivery care. The indicator reflects women's financial autonomy, a key dimension of gender power relations.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Pregnancy Financial Autonomy</div>
+                        <div class="variable-unit">Pregnancy-Related Decision-Making (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">16.0% have autonomy</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Women with financial autonomy on pregnancy-related issues have greater uptake of antenatal care and positive birth outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Partner Availability</div>
+                        <div class="variable-unit">Living with Partner (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">73.3% (n=3858/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Pregnant women with involved partners are more likely to receive prenatal care. Lack of partner involvement is associated with higher neonatal mortality and adverse birth outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Emotional Support</div>
+                        <div class="variable-unit">Community Emotional Support (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">32.2% (n=1693/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Low social support is associated with depression, anxiety, and may indirectly raise risk for adverse birth outcomes through stress-related pathways.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Transport Support</div>
+                        <div class="variable-unit">Social Transport Access (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">22.2% (n=1170/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Emergency maternal transport services are essential for improving outcomes. Transportation barriers produce delays contributing to poor perinatal outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Financial Support</div>
+                        <div class="variable-unit">Social Financial Support (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Overall</span><span class="stats-value">4.7% (n=250/5264)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Financial constraints significantly hinder women's access to antenatal care in low- and middle-income countries.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- REFERENCES -->
+        <div class="references-section">
+            <h2>References</h2>
+            <div class="reference-item"><span class="reference-number">24.</span> Rapang A, et al. The Effect of Exposure to Carbon Monoxide Gas in Pregnant Women. J INFO Kesehat. 2023;21(4):713-20.</div>
+            <div class="reference-item"><span class="reference-number">25.</span> Zhong K, et al. Susceptible window identification of maternal ozone exposure and preterm birth. Int Health. 2025.</div>
+            <div class="reference-item"><span class="reference-number">26.</span> Aguilera J, et al. Air pollution and pregnancy. Semin Perinatol. 2023;47(8):151838.</div>
+            <div class="reference-item"><span class="reference-number">27.</span> Kaur K, et al. PM2.5 exposure during pregnancy and placental lipid metabolic genes. Environ Res. 2022;211:113066.</div>
+            <div class="reference-item"><span class="reference-number">28.</span> Galka K, et al. Carbon monoxide levels and adverse pregnancy outcomes. Acta Obstet Gynecol Scand. 2025;104(12):2237-43.</div>
+            <div class="reference-item"><span class="reference-number">29.</span> Place E, et al. Carbon monoxide exposure in pregnant women in the UK. BMC Pregnancy Childbirth. 2025;25(1):1063.</div>
+            <div class="reference-item"><span class="reference-number">30.</span> Liang Z, et al. Nitrogen dioxide exposure and spontaneous abortion risk. Ecotoxicol Environ Saf. 2021;224:112633.</div>
+            <div class="reference-item"><span class="reference-number">31.</span> Abellan A, et al. Urban environment during pregnancy and lung function in children. Environ Pollut. 2024;344:123345.</div>
+            <div class="reference-item"><span class="reference-number">32.</span> Girardi G, et al. Social determinants of health in pregnant individuals. Int J Equity Health. 2023;22(1):186.</div>
+            <div class="reference-item"><span class="reference-number">33.</span> Scholmerich VLN, et al. Neighborhood Social Capital and Pregnancy Outcomes. PLoS ONE. 2014;9(5):e95873.</div>
+            <div class="reference-item"><span class="reference-number">36.</span> Li F, et al. Effects of PM2.5 exposure on perinatal complications. BMC Pregnancy Childbirth. 2025;25(1):686.</div>
+            <div class="reference-item"><span class="reference-number">39.</span> Gage AJ, Guirlene Calixte M. Physical accessibility of maternal health services. Popul Stud. 2006;60(3):271-88.</div>
+            <div class="reference-item"><span class="reference-number">40.</span> Rylander C, et al. Climate change and maternal and pregnancy outcomes. Glob Health Action. 2013;6(1):1-9.</div>
+            <div class="reference-item"><span class="reference-number">42.</span> Wu Y, et al. Temperature and humidity effects on preterm birth. Front Public Health. 2023;11:1101283.</div>
+            <div class="reference-item"><span class="reference-number">43.</span> Olapoju OM. Transport barriers for pregnant women. Discov Health Syst. 2025;4(1):17.</div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Authors</h3>
+                    <p>Makanga PT, Makacha L, Mlambo R, Nyapwere N, Dube YP, Craik R, Misty H, Magee LA, Barrat B, von Dadelszen P</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Affiliations</h3>
+                    <p>PRECISE Network | Midlands State University (Zimbabwe) | Centre for Sexual Health HIV and AIDS Research Zimbabwe (CeSHHAR Zimbabwe) | King's College London | Imperial College London | University of British Columbia</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Funding</h3>
+                    <p>United Kingdom Research and Innovation GCRF GROW award (MR/P027938/1)</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCategory(header) {
+            header.classList.toggle('active');
+            const grid = header.nextElementSibling;
+            grid.classList.toggle('active');
+        }
+
+        function toggleCard(card) {
+            event.stopPropagation();
+            card.classList.toggle('expanded');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const firstCategory = document.querySelector('.category-header');
+                if (firstCategory) {
+                    toggleCategory(firstCategory);
+                }
+            }, 400);
+        });
+
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.category-section').forEach(section => {
+            section.style.animationPlayState = 'paused';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
