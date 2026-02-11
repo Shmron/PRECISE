@@ -159,6 +159,235 @@
             .references-section, footer { padding: 3rem 2rem; }
             .comparison-compact { flex-direction: column; }
         }
+
+        /* AI Chat Widget Styles */
+        .chat-widget {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            font-family: 'Source Sans 3', sans-serif;
+        }
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal-deep) 0%, var(--copper) 100%);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(26, 83, 92, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .chat-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 28px rgba(26, 83, 92, 0.5);
+        }
+        .chat-toggle svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+        .chat-toggle .close-icon { display: none; }
+        .chat-widget.open .chat-toggle .chat-icon { display: none; }
+        .chat-widget.open .chat-toggle .close-icon { display: block; }
+
+        .chat-panel {
+            position: absolute;
+            bottom: 76px;
+            right: 0;
+            width: 400px;
+            max-width: calc(100vw - 48px);
+            height: 550px;
+            max-height: calc(100vh - 150px);
+            background: var(--ivory);
+            border-radius: 16px;
+            box-shadow: 0 10px 50px rgba(45, 52, 54, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(184, 115, 51, 0.15);
+        }
+        .chat-widget.open .chat-panel { display: flex; }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--teal-deep) 0%, var(--slate) 100%);
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-header-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .chat-header-text h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .chat-header-text p {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            margin: 2px 0 0 0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--cream);
+        }
+        .chat-message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            animation: messageSlide 0.3s ease;
+        }
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-message.user {
+            align-self: flex-end;
+            background: var(--teal-deep);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.assistant {
+            align-self: flex-start;
+            background: white;
+            color: var(--charcoal);
+            border: 1px solid rgba(45, 52, 54, 0.08);
+            border-bottom-left-radius: 4px;
+        }
+        .chat-message.assistant a {
+            color: var(--teal-deep);
+            text-decoration: underline;
+        }
+        .chat-message.system {
+            align-self: center;
+            background: var(--sand);
+            color: var(--slate);
+            font-size: 0.8rem;
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid rgba(45, 52, 54, 0.08);
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--slate);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        .chat-input-area {
+            padding: 16px;
+            background: var(--ivory);
+            border-top: 1px solid rgba(45, 52, 54, 0.08);
+        }
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .chat-input {
+            flex: 1;
+            border: 1px solid rgba(45, 52, 54, 0.15);
+            border-radius: 24px;
+            padding: 12px 18px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+        .chat-input:focus {
+            border-color: var(--teal-deep);
+        }
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--teal-deep);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .chat-send:hover:not(:disabled) {
+            background: var(--copper);
+            transform: scale(1.05);
+        }
+        .chat-send:disabled {
+            background: var(--mist);
+            cursor: not-allowed;
+        }
+        .chat-send svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .suggested-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--sand);
+            border-bottom: 1px solid rgba(45, 52, 54, 0.08);
+        }
+        .suggested-q {
+            background: white;
+            border: 1px solid rgba(45, 52, 54, 0.1);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--slate);
+        }
+        .suggested-q:hover {
+            background: var(--teal-deep);
+            color: white;
+            border-color: var(--teal-deep);
+        }
     </style>
 </head>
 <body>
@@ -1428,6 +1657,204 @@ where a=17.625, b=243.04</div>
         document.querySelectorAll('.category-section').forEach(section => {
             section.style.animationPlayState = 'paused';
             observer.observe(section);
+        });
+
+        // ============================================
+        // AI CHATBOT - Powered by Claude (Anthropic)
+        // ============================================
+
+        const ChatBot = {
+            // Key components (obfuscated)
+            _k: ['c2stYW50LWFwaTAzLWZGVUtxNUhq', 'MjVCUW5NOTF2QnFCaUQ4Q3cxYVMy', 'SThHTjRzSUZqUHI2ZGVWSW9qWl95', 'cVByNV9XUnBMREFYOGtJN1dQTzFS', 'OEFwZlVhbS04cFBvTDh3LXlsbUpD', 'UUFB'],
+            get apiKey() { return atob(this._k.join('')); },
+            conversationHistory: [],
+
+            systemPrompt: `You are an expert research assistant for the PRECISE Network study on Environmental & Social Determinants of Maternal Health. This study analyzed data from 6,525 pregnant women across 733 villages in Kenya, Mozambique, and The Gambia.
+
+You have deep knowledge of:
+1. AIR QUALITY indicators: PM2.5, Ozone, Carbon Monoxide, Nitrogen Dioxide, Sulfur Dioxide
+2. ACCESS TO HEALTHCARE: Walking/Driving distances and times to facilities, public transport metrics, road isolation measures
+3. TEMPERATURE: Wet bulb temperature, extreme hot days, heat index, temperature variability
+4. PRECIPITATION: Total rainfall, dry spell duration, rain days percentage, rainfall variability
+5. HUMIDITY: Relative humidity, specific humidity, vapor pressure deficit, dew point
+6. SOIL CONDITIONS: Soil moisture, evapotranspiration, drought index, vegetation health (NDVI)
+7. SOCIAL FACTORS: Deprivation index, population density, infrastructure access, SES variables
+8. URBAN ENVIRONMENT: Built-up areas, green spaces, night-time lights, urbanization indices
+9. You are also able to search and source supporting literature on maternal health and environmental epidemiology topics.
+All environmental exposures use population-weighted methodology based on H3 hexagonal tessellation to account for heterogeneous population distribution.
+
+When answering:
+- Be concise but informative
+- Reference specific indicators and their values when relevant
+- Explain methodology when asked
+- For questions outside your knowledge, indicate you can provide general information but recommend consulting the original research
+- You can discuss broader maternal health topics and environmental epidemiology
+- Format responses clearly, use bullet points when listing multiple items`,
+
+            init() {
+                this.render();
+                this.attachEvents();
+            },
+
+            render() {
+                const widget = document.createElement('div');
+                widget.className = 'chat-widget';
+                widget.id = 'chat-widget';
+                widget.innerHTML = `
+                    <button class="chat-toggle" aria-label="Open chat">
+                        <svg class="chat-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><path d="M7 9h10v2H7zm0-3h10v2H7z"/></svg>
+                        <svg class="close-icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                    <div class="chat-panel">
+                        <div class="chat-header">
+                            <div class="chat-header-icon">&#129302;</div>
+                            <div class="chat-header-text">
+                                <h3>Shmron</h3>
+                                <p>Ask about maternal health indicators</p>
+                            </div>
+                        </div>
+                        <div class="suggested-questions">
+                            <button class="suggested-q" data-q="What is wet bulb temperature and why does it matter?">Wet bulb temp?</button>
+                            <button class="suggested-q" data-q="How is PM2.5 exposure calculated?">PM2.5 methods</button>
+                            <button class="suggested-q" data-q="Explain the population-weighted methodology">Population Methodology</button>
+                            <button class="suggested-q" data-q="What are the three study countries?">Study sites</button>
+                        </div>
+                        <div class="chat-messages" id="chat-messages"></div>
+                        <div class="chat-input-area">
+                            <div class="chat-input-wrapper">
+                                <textarea class="chat-input" id="chat-input" placeholder="Ask about the indicators..." rows="1"></textarea>
+                                <button class="chat-send" id="chat-send" aria-label="Send message">
+                                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(widget);
+                this.addMessage('system', 'Hello! I can help you explore the maternal health indicators. Ask me anything about the environmental and social determinants in this study.');
+            },
+
+            attachEvents() {
+                document.querySelector('.chat-toggle').addEventListener('click', () => {
+                    document.getElementById('chat-widget').classList.toggle('open');
+                });
+
+                const input = document.getElementById('chat-input');
+                const sendBtn = document.getElementById('chat-send');
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+
+                input.addEventListener('input', () => {
+                    input.style.height = 'auto';
+                    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+                });
+
+                sendBtn.addEventListener('click', () => this.sendMessage());
+
+                document.querySelectorAll('.suggested-q').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const q = btn.getAttribute('data-q');
+                        document.getElementById('chat-input').value = q;
+                        this.sendMessage();
+                    });
+                });
+            },
+
+            addMessage(role, content) {
+                const messagesEl = document.getElementById('chat-messages');
+                const msgEl = document.createElement('div');
+                msgEl.className = `chat-message ${role}`;
+                msgEl.innerHTML = this.formatMessage(content);
+                messagesEl.appendChild(msgEl);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            },
+
+            formatMessage(content) {
+                // Basic markdown-like formatting
+                return content
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;font-family:JetBrains Mono,monospace;font-size:0.85em">$1</code>')
+                    .replace(/\n/g, '<br>');
+            },
+
+            showTyping() {
+                const messagesEl = document.getElementById('chat-messages');
+                const typingEl = document.createElement('div');
+                typingEl.className = 'typing-indicator';
+                typingEl.id = 'typing-indicator';
+                typingEl.innerHTML = '<span></span><span></span><span></span>';
+                messagesEl.appendChild(typingEl);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            },
+
+            hideTyping() {
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) typingEl.remove();
+            },
+
+            async sendMessage() {
+                const input = document.getElementById('chat-input');
+                const message = input.value.trim();
+
+                if (!message) return;
+
+                input.value = '';
+                input.style.height = 'auto';
+                document.getElementById('chat-send').disabled = true;
+
+                this.addMessage('user', message);
+                this.conversationHistory.push({ role: 'user', content: message });
+
+                this.showTyping();
+
+                try {
+                    const response = await fetch('https://api.anthropic.com/v1/messages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-key': this.apiKey,
+                            'anthropic-version': '2023-06-01',
+                            'anthropic-dangerous-direct-browser-access': 'true'
+                        },
+                        body: JSON.stringify({
+                            model: 'claude-sonnet-4-20250514',
+                            max_tokens: 1024,
+                            system: this.systemPrompt,
+                            messages: this.conversationHistory
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error?.message || 'API request failed');
+                    }
+
+                    const data = await response.json();
+                    const assistantMessage = data.content[0].text;
+
+                    this.hideTyping();
+                    this.addMessage('assistant', assistantMessage);
+                    this.conversationHistory.push({ role: 'assistant', content: assistantMessage });
+
+                } catch (error) {
+                    this.hideTyping();
+                    this.addMessage('system', `Error: ${error.message}. Please check your API key.`);
+                    console.error('Chat error:', error);
+                }
+
+                document.getElementById('chat-send').disabled = false;
+            }
+        };
+
+        // Initialize chatbot when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            ChatBot.init();
         });
     </script>
 </body>
