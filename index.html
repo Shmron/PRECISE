@@ -140,6 +140,16 @@
         .tier-1 { background: #e74c3c; color: white; }
         .tier-2 { background: #f39c12; color: white; }
         .tier-3 { background: #3498db; color: white; }
+        /* Abstract Section Styles */
+        .abstract-section { padding: 3rem 4rem; background: linear-gradient(135deg, var(--ivory) 0%, var(--sand) 100%); border-bottom: 1px solid rgba(184, 115, 51, 0.2); }
+        .abstract-section h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .abstract-section h2::before { content: ''; display: inline-block; width: 4px; height: 28px; background: var(--copper); }
+        .abstract-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+        .abstract-column h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 600; color: var(--teal-deep); margin-bottom: 1rem; }
+        .abstract-column p { font-size: 0.95rem; line-height: 1.85; color: var(--slate); margin-bottom: 1rem; text-align: justify; }
+        .abstract-highlight { background: white; border-left: 4px solid var(--copper); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+        .abstract-highlight p { margin-bottom: 0; font-style: italic; color: var(--charcoal); }
+        @media (max-width: 900px) { .abstract-content { grid-template-columns: 1fr; } .abstract-section { padding: 2rem; } }
         .references-section { margin-top: 5rem; padding: 4rem; background: var(--sand); border-top: 1px solid rgba(184, 115, 51, 0.2); }
         .references-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 2.5rem; }
         .reference-item { font-size: 0.88rem; line-height: 1.8; color: var(--slate); margin-bottom: 1rem; padding-left: 2.5rem; position: relative; }
@@ -403,7 +413,7 @@
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Participants</div>
-                    <div class="meta-value">6,525 pregnant women</div>
+                    <div class="meta-value">6,687 pregnant women</div>
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Villages</div>
@@ -411,10 +421,36 @@
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Indicators</div>
-                    <div class="meta-value">8 categories, 28+ variables</div>
+                    <div class="meta-value">11 categories, 45+ variables</div>
                 </div>
             </div>
         </header>
+
+        <!-- ABSTRACT / INTRODUCTION SECTION -->
+        <section class="abstract-section">
+            <h2>Introduction</h2>
+            <div class="abstract-content">
+                <div class="abstract-column">
+                    <h3>Global Maternal Health and Its Determinants</h3>
+                    <p>Action on the determinants of health is a key global health priority including maternal health (1-3). Interventions that target these distal pathways to negative outcomes for pregnant women and their babies have generally received less attention compared to those clinical in nature. However, these nonclinical factors that affect pregnancy outcomes are many and affect different pregnancy outcomes in different ways. These determinants are a function of the woman's exposure to different characteristics of her environment.</p>
+                    <p>Many epidemiological studies have suggested associations between environmental exposures and adverse maternal health outcomes. However, most of these studies have focussed on the physical environment in isolation. In this study we adopt a broad perspective to what constitutes the environment to encompass both the physical as well as social characteristics around the pregnant woman. The known environmental exposures attributed to disparities in maternal health outcomes exist both at individual as well as at community level and are a function of geography (4).</p>
+                    <div class="abstract-highlight">
+                        <p>Physical environmental risk factors implicated in negative pregnancy outcomes include exposure to heavy metals, air quality, flood proneness and spatial access to care. Prenatal exposure to heavy metals such as lead, mercury and cadmium is one of the strongest known risk factors for preeclampsia (5-8).</p>
+                    </div>
+                    <p>Air quality, in particular passive smoke from tobacco as well as household air pollution from use of solid fuels, has also been associated with preeclampsia, still births and low birth weight (9-11). A retrospective cohort study revealed significant positive correlations between physical isolation and flood proneness to adverse maternal health outcomes in Mozambique (12). This was also confirmed in studies investigating the effect of seasonal variation of spatial access to care on maternal health outcomes due to flooding (13, 14).</p>
+                </div>
+                <div class="abstract-column">
+                    <h3>Geography, GIS and Global Maternal Health</h3>
+                    <p>The Geo-Information Sciences largely emerged from need in the environmental sciences. GIS has grown to include capabilities for quantifying socio-geographical characteristics of places including characterization of social contexts and how these have an effect on maternal and other health outcomes (4, 18, 19).</p>
+                    <p>The geospatial sciences present a unique opportunity for measuring aspects of a woman's environment that may contribute to risk for adverse pregnancy outcomes, including her physical and social environments. Geography and GIS are implicit in global health priorities that influence strategies for improving maternal health. The emphasis on eliciting local perspectives on the determinants of health is a new priority (3) that will elucidate how place and geographical context shapes maternal health outcomes.</p>
+                    <div class="abstract-highlight">
+                        <p>The emphasis on monitoring determinants and health outcomes at more disaggregate spatial levels to better target interventions (3) has presented new opportunities to further take advantage of GIS for understanding the distal pathways to adverse pregnancy outcomes.</p>
+                    </div>
+                    <h3>Methods</h3>
+                    <p>This work was premised with a scoping review on the interactions between social and environmental exposures with outcomes related to placental disorders (20). The data for the indicators were generally presented either as vector or raster format, depending on the nature of the phenomenon to be represented (21). The vector data model presents spatial elements as points, lines and polygons whilst raster model presents data in grids or pixels (21, 22). Raster data type is best for the representation of continuous data like temperature from sources such as satellite imagery, while vector is best for discrete data like village points and roads (23).</p>
+                </div>
+            </div>
+        </section>
 
         <main>
             <!-- POPULATION WEIGHTING METHODOLOGY -->
@@ -512,28 +548,33 @@
                         <div class="variable-name">NDVI</div>
                         <div class="variable-unit">Normalized Difference Vegetation Index (-1 to 1, unitless)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.42 [0.35, 0.53] P95: 0.67</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.49 [0.43, 0.55] P95: 0.71</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.25 [0.20, 0.42] P95: 0.71</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.42 [0.28, 0.54] P95: 0.71</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.02 [-0.01, 0.21] P95: 0.40</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.14 [-0.01, 0.39] P95: 0.57</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.13 [0.09, 0.17] P95: 0.30</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.12 [0.01, 0.21] P95: 0.46</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">Landsat Collection 2 Tier 1 Level 2 8-Day NDVI Composite; MODIS - MOD09GA/Q1</div>
+                                <div class="dataset-info">Landsat7, Landsat 8, MODIS - MOD09GA/Q1, MODIS Terra Daily NDVI</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Residential greenness has been consistently associated with improved pregnancy outcomes and overall population health. NDVI leverages the differential reflectance of vegetation in the visible red (RED) and near-infrared (NIR) spectral bands, with higher values indicating denser and healthier vegetation cover and, indirectly, lower levels of ambient air pollution.</p>
+                                <p>Residential greenness has been consistently associated with improved pregnancy outcomes and overall population health (Lee et al. 2020). Satellite-derived vegetation indices, particularly the Normalized Difference Vegetation Index (NDVI), are widely used as proxy measures of environmental quality and exposure to air pollution (Sedda et al. 2015). NDVI leverages the differential reflectance of vegetation in the visible red (RED) and near-infrared (NIR) spectral bands, with higher values indicating denser and healthier vegetation cover and, indirectly, lower levels of ambient air pollution.</p>
                                 <div class="formula-display">NDVI = (NIR - RED) / (NIR + RED)
 
 Village-level greenness was quantified by spatially
-averaging NDVI values within each village boundary.</div>
+averaging NDVI values, calculated as the mean of all
+NDVI pixels contained within each village boundary.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Satellite-derived vegetation indices, particularly NDVI, are widely used as proxy measures of environmental quality and exposure to air pollution. Higher values indicate denser and healthier vegetation cover.</p>
+                                <p>Satellite-derived vegetation indices, particularly NDVI, are widely used as proxy measures of environmental quality and exposure to air pollution. Higher values indicate denser and healthier vegetation cover. NDVI values range from -1 to 1, where values closer to 1 indicate dense, healthy vegetation.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Lee KJ, et al. (2020) Greenness, civil environment, and pregnancy outcomes. Environ Health 19:91. | Sedda L, et al. (2015) Poverty, health and satellite-derived vegetation indices. Int Health 7(2):99-106.</p>
                             </div>
                         </div>
                     </div>
@@ -543,10 +584,10 @@ averaging NDVI values within each village boundary.</div>
                         <div class="variable-name">Distance to Highways</div>
                         <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.80 [0.52, 3.21] P95: 7.29</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.01 [0.41, 7.23] P95: 8.10</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.59 [0.59, 4.66] P95: 8.41</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">1.34 [0.52, 3.78] P95: 8.10</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.8 [0.5, 3.1] P95: 5.4</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.0 [0.4, 7.2] P95: 8.1</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.6 [0.6, 4.7] P95: 8.4</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">1.3 [0.5, 3.7] P95: 8.1</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -556,15 +597,19 @@ averaging NDVI values within each village boundary.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Residential proximity to major roadways is commonly used as a proxy for traffic-related air pollution exposure. Epidemiological evidence indicates that women residing within close proximity (e.g., less than 200m) to major roads experience an increased risk of adverse pregnancy outcomes, including preterm birth.</p>
-                                <div class="formula-display">Distance_highway = Sum(Population_i x Distance_i) / Sum(Population_i)
+                                <p>Residential proximity to major roadways is commonly used as a proxy for traffic-related air pollution exposure (Barnett et al. 2011). Epidemiological evidence indicates that women residing within proximity (e.g., ≤200m) to major roads experience an increased risk of adverse pregnancy outcomes, including preterm birth (Hitchins et al. 2000). Pollutants produced by motorized vehicles, such as carbon monoxide (CO), nitrogen oxide (NOx), hydrocarbons (HC), sulphur dioxide (SO2), lead (Pb) and carbon dioxide (CO2), have negative and dangerous impacts on the body (Rapang et al. 2023).</p>
+                                <div class="formula-display">Distance_highway = Σ(Population_i × Distance_i) / Σ(Population_i)
 
 where Distance_i represents the Euclidean distance from
 grid cell i to the nearest highway.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Pollutants produced by motorized vehicles, such as CO, NOx, HC, SO2, Pb and CO2, have negative impacts on the body. Traffic-related pollutant concentrations exhibit a strong spatial gradient with non-linear decay with increasing distance.</p>
+                                <p>Traffic-related pollutant concentrations exhibit a strong spatial gradient, with highest levels adjacent to roads and a non-linear decay with increasing distance. Exposure to vehicle emissions, particularly carbon monoxide (CO), during pregnancy has been identified as a potential factor contributing to low birth weight in infants.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Barnett AG, et al. (2011) Increased traffic exposure and negative birth outcomes. Environ Health 10:26. | Hitchins J, et al. (2000) Concentrations of submicrometre particles from vehicle emissions. Atmos Environ 34(1):51-9. | Rapang A, et al. (2023) Effect of CO exposure in pregnant women. J INFO Kesehat 21(4):713-20.</p>
                             </div>
                         </div>
                     </div>
@@ -574,10 +619,10 @@ grid cell i to the nearest highway.</div>
                         <div class="variable-name">Distance to Major Roads</div>
                         <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.34 [0.52, 2.70] P95: 4.93</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.95 [0.41, 1.22] P95: 4.95</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.52 [0.47, 2.12] P95: 8.14</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.95 [0.41, 2.67] P95: 6.86</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.3 [0.5, 2.7] P95: 4.9</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.0 [0.4, 1.2] P95: 4.9</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.5 [0.5, 2.1] P95: 8.1</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">1.0 [0.4, 2.7] P95: 6.9</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -588,6 +633,10 @@ grid cell i to the nearest highway.</div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
                                 <p>Population-weighted Euclidean distance to the nearest major road was computed using the same methodology as for highways, reflecting spatial variation in exposure to traffic-related pollution sources.</p>
+                                <div class="formula-display">Distance_major_road = Σ(Population_i × Distance_i) / Σ(Population_i)
+
+where Distance_i represents the Euclidean distance from
+grid cell i to the nearest major road.</div>
                             </div>
                         </div>
                     </div>
@@ -597,98 +646,95 @@ grid cell i to the nearest highway.</div>
                         <div class="variable-name">Elevation</div>
                         <div class="variable-unit">Altitude (meters above sea level)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">188.75 [169.15, 192.22] P95: 199.56</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">19.01 [18.64, 31.69] P95: 44.65</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">26.55 [15.29, 26.55] P95: 35.60</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">26.55 [16.96, 111.95] P95: 184.07</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">188.8 [169.2, 192.2] P95: 199.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">19.0 [18.6, 33.1] P95: 44.6</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">26.6 [15.3, 26.6] P95: 35.6</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">35.4 [19.9, 182.1] P95: 199.6</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">MERIT/DEM/v1_0_3: Elevation in meters, referenced to EGM96 geoid model</div>
+                                <div class="dataset-info">Digital Elevation Model (DEM) - MERIT/DEM/v1_0_3: Elevation in meters, referenced to EGM96 geoid model</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Village-level altitude was derived by calculating the mean elevation pixel value within each village or neighbourhood boundary.</p>
+                                <p>Elevation influences atmospheric pressure and air circulation patterns, which can affect the dispersion and concentration of air pollutants at a given location (Burton et al. 2025). Village-level altitude was derived by calculating the mean elevation pixel value within each village or neighbourhood boundary.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Elevation influences atmospheric pressure and air circulation patterns, which can affect the dispersion and concentration of air pollutants. Exposure to high-altitude environments has been associated with adverse reproductive and pregnancy outcomes, including low birth weight.</p>
+                                <p>In addition to affecting air pollutant dispersion, exposure to high-altitude environments has been associated with adverse reproductive and pregnancy outcomes, including low birth weight and increased risk of pregnancy complications (Burton et al. 2025).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Burton GJ, et al. (2025) Pregnancy at high altitude: the challenge of hypoxia. Phil Trans R Soc B 380(1933):20240167.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- PM2.5 GHAP -->
+                    <!-- PM2.5 -->
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (GHAP)</div>
-                        <div class="variable-unit">Global High Air Pollutants (&mu;g/m&sup3;)</div>
+                        <div class="variable-name">PM2.5</div>
+                        <div class="variable-unit">Fine Particulate Matter (&mu;g/m&sup3;)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">7.79 [7.09, 9.30] P95: 12.68</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">7.85 [6.91, 8.84] P95: 10.48</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">21.76 [15.80, 25.85] P95: 46.29</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">7.85 [7.00, 17.58] P95: 42.93</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">12.9 [10.2, 16.8] P95: 26.9</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">13.2 [8.7, 19.9] P95: 32.9</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">47.8 [30.6, 73.5] P95: 140.9</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">14.9 [10.5, 24.4] P95: 73.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">Global High Air Pollutants (GHAP) PM2.5 Concentrations</div>
+                                <div class="dataset-info">Global High Air Pollutants (GHAP) PM2.5 Concentrations, Copernicus Atmosphere Monitoring Service (CAMS) Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Air pollution is one of the top five health risk factors, contributing to 6.67 million deaths worldwide in 2019 (Zhong et al. 2025). Pregnant women and neonates with exposure to high levels of air pollutants are at increased risk of adverse health outcomes such as maternal hypertensive disorders, postpartum depression, placental abruption, low birth weight, preterm birth, infant mortality, and adverse lung and respiratory effects (Aguilera et al. 2023). Metrics were calculated by spatially averaging within a village's boundary.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Exposure to fine particulate matter (PM2.5) has been associated with adverse maternal and birth outcomes, including increased risk of gestational hypertension and reduced birth weight. Inhalation of ambient PM2.5 can cross the placenta and has been linked to adverse obstetric and postnatal metabolic health outcomes.</p>
+                                <p>Exposure to fine particulate matter (PM2.5) has been associated with adverse maternal and birth outcomes, including increased risk of gestational hypertension and reduced birth weight (Makanga et al. 2019). Inhalation of ambient PM2.5 has been shown to cross the placenta and has been linked to adverse obstetric and postnatal metabolic health outcomes (Kaur et al. 2022).</p>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- PM2.5 CAMS -->
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (CAMS)</div>
-                        <div class="variable-unit">Copernicus Atmosphere Monitoring Service (&mu;g/m&sup3;)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">15.66 [14.00, 18.16] P95: 22.11</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">12.54 [8.16, 15.42] P95: 23.24</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">55.79 [41.85, 69.93] P95: 113.20</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">16.02 [12.99, 23.24] P95: 79.35</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">Copernicus Atmosphere Monitoring Service (CAMS) Global Reanalysis (EAC4)</div>
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Zhong K, et al. (2025) Susceptible window identification of maternal ozone exposure and preterm birth. Int Health. | Aguilera J, et al. (2023) Air pollution and pregnancy. Semin Perinatol 47(8):151838. | Kaur K, et al. (2022) PM2.5 exposure during pregnancy and placental lipid metabolic genes. Environ Res 211:113066.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- PM2.5 Non-Fire Smoke -->
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (Non-Fire Smoke)</div>
+                        <div class="variable-name">Non-Fire Smoke PM2.5</div>
                         <div class="variable-unit">Background Particulate Matter (&mu;g/m&sup3;)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.59 [4.32, 10.04] P95: 14.43</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">4.92 [4.10, 6.36] P95: 7.38</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">48.56 [22.98, 72.77] P95: 95.85</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">5.87 [4.53, 11.71] P95: 74.59</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.2 [3.7, 8.0] P95: 16.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">4.2 [3.0, 6.2] P95: 12.7</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">42.2 [15.4, 67.9] P95: 115.5</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">5.3 [3.6, 11.1] P95: 67.1</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
                                 <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Non-fire smoke PM2.5 represents background particulate matter from sources other than biomass burning, including industrial emissions, vehicle exhaust, and dust. This component contributes to chronic air pollution exposure during pregnancy.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- PM2.5 Fire Smoke -->
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">PM2.5 (Fire Smoke)</div>
+                        <div class="variable-name">Fire Smoke PM2.5</div>
                         <div class="variable-unit">Biomass Burning Particulate Matter (&mu;g/m&sup3;)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.07 [0.04, 0.14] P95: 0.40</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.30 [0.04, 0.63] P95: 1.58</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.28 [0.13, 0.68] P95: 1.41</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.12 [0.05, 0.43] P95: 1.06</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 0.1] P95: 0.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.1 [0.0, 0.4] P95: 2.0</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.1 [0.0, 0.6] P95: 1.9</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.1 [0.0, 0.2] P95: 1.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -696,62 +742,78 @@ grid cell i to the nearest highway.</div>
                                 <h4>Dataset</h4>
                                 <div class="dataset-info">Finnish Meteorological Institute (FMI) - Global smoke PM2.5 estimates</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- AOD Dust -->
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">AOD (Dust)</div>
-                        <div class="variable-unit">Dust Aerosol Optical Depth (dimensionless)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.01 [0.004, 0.019] P95: 0.04</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.003 [0.002, 0.004] P95: 0.004</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.19 [0.11, 0.30] P95: 0.41</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.008 [0.003, 0.039] P95: 0.30</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                                <h4>Rationale</h4>
+                                <p>Fire smoke PM2.5 captures particulate matter from biomass burning events including agricultural fires and wildfires. Seasonal burning patterns in sub-Saharan Africa can create acute exposure episodes during pregnancy.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- AOD Black Carbon -->
+                    <!-- Total AOD -->
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">AOD (Black Carbon)</div>
-                        <div class="variable-unit">Black Carbon Aerosol Optical Depth (dimensionless)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.006 [0.005, 0.009] P95: 0.01</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.004 [0.004, 0.012] P95: 0.02</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.009 [0.006, 0.012] P95: 0.01</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.006 [0.004, 0.010] P95: 0.02</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AOD Total -->
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">AOD (Total)</div>
+                        <div class="variable-name">Total AOD</div>
                         <div class="variable-unit">Total Aerosol Optical Depth (dimensionless)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.19 [0.16, 0.22] P95: 0.24</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.15 [0.13, 0.21] P95: 0.26</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.36 [0.28, 0.46] P95: 0.63</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.19 [0.15, 0.24] P95: 0.46</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.2 [0.1, 0.2] P95: 0.4</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.1 [0.1, 0.1] P95: 0.4</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.3 [0.2, 0.5] P95: 0.8</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.2 [0.1, 0.3] P95: 0.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
                                 <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Aerosol Optical Depth (AOD) is a measure of the extinction of solar radiation by aerosols in the atmospheric column. Higher values indicate greater atmospheric particle loading from all sources.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dust AOD -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Dust AOD</div>
+                        <div class="variable-unit">Dust Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.1</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.0</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.2 [0.1, 0.3] P95: 0.5</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.3</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Dust AOD specifically captures desert dust aerosols. The Gambia's proximity to the Sahara Desert explains its higher dust loading compared to East African sites.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Black Carbon AOD -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Black Carbon AOD</div>
+                        <div class="variable-unit">Black Carbon Aerosol Optical Depth (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.0</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.0</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.0</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.0</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Black carbon aerosols originate primarily from incomplete combustion of fossil fuels and biomass burning. They contribute to respiratory and cardiovascular health impacts during pregnancy.</p>
                             </div>
                         </div>
                     </div>
@@ -761,10 +823,10 @@ grid cell i to the nearest highway.</div>
                         <div class="variable-name">Carbon Monoxide (CO)</div>
                         <div class="variable-unit">Total Column (g/m&sup2;)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.77 [0.70, 0.83] P95: 0.89</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.70 [0.68, 0.88] P95: 1.03</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.98 [0.90, 1.05] P95: 1.10</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">0.82 [0.69, 0.92] P95: 1.07</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.8 [0.7, 0.8] P95: 1.0</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.7 [0.7, 0.9] P95: 1.1</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">1.0 [0.9, 1.0] P95: 1.2</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.8 [0.7, 0.9] P95: 1.1</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -774,7 +836,11 @@ grid cell i to the nearest highway.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>At a threshold of >2 ppm, CO was associated with lower mean birth-weight and higher rates of SGA and PTB. Acute CO poisoning in pregnant women is linked to complications such as preterm birth and miscarriage.</p>
+                                <p>At a threshold of >2 ppm, CO was associated with lower mean birth-weight and higher rates of SGA and PTB, with a dose-response relationship (Galka et al. 2025). Acute CO poisoning in pregnant women is linked to complications such as preterm birth and miscarriage, with outcomes influenced by severity of maternal poisoning and stage of foetal development (Place et al. 2025). Exposure to vehicle emissions, particularly CO, during pregnancy has been identified as a potential factor contributing to low birth weight (Rapang et al. 2023).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Galka K, et al. (2025) Carbon monoxide levels and adverse pregnancy outcomes. Acta Obstet Gynecol Scand 104(12):2237-43. | Place E, et al. (2025) Carbon monoxide exposure in pregnant women in the UK. BMC Pregnancy Childbirth 25(1):1063.</p>
                             </div>
                         </div>
                     </div>
@@ -782,12 +848,12 @@ grid cell i to the nearest highway.</div>
                     <!-- NO2 -->
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Nitrogen Dioxide (NO2)</div>
-                        <div class="variable-unit">Total Column (mg/m&sup2;)</div>
+                        <div class="variable-unit">Total Column (&mu;mol/m&sup2;)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.29 [1.15, 1.38] P95: 1.52</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.77 [1.46, 2.29] P95: 2.52</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">2.13 [1.98, 2.23] P95: 2.40</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">1.51 [1.30, 2.09] P95: 2.44</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.02 [0.02, 0.03] P95: 0.03</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.03 [0.03, 0.04] P95: 0.07</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.05 [0.04, 0.05] P95: 0.07</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.03 [0.02, 0.04] P95: 0.06</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -797,7 +863,11 @@ grid cell i to the nearest highway.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Short-term exposure to NO2 may induce increased risk of Spontaneous Abortion (SAB) outpatient visits, especially in elder women and cool seasons.</p>
+                                <p>Short-term exposure to NO2 may induce increased risk of Spontaneous Abortion (SAB) outpatient visits, especially in elder women and cool seasons (Liang et al. 2021).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Liang Z, et al. (2021) Short-term ambient nitrogen dioxide exposure is associated with increased risk of spontaneous abortion. Ecotoxicol Environ Saf 224:112633.</p>
                             </div>
                         </div>
                     </div>
@@ -807,10 +877,10 @@ grid cell i to the nearest highway.</div>
                         <div class="variable-name">Ozone (O3)</div>
                         <div class="variable-unit">Total Column (Dobson Units)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">211.2 [207.2, 214.9] P95: 219.3</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">217.3 [211.5, 224.6] P95: 233.0</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">213.6 [207.0, 220.8] P95: 228.3</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">213.2 [208.6, 218.5] P95: 230.8</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">265.2 [259.6, 270.0] P95: 276.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">272.1 [265.4, 283.4] P95: 297.2</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">268.9 [259.6, 276.5] P95: 287.0</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">267.6 [261.2, 274.0] P95: 290.0</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -820,7 +890,34 @@ grid cell i to the nearest highway.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>There is some positive correlation between Ozone (O3) and Preterm Birth which is mostly pronounced during middle pregnancy.</p>
+                                <p>There is some positive correlation between Ozone (O3) and Preterm Birth which is mostly pronounced during middle pregnancy (Zhong et al. 2025).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Zhong K, et al. (2025) Susceptible window identification of maternal ozone exposure and preterm birth. Int Health ihaf073.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SO2 -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Sulfur Dioxide (SO2)</div>
+                        <div class="variable-unit">Total Column (Dobson Units)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 0.0] P95: 0.0</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.1 [0.0, 0.1] P95: 0.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.1 [0.1, 0.2] P95: 0.3</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.0 [0.0, 0.1] P95: 0.2</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">CAMS Global Reanalysis (EAC4)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Sulfur dioxide (SO2) is a gaseous pollutant produced by fossil fuel combustion and volcanic activity. Exposure during pregnancy has been associated with respiratory symptoms and adverse birth outcomes.</p>
                             </div>
                         </div>
                     </div>
@@ -828,11 +925,12 @@ grid cell i to the nearest highway.</div>
                     <!-- Road Network Density -->
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Road Network Density</div>
-                        <div class="variable-unit">Population-Weighted (km/km&sup2;)</div>
+                        <div class="variable-unit">Population-Weighted (km⁻¹)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">8.43 +/- 5.79</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">8.20 [2.09, 16.12]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.12 - 20.49</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">4.0 [2.1, 17.5] P95: 20.9</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">9.9 [5.2, 11.7] P95: 11.7</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">12.6 [7.2, 18.0] P95: 18.0</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">9.0 [2.7, 13.1] P95: 19.1</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -842,28 +940,30 @@ grid cell i to the nearest highway.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">Road Density_PW = Sum(Population_i x RoadDensity_i) / Sum(Population_i)
+                                <p>Exposure to traffic-related pollution has been associated with increased risk of adverse pregnancy outcomes. Road density is commonly used as a spatial proxy for traffic intensity and associated vehicular emissions, with populations residing in communities with dense road networks experiencing higher exposure levels (Phillips et al. 2021).</p>
+                                <div class="formula-display">Road Density_PW = Σ(Population_i × RoadDensity_i) / Σ(Population_i)
 
-where RoadDensity_i represents road length per unit
-area within grid cell i.</div>
+where RoadDensity_i represents road length per unit area
+within grid cell i, and Population_i denotes the
+population of grid cell i.</div>
                             </div>
                             <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Exposure to traffic-related pollution has been associated with increased risk of adverse pregnancy outcomes. Road density is commonly used as a spatial proxy for traffic intensity and associated vehicular emissions.</p>
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Phillips BB, et al. (2021) Spatial extent of road pollution: A national analysis. Sci Total Environ 773:145589.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. ANC SEEKING BEHAVIOUR & ACCESS TO CARE -->
+            <!-- 2. SPATIAL ACCESS TO CARE -->
             <div class="category-section cat-anc">
                 <div class="category-header" onclick="toggleCategory(this)">
                     <div class="category-number">02</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127973;</div>
-                        <h2 class="category-title">ANC Seeking Behaviour & Access to Care</h2>
-                        <div class="category-count">11 indicators</div>
+                        <h2 class="category-title">Spatial Access to Care</h2>
+                        <div class="category-count">7 indicators</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
                 </div>
@@ -872,9 +972,10 @@ area within grid cell i.</div>
                         <div class="variable-name">Road Quality Index</div>
                         <div class="variable-unit">RQI (0 to 1, dimensionless)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">0.288 +/- 0.12</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.27 [0.20, 0.35]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 0.67</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.5 [0.5, 0.6] P95: 0.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.4 [0.4, 0.5] P95: 0.5</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.4 [0.4, 0.5] P95: 0.7</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.5 [0.4, 0.5] P95: 0.6</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -884,13 +985,18 @@ area within grid cell i.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">RQI = Sum(RoadLength_i x SpeedLimit_i) / Sum(RoadLength_i) / 120
+                                <p>Road Quality Index (RQI) is derived from OpenStreetMap road network data combined with WorldPop gridded population estimates. The index quantifies the quality of road infrastructure accessible to residential populations by weighting road segments by their estimated speed limits.</p>
+                                <div class="formula-display">RQI = Σ(RoadLength_i × SpeedLimit_i) / Σ(RoadLength_i) / 120
+
+where RoadLength_i is the length of road segment i,
+SpeedLimit_i is the estimated speed limit (km/h) based on road class,
+and 120 km/h normalizes to the maximum highway speed.
 
 Lower RQI values indicate poorer road conditions.</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Road quality influences travel speed and accessibility to health facilities, with poorer road conditions associated with longer travel times and reduced access to maternal healthcare services.</p>
+                                <p>Road quality influences travel speed and accessibility to health facilities, with poorer road conditions associated with longer travel times and reduced access to maternal healthcare services. The quality of road infrastructure is a critical determinant of the "second delay" in maternal healthcare access - the delay in reaching an appropriate facility once the decision to seek care has been made (44).</p>
                             </div>
                         </div>
                     </div>
@@ -899,22 +1005,29 @@ Lower RQI values indicate poorer road conditions.</div>
                         <div class="variable-name">Walking Distance to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">4.02 +/- 6.01</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.38 [1.52, 4.57]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.45 - 35.05</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">3.0 [1.5, 4.4] P95: 28.7</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">3.6 [3.3, 5.6] P95: 23.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">1.6 [1.3, 6.7] P95: 11.6</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">3.1 [1.5, 5.1] P95: 22.2</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (foot-walking profile) + WorldPop 100m</div>
+                                <div class="dataset-info">OpenRouteService API (foot-walking profile), WorldPop 100m, Health facility locations from national registries</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">PW_WalkDist_Fac = Sum(Pop_i x WalkDist_i) / Sum(Pop_i)
+                                <p>Population-weighted walking distance to the nearest health facility providing maternal healthcare services. Distances are computed using network routing algorithms that account for pedestrian pathways and terrain.</p>
+                                <div class="formula-display">PW_WalkDist_Fac = Σ(Pop_i × WalkDist_i) / Σ(Pop_i)
 
-Walking distance calculated via OSRM network routing
-from each H3 hexagon centroid to health facility.</div>
+where Pop_i is population in grid cell i,
+WalkDist_i is network walking distance from cell i centroid
+to nearest health facility (km).</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Walking distance reflects accessibility for populations without motorized transport. In many sub-Saharan African settings, walking remains the primary mode of transport to health facilities, particularly for routine antenatal care visits (44).</p>
                             </div>
                         </div>
                     </div>
@@ -923,17 +1036,24 @@ from each H3 hexagon centroid to health facility.</div>
                         <div class="variable-name">Walking Time to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">48.32 +/- 72.18</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">28.50 [18.20, 54.80]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">5.4 - 420.6</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">35.7 [18.3, 52.9] P95: 344.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">43.7 [39.6, 67.3] P95: 280.1</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">19.2 [15.5, 80.1] P95: 139.4</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">37.7 [18.3, 61.2] P95: 266.1</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <div class="formula-display">Walking Time (min) = Walking Distance (km) / 5 x 60
+                                <p>Walking time is derived from walking distance using a standard pedestrian walking speed assumption.</p>
+                                <div class="formula-display">Walking Time (min) = Walking Distance (km) × 60 / 5
 
-Assumes average walking speed of 5 km/h.</div>
+Assumes average walking speed of 5 km/h, which is
+consistent with WHO accessibility modeling standards.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Time-based accessibility metrics capture the temporal dimension of healthcare access. Walking times exceeding 60 minutes have been associated with reduced antenatal care utilization and increased risk of home delivery without skilled attendance (44).</p>
                             </div>
                         </div>
                     </div>
@@ -942,15 +1062,28 @@ Assumes average walking speed of 5 km/h.</div>
                         <div class="variable-name">Driving Distance to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">5.84 +/- 8.42</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">3.45 [2.12, 6.78]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.62 - 52.4</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">3.0 [1.5, 4.4] P95: 28.7</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">3.6 [3.3, 5.6] P95: 23.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">1.6 [1.3, 6.7] P95: 11.6</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">3.1 [1.5, 5.1] P95: 22.2</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">OpenRouteService API (driving-car profile) + WorldPop 100m</div>
+                                <div class="dataset-info">OpenRouteService API (driving-car profile), WorldPop 100m, Health facility locations from national registries</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Population-weighted driving distance to the nearest health facility using road network routing. Accounts for road network topology and driving restrictions.</p>
+                                <div class="formula-display">PW_DriveDist_Fac = Σ(Pop_i × DriveDist_i) / Σ(Pop_i)
+
+where DriveDist_i is the network driving distance from
+cell i centroid to nearest health facility (km).</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Driving distance represents motorized accessibility, which is critical for emergency obstetric care and referrals. Longer driving distances correlate with delays in reaching emergency care for obstetric complications (44).</p>
                             </div>
                         </div>
                     </div>
@@ -959,15 +1092,26 @@ Assumes average walking speed of 5 km/h.</div>
                         <div class="variable-name">Driving Time to Facility</div>
                         <div class="variable-unit">Population-Weighted Network Time (minutes)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">13.97 +/- 45.54</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">6.40 [5.25, 12.61]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">1.2 - 286.4</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">4.6 [3.6, 6.0] P95: 28.2</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">5.8 [5.8, 9.9] P95: 43.5</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">3.7 [2.1, 7.9] P95: 14.2</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">5.3 [3.6, 6.7] P95: 31.7</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Driving time is computed using network routing algorithms that account for road type, speed limits, and traffic patterns.</p>
+                                <div class="formula-display">Driving Time = Network-based travel time estimate
+using road-class-specific speed assumptions:
+- Highways: 80-100 km/h
+- Primary roads: 60-80 km/h
+- Secondary roads: 40-60 km/h
+- Tertiary/local roads: 20-40 km/h</div>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Travel time to nearest facility is a critical determinant of healthcare access. Delays reaching health facilities represent the second of three delays known to elevate risks for adverse maternal outcomes.</p>
+                                <p>Travel time to nearest facility is a critical determinant of healthcare access. Delays reaching health facilities represent the "second delay" in Thaddeus and Maine's three-delays framework, which is known to elevate risks for adverse maternal outcomes (44).</p>
                             </div>
                         </div>
                     </div>
@@ -976,18 +1120,28 @@ Assumes average walking speed of 5 km/h.</div>
                         <div class="variable-name">Public Transport Distance to Facility</div>
                         <div class="variable-unit">Population-Weighted Total Journey Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">6.12 +/- 9.24</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">3.68 [2.24, 7.15]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.58 - 58.2</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.4 [2.2, 9.7] P95: 30.8</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">3.7 [3.1, 4.2] P95: 23.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">3.2 [1.5, 10.3] P95: 22.5</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">3.7 [1.8, 8.0] P95: 23.3</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Methodology</h4>
+                                <p>Public transport accessibility models a multi-modal journey combining walking to a pickup point on a main road and vehicle travel to the facility.</p>
                                 <div class="formula-display">TotalDist = WalkToPickup + InVehicleDist
 
-Public transport only operates on main roads
-(primary/secondary).</div>
+where WalkToPickup is walking distance to nearest
+primary/secondary road with public transport,
+InVehicleDist is vehicle distance along roads.
+
+Public transport assumed to operate only on
+primary and secondary classified roads.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Public transport represents the most common mode of motorized transport for pregnant women in resource-limited settings, particularly for planned antenatal visits. Accessibility via public transport captures the realistic journey patterns of women seeking maternal healthcare (44).</p>
                             </div>
                         </div>
                     </div>
@@ -996,99 +1150,114 @@ Public transport only operates on main roads
                         <div class="variable-name">Public Transport Time to Facility</div>
                         <div class="variable-unit">Population-Weighted Total Journey Time (minutes)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">24.56 +/- 38.72</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">14.80 [9.45, 28.60]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">2.8 - 245.8</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">39.2 [24.8, 63.9] P95: 121.2</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">30.4 [26.6, 38.5] P95: 124.4</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">29.1 [23.3, 54.1] P95: 146.9</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">33.7 [24.8, 58.0] P95: 126.9</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Methodology</h4>
+                                <p>Total public transport journey time combines walking, waiting, and in-vehicle components to model realistic travel patterns.</p>
                                 <div class="formula-display">TotalTime = WalkTime + WaitTime + VehicleTime
 
-WaitTime: Fixed 20 minutes for public transport delays
-WalkSpeed: 5 km/h to reach pickup point</div>
+where:
+- WalkTime = WalkDist / 5 km/h × 60 (minutes)
+- WaitTime = 20 minutes (fixed, for typical delays)
+- VehicleTime = InVehicleDist / VehicleSpeed × 60</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Public transport journey times capture the full temporal burden of healthcare access, including waiting periods that disproportionately affect pregnant women. Journey times exceeding 2 hours are associated with reduced ANC attendance and delayed emergency care seeking (44).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. PHYSICAL ISOLATION -->
+            <div class="category-section cat-anc">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">03</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#128739;</div>
+                        <h2 class="category-title">Physical Isolation</h2>
+                        <div class="category-count">2 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Isolation Walking Distance to Major Roads</div>
+                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1.9 [0.9, 4.4] P95: 10.1</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.3 [0.6, 1.9] P95: 15.2</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.7 [0.6, 2.6] P95: 10.4</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">1.3 [0.7, 3.9] P95: 10.1</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road network (primary/secondary roads), WorldPop 100m</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Population-weighted walking distance to the nearest primary or secondary road, representing accessibility to major transport corridors.</p>
+                                <div class="formula-display">PW_WalkIso_Major = Σ(Pop_i × WalkDist_MajorRoad_i) / Σ(Pop_i)
+
+Major roads defined as OSM highway classes:
+primary, primary_link, secondary, secondary_link</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Walking distance to major roads is a proxy for isolation from transport networks. Difficult access to roads is a known barrier to healthcare utilization, particularly affecting women's ability to access public transport for antenatal care (4, 12).</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Walking Isolation (Major Roads)</div>
+                        <div class="variable-name">Isolation Walking Distance to Highways</div>
                         <div class="variable-unit">Population-Weighted Network Distance (km)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">1.48 +/- 3.35</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.60 [0.42, 1.24]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 7.11</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">2.9 [0.9, 4.9] P95: 10.6</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">1.3 [0.6, 15.1] P95: 16.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.7 [0.7, 5.1] P95: 10.8</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">1.9 [0.7, 5.9] P95: 15.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Walking distance to major roads is a proxy for isolation from transport networks. Difficult access to roads is a known barrier to healthcare utilization.</p>
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">OSM Road network (trunk/motorway roads), WorldPop 100m</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Walking Isolation (Highways)</div>
-                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">3.82 +/- 4.56</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.14 [0.92, 5.28]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.15 - 18.42</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
                             <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Walking distance to highways captures isolation from long-distance transport. Highways typically have inter-city bus services connecting to urban referral hospitals.</p>
+                                <h4>Methodology</h4>
+                                <p>Population-weighted walking distance to the nearest highway/trunk road, representing accessibility to national transport corridors.</p>
+                                <div class="formula-display">PW_WalkIso_Highway = Σ(Pop_i × WalkDist_Highway_i) / Σ(Pop_i)
+
+Highways defined as OSM highway classes:
+motorway, motorway_link, trunk, trunk_link</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Driving Isolation (Major Roads)</div>
-                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">0.92 +/- 1.84</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">0.45 [0.28, 0.94]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.05 - 5.86</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Driving isolation captures vehicular accessibility to major transport corridors, relevant for emergency referrals and ambulance access.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Driving Isolation (Highways)</div>
-                        <div class="variable-unit">Population-Weighted Network Distance (km)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">2.58 +/- 3.12</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1.42 [0.58, 3.86]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.08 - 12.64</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Driving isolation from highways indicates connectivity to regional/national transport networks for accessing higher-level health facilities during pregnancy complications.</p>
+                                <p>Walking distance to highways captures isolation from long-distance transport. Highways typically have inter-city bus services connecting to urban referral hospitals, which is critical for accessing higher-level emergency obstetric care (4, 12, 13).</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. TEMPERATURE -->
+            <!-- 4. HEAT EXPOSURE AND WEATHER -->
             <div class="category-section cat-temp">
                 <div class="category-header" onclick="toggleCategory(this)">
-                    <div class="category-number">03</div>
+                    <div class="category-number">04</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127777;</div>
-                        <h2 class="category-title">Temperature</h2>
+                        <h2 class="category-title">Heat Exposure and Weather</h2>
                         <div class="category-count">6 indicators (3 tiers)</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
@@ -1098,22 +1267,30 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <span class="tier-label tier-1">Tier 1 - Heat Stress</span>
                         <div class="variable-name">Wet Bulb Temperature</div>
-                        <div class="variable-unit">Heat Stress Index (C)</div>
+                        <div class="variable-unit">Heat Stress Index (&deg;C)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">21.58 [19.90, 22.30] P95: 23.25</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">17.04 [16.88, 17.20] P95: 17.45</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">14.74 [12.87, 15.53] P95: 16.23</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">17.04 [14.88, 19.75] P95: 22.67</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">21.4 [19.8, 22.8] P95: 24.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">17.1 [14.3, 20.1] P95: 22.9</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">14.7 [8.6, 23.0] P95: 24.6</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">20.1 [16.4, 22.3] P95: 24.3</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">MERRA-2 (NASA/GSFC/MERRA/slv/2) - T2MWET band</div>
+                                <div class="dataset-info">ERA-5, MERRA-2 (NASA/GSFC/MERRA/slv/2) - T2MWET band</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Tier 1 is based on Wet-bulb temperature, extreme hot days and heatwave days. High temperature and humidity increase the risk of adverse pregnancy outcomes, while lower values are generally protective (Basu et al. 2010). Wet-bulb temperature integrates heat and humidity and is a physiologically relevant measure of maternal heat stress (Sherwood & Huber 2010).</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Wet bulb temperature is a superior heat stress metric as it accounts for the body's inability to cool through sweating in humid conditions. Values above 32C are dangerous; above 35C is lethal for prolonged exposure. Pregnant women are especially vulnerable to heat stress.</p>
+                                <p>Wet bulb temperature is a superior heat stress metric as it accounts for the body's inability to cool through sweating in humid conditions. Values above 32&deg;C are dangerous; above 35&deg;C is lethal for prolonged exposure. Pregnant women are especially vulnerable to heat stress. Extreme hot days and heatwaves capture acute and sustained thermal stress beyond average conditions and have been linked to increased risks of preterm birth and stillbirth (McElroy et al. 2022).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Basu R, et al. (2010) High ambient temperature and risk of preterm delivery. Am J Epidemiol 172(10). | Sherwood SC, Huber M. (2010) An adaptability limit to climate change due to heat stress. PNAS 107(21):9552-5. | McElroy S, et al. (2022) Extreme heat, preterm birth, and stillbirth. Environ Int 158:106902.</p>
                             </div>
                         </div>
                     </div>
@@ -1160,18 +1337,22 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <span class="tier-label tier-2">Tier 2 - Ambient Air</span>
                         <div class="variable-name">Ambient Temperature</div>
-                        <div class="variable-unit">Mean Air Temperature at 2m (C)</div>
+                        <div class="variable-unit">Mean Air Temperature at 2m (&deg;C)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.76 [25.56, 26.00] P95: 26.29</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">23.32 [23.17, 23.66] P95: 23.98</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">27.69 [27.49, 27.94] P95: 28.32</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">25.65 [23.57, 26.28] P95: 27.97</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">27.3 [25.7, 28.3] P95: 29.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">24.1 [21.5, 26.5] P95: 29.1</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">27.6 [26.2, 28.7] P95: 30.3</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">26.7 [24.9, 28.2] P95: 29.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
                                 <div class="dataset-info">ERA5-Land Hourly (ECMWF/ERA5_LAND/HOURLY)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Tier 2 is based on Ambient (2m) air temperature and Diurnal temperature. Ambient air temperature is used as an indicator of environmental heat exposure and has been associated with adverse pregnancy outcomes, with elevated temperatures increasing risk and lower temperatures showing protective effects (Basu et al. 2010).</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
@@ -1183,18 +1364,26 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <span class="tier-label tier-2">Tier 2 - Ambient Air</span>
                         <div class="variable-name">Diurnal Temperature</div>
-                        <div class="variable-unit">Daily Temperature Range (C)</div>
+                        <div class="variable-unit">Daily Temperature Range (&deg;C)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">6.67 [5.63, 7.96] P95: 10.30</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">8.93 [6.42, 11.78] P95: 14.93</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">12.52 [8.18, 14.53] P95: 16.60</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">7.73 [6.05, 10.80] P95: 15.17</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">6.7 [5.6, 8.0] P95: 10.3</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">8.9 [6.4, 11.8] P95: 14.9</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">12.5 [8.2, 14.5] P95: 16.6</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">7.7 [6.1, 10.8] P95: 15.2</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Diurnal temperature variation reflects intra-day thermal instability rather than absolute heat exposure.</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Preconceptional and prenatal exposure to Diurnal Temperature Variations (DTV) are significantly associated with childhood pneumonia and adverse pregnancy outcomes.</p>
+                                <p>Exposure to elevated diurnal temperature variation has been shown to be significantly associated with adverse early-life respiratory outcomes, including childhood pneumonia, indicating an independent exposure pathway related to repeated thermoregulatory stress (Xu et al. 2014).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Xu Z, et al. (2014) Temperature variability and childhood pneumonia. Environ Health 13:51.</p>
                             </div>
                         </div>
                     </div>
@@ -1203,32 +1392,40 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <span class="tier-label tier-3">Tier 3 - Surface Derived</span>
                         <div class="variable-name">Land Surface Temperature</div>
-                        <div class="variable-unit">Surface Temperature (C)</div>
+                        <div class="variable-unit">Surface Temperature (&deg;C)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Kenya</span><span class="stats-value">26.93 [25.14, 28.89] P95: 30.36</span></div>
-                            <div><span class="stats-label">Mozambique</span><span class="stats-value">24.18 [21.40, 26.55] P95: 27.86</span></div>
-                            <div><span class="stats-label">The Gambia</span><span class="stats-value">30.58 [28.60, 33.96] P95: 36.95</span></div>
-                            <div><span class="stats-label">Overall</span><span class="stats-value">26.93 [23.27, 31.43] P95: 36.29</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">28.3 [28.3, 28.9] P95: 29.1</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">29.2 [29.2, 30.1] P95: 30.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">26.6 [25.9, 26.6] P95: 26.8</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">28.7 [28.3, 29.2] P95: 30.3</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Dataset</h4>
-                                <div class="dataset-info">Landsat 7, Landsat 8, MODIS</div>
+                                <div class="dataset-info">ERA 5, MODIS, Landsat7, Landsat8</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Tier 3 is based on Land Surface Temperature (LST). LST represents the radiative temperature of the Earth's surface and is influenced by land cover, vegetation, and urban form.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Land surface temperature captures the actual thermal environment experienced at ground level, which can differ significantly from air temperature, especially in urban heat islands.</p>
+                                <p>While LST does not directly represent ambient air temperature experienced by individuals, it provides valuable information on spatial heat patterns such as urban heat islands and localised heat accumulation, which shape pregnant women's exposure (Li & Bou-Zeid 2013).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Li D, Bou-Zeid E. (2013) Synergistic Interactions between Urban Heat Islands and Heat Waves. J Appl Meteorol Climatol 52(9):2051-64.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. PRECIPITATION -->
+            <!-- 5. PRECIPITATION -->
             <div class="category-section cat-precip">
                 <div class="category-header" onclick="toggleCategory(this)">
-                    <div class="category-number">04</div>
+                    <div class="category-number">05</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127783;</div>
                         <h2 class="category-title">Precipitation</h2>
@@ -1238,12 +1435,13 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                 </div>
                 <div class="variables-grid">
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Mean Monthly Precipitation</div>
-                        <div class="variable-unit">PERSIANN-CDR Daily Rainfall (mm)</div>
+                        <div class="variable-name">Precipitation</div>
+                        <div class="variable-unit">Daily Rainfall (mm/day)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">4.88 +/- 6.68</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">2.02 [0.36, 7.49]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">0.0 - 22.02</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0 [0.0, 0.0] P95: 11.8</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.0 [0.0, 0.7] P95: 12.6</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.0 [0.0, 0.7] P95: 15.9</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.0 [0.0, 0.4] P95: 13.0</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1257,17 +1455,21 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Seasonal variations in precipitation have been associated with fluctuations in birth outcomes, including birth weight and length. Rainfall affects food availability, disease transmission, and access to healthcare during wet seasons.</p>
+                                <p>Seasonal variations in precipitation have been associated with fluctuations in birth outcomes, including birth weight and length (Rashid et al. 2017). Rainfall affects food availability, disease transmission, and access to healthcare during wet seasons.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Rashid H, et al. (2017) Temperature during pregnancy influences the fetal growth and birth size. Trop Med Health 45:1.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 5. RELATIVE HUMIDITY -->
+            <!-- 6. RELATIVE HUMIDITY -->
             <div class="category-section cat-humid">
                 <div class="category-header" onclick="toggleCategory(this)">
-                    <div class="category-number">05</div>
+                    <div class="category-number">06</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#128167;</div>
                         <h2 class="category-title">Relative Humidity</h2>
@@ -1277,12 +1479,13 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                 </div>
                 <div class="variables-grid">
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Mean Monthly Relative Humidity</div>
+                        <div class="variable-name">Relative Humidity</div>
                         <div class="variable-unit">Percentage (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">67.00 +/- 13.14</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">71.21 [49.82, 78.73]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">28.5 - 85.19</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">72.4 [68.6, 76.6] P95: 82.7</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">69.8 [63.7, 75.0] P95: 82.3</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">55.6 [38.8, 77.7] P95: 87.2</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">70.9 [65.3, 76.2] P95: 84.2</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1293,39 +1496,72 @@ WalkSpeed: 5 km/h to reach pickup point</div>
                             <div class="detail-section">
                                 <h4>Methodology</h4>
                                 <div class="formula-display">RH calculated using Magnus-Tetens approximation:
-e_s(T) = exp((a * T)/(b + T))
-RH = 100 x (e_s(T_dew) / e_s(T_air))
+e_s(T) = exp((a × T)/(b + T))
+e_s(T_d) = exp((a × T_d)/(b + T_d))
+RH = 100 × (e_s(T_dew) / e_s(T_air))
 
-where a=17.625, b=243.04</div>
+where T is air temperature (°C), T_d is dew point
+temperature (°C), a=17.625, b=243.04</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Low relative humidity has been associated with reduced risk of preterm birth, whereas high relative humidity increases risk. Humidity affects thermal comfort, disease transmission, and food storage/safety.</p>
+                                <p>Low relative humidity has been associated with reduced risk of preterm birth, whereas high relative humidity increases risk (Wu et al. 2023). Humidity affects thermal comfort, disease transmission, and food storage/safety.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Wu Y, et al. (2023) Effects of ambient temperature and relative humidity on preterm birth. Front Public Health 11:1101283.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 6. MACRONUTRIENTS -->
+            <!-- 7. SOIL MICRO-NUTRIENTS -->
             <div class="category-section cat-soil">
                 <div class="category-header" onclick="toggleCategory(this)">
-                    <div class="category-number">06</div>
+                    <div class="category-number">07</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127793;</div>
-                        <h2 class="category-title">Macronutrients (Soil Quality)</h2>
+                        <h2 class="category-title">Soil Micro-Nutrients</h2>
                         <div class="category-count">4 indicators</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
                 </div>
                 <div class="variables-grid">
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Soil Nitrogen (N)</div>
+                        <div class="variable-name">Calcium (Ca)</div>
+                        <div class="variable-unit">Extractable Calcium (ppm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">62.5 [61.7, 63.0] P95: 64.5</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">60.1 [60.1, 67.8] P95: 68.6</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">62.7 [61.5, 62.7] P95: 64.7</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">62.5 [61.6, 63.3] P95: 68.6</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ISDASOIL/Africa/v1/calcium_extractable (iSDAsoil 30m Resolution)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Values for each raster are averaged per neighbourhood/village boundary.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Soil calcium affects food crop mineral content. Calcium is critical during pregnancy for fetal bone development, blood clotting, and muscle function. Maternal calcium deficiency is associated with preeclampsia and low birth weight.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Nitrogen (N)</div>
                         <div class="variable-unit">Total Nitrogen (g/kg)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">57.94 +/- 7.64</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">53.84 [50.61, 67.45]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">38.2 - 80.30</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">57.7 [56.2, 72.3] P95: 80.5</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">53.8 [52.9, 62.6] P95: 78.5</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">49.1 [48.3, 52.8] P95: 58.2</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">56.2 [52.9, 63.5] P95: 78.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1341,12 +1577,13 @@ where a=17.625, b=243.04</div>
                     </div>
 
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Soil Phosphorus (P)</div>
+                        <div class="variable-name">Phosphorus (P)</div>
                         <div class="variable-unit">Extractable Phosphorus (ppm)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">24.23 +/- 0.86</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">24.26 [23.56, 24.97]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">21.8 - 25.75</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.1 [23.6, 25.3] P95: 25.8</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">24.3 [24.1, 24.6] P95: 25.4</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">23.6 [23.6, 23.8] P95: 24.9</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">24.2 [23.6, 25.1] P95: 25.5</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1362,12 +1599,13 @@ where a=17.625, b=243.04</div>
                     </div>
 
                     <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Soil Potassium (K)</div>
+                        <div class="variable-name">Potassium (K)</div>
                         <div class="variable-unit">Extractable Potassium (ppm)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">44.76 +/- 1.59</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">45.30 [43.00, 47.09]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">40.1 - 49.22</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">46.2 [45.8, 46.4] P95: 47.2</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">45.3 [44.8, 47.8] P95: 49.4</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">41.8 [41.2, 42.2] P95: 42.2</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">45.8 [44.8, 46.4] P95: 48.3</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1381,37 +1619,16 @@ where a=17.625, b=243.04</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="variable-card" onclick="toggleCard(this)">
-                        <div class="variable-name">Soil Calcium (Ca)</div>
-                        <div class="variable-unit">Extractable Calcium (ppm)</div>
-                        <div class="stats-display">
-                            <div><span class="stats-label">Mean +/- SD</span><span class="stats-value">1842.5 +/- 486.2</span></div>
-                            <div><span class="stats-label">Median [Q1, Q3]</span><span class="stats-value">1756.4 [1485.2, 2124.8]</span></div>
-                            <div><span class="stats-label">Range</span><span class="stats-value">624.8 - 3842.6</span></div>
-                        </div>
-                        <button class="expand-btn">View Details</button>
-                        <div class="variable-details">
-                            <div class="detail-section">
-                                <h4>Dataset</h4>
-                                <div class="dataset-info">ISDASOIL/Africa/v1/calcium_extractable</div>
-                            </div>
-                            <div class="detail-section">
-                                <h4>Rationale</h4>
-                                <p>Soil calcium affects food crop mineral content. Calcium is critical during pregnancy for fetal bone development, blood clotting, and muscle function. Maternal calcium deficiency is associated with preeclampsia and low birth weight.</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- 7. URBANIZATION -->
+            <!-- 8. URBAN FORM -->
             <div class="category-section cat-urban">
                 <div class="category-header" onclick="toggleCategory(this)">
-                    <div class="category-number">07</div>
+                    <div class="category-number">08</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#127961;</div>
-                        <h2 class="category-title">Urbanization</h2>
+                        <h2 class="category-title">Urban Form</h2>
                         <div class="category-count">1 indicator</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
@@ -1421,9 +1638,10 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Settlement Classification</div>
                         <div class="variable-unit">Degree of Urbanization (categorical)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Most Frequent</span><span class="stats-value">Rural (68.4%)</span></div>
-                            <div><span class="stats-label">Peri-Urban</span><span class="stats-value">24.2%</span></div>
-                            <div><span class="stats-label">Urban</span><span class="stats-value">7.4%</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">Peri-Urban: 26.1% | Rural: 8.0% | Urban: 65.8%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">Peri-Urban: 7.1% | Rural: 20.5% | Urban: 72.3%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">Peri-Urban: 0.2% | Rural: 60.3% | Urban: 39.5%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">Peri-Urban: 14.7% | Rural: 21.9% | Urban: 63.4%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
@@ -1440,20 +1658,155 @@ where a=17.625, b=243.04</div>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>The ongoing urbanization worldwide is leading to an increasing number of pregnant women being exposed to higher levels of urban-related environmental hazards such as air pollution and noise, and at the same time, having less contact with natural environments. The urban environment during pregnancy may influence child's respiratory health.</p>
+                                <p>The ongoing urbanization worldwide is leading to an increasing number of pregnant women being exposed to higher levels of urban-related environmental hazards such as air pollution and noise, and at the same time, having less contact with natural environments. The urban environment during pregnancy may influence child's respiratory health (Li et al. 2025).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Li F, et al. (2025) The silent threat: effects of PM2.5 exposure on perinatal complications and neonatal outcomes. BMC Pregnancy Childbirth 25(1):686.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 9. IPCC CLIMATE ZONE -->
+            <div class="category-section cat-temp">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">09</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127758;</div>
+                        <h2 class="category-title">IPCC Climate Zone</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">IPCC Climate Zone</div>
+                        <div class="variable-unit">Climate Classification (categorical)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Tropical Dry</span><span class="stats-value">Kenya: 97.2% | Mozambique: 99.9% | Gambia: 98.6% | All: 98.4%</span></div>
+                            <div><span class="stats-label">Tropical Moist</span><span class="stats-value">Kenya: 1.0% | Mozambique: 0.0% | Gambia: 1.4% | All: 0.8%</span></div>
+                            <div><span class="stats-label">Tropical Montane</span><span class="stats-value">Kenya: 0.4% | All: 0.2%</span></div>
+                            <div><span class="stats-label">Warm Temperate Dry</span><span class="stats-value">Kenya: 1.2% | All: 0.6%</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">WorldPop Population Data, IPCC Climate Zones TIF</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Climate zones were assigned using the Intergovernmental Panel on Climate Change (IPCC) climate classification, based on long-term temperature and precipitation patterns (46). Village-level climate zones were determined using a population-weighted dominant classification.</p>
+                                <div class="formula-display">Climate Zone = argmax_z [Σ(Population_i | Climate_i = z)]
+
+This method ensures assigned climate zones represent
+conditions experienced by most village residents.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Climate zone classification provides contextual information relevant to environmental exposures during pregnancy, including thermal regimes and seasonal variability (47).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">IPCC (2023) Climate Change 2021 – The Physical Science Basis. Cambridge University Press. | Watts N, et al. (2019) The 2019 report of The Lancet Countdown on health and climate change. Lancet 394(10211):1836-78.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 8. SOCIO-DEMOGRAPHIC -->
+            <!-- 10. WEALTH AND DEVELOPMENT INDICATORS -->
+            <div class="category-section cat-urban">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">10</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#128161;</div>
+                        <h2 class="category-title">Wealth and Development Indicators</h2>
+                        <div class="category-count">2 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <!-- VIIRS Night Lights -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">VIIRS Nighttime Lights</div>
+                        <div class="variable-unit">Radiance (nW/cm²/sr)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">3.0 [1.1, 5.6] P95: 6.7</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">2.9 [0.6, 6.6] P95: 8.7</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.5 [0.0, 1.6] P95: 1.7</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">1.9 [0.8, 5.5] P95: 8.3</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ee.ImageCollection("NOAA/VIIRS/DNB/ANNUAL_V21"), WorldPop Population Data, Village Shapefiles</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>VIIRS nighttime light intensity is widely used as a proxy for human settlement density, infrastructure development, and socioeconomic activity. Nighttime lights correlate strongly with population distribution, electrification, income, and access to services (Jean et al. 2016).</p>
+                                <div class="formula-display">NTL_PW = Σ(Population_i × NTL_i) / Σ(Population_i)
+
+This population-weighted approach ensures nighttime light
+estimates reflect conditions experienced by most
+village residents rather than uninhabited areas.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Jean N, et al. (2016) Combining satellite imagery and machine learning to predict poverty. Science 353(6301):790-4. | Chen X, Nordhaus WD. (2011) Using luminosity data as a proxy for economic statistics. PNAS 108(21):8589-94.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Relative Wealth Index -->
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <div class="variable-name">Relative Wealth Index</div>
+                        <div class="variable-unit">RWI (dimensionless, relative scale)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.6 [0.2, 0.8] P95: 1.0</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">0.3 [0.2, 0.4] P95: 0.9</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">-0.1 [-0.4, 0.5] P95: 0.5</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">0.3 [0.1, 0.6] P95: 1.0</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">WorldPop Population Data, Village Shapefiles, HDX Relative Wealth Index (93 Low and Middle Income Countries)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>The Relative Wealth Index (RWI) is a high-resolution, machine-learning-derived proxy of relative household wealth developed by Meta Data for Good and validated against Demographic and Health Survey (DHS) wealth indices (Jean et al. 2016). RWI provides a continuous measure of socioeconomic status, with values interpreted relative to the national wealth distribution.</p>
+                                <div class="formula-display">RWI_PW = Σ(Population_i × RWI_i) / Σ(Population_i)
+
+This population-weighted approach ensures wealth
+estimates reflect socioeconomic conditions experienced
+by most village residents.</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Rationale</h4>
+                                <p>Village-level socioeconomic context was estimated using a population-weighted RWI, accounting for within-village population distribution (Victora et al. 2008; Marmot et al. 2008).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Jean N, et al. (2016) Combining satellite imagery and machine learning to predict poverty. Science 353(6301):790-4. | Victora CG, et al. (2008) Maternal and child undernutrition. Lancet 371(9609):340-57. | Marmot M, et al. (2008) Closing the gap in a generation. Lancet 372(9650):1661-9.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 11. SOCIO-GEOGRAPHIC CHARACTERISTICS -->
             <div class="category-section cat-social">
                 <div class="category-header" onclick="toggleCategory(this)">
-                    <div class="category-number">08</div>
+                    <div class="category-number">11</div>
                     <div class="category-title-wrapper">
                         <div class="category-icon">&#128101;</div>
-                        <h2 class="category-title">Socio-Demographic Indicators</h2>
+                        <h2 class="category-title">Socio-Geographic Characteristics</h2>
                         <div class="category-count">8 indicators</div>
                     </div>
                     <div class="toggle-indicator">&#9660;</div>
@@ -1463,17 +1816,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Social Inclusion</div>
                         <div class="variable-unit">Community Group Participation (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">7.5% (n=338/5264)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">3.8%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">6.9%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">9.3%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">5.9%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
                                 <h4>Methodology</h4>
-                                <p>Proportion of pregnant women who are aware of and actively participate in community groups or organisations that provide support for pregnancy-related problems.</p>
+                                <p>Proportion of pregnant women who are aware of and actively participate in community groups or organisations (formal or informal) that provide support for pregnancy-related problems. Derived from survey questions assessing awareness and active participation through meeting attendance, financial contributions, or advocacy.</p>
                             </div>
                             <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>This indicator captures social inclusion during pregnancy by reflecting engagement in community-based support and health promotion structures that help reduce social exclusion during the prenatal period.</p>
+                                <p>This indicator captures social inclusion during pregnancy by reflecting engagement in community-based support and health promotion structures that help reduce social exclusion during the prenatal period (Victora et al. 2008).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Victora CG, et al. (2008) Maternal and child undernutrition. Lancet 371(9609):340-57.</p>
                             </div>
                         </div>
                     </div>
@@ -1482,13 +1842,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Community Help</div>
                         <div class="variable-unit">Bonding Social Capital (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">62.6% have community help</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">75.0%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">51.3%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">49.6%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">62.7%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Proportion of pregnant women who report having access to help from neighbours or other families in their community if pregnancy-related problems arise. Responses of "don't know" were recoded as "no" (yes=1; no/don't know=0).</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Bonding social capital (strong ties of trust with neighbours, family, friends) acts through psychosocial support mechanisms to improve pregnancy health.</p>
+                                <p>Bonding social capital (strong ties of trust with neighbours, family, friends) acts through psychosocial support mechanisms to improve pregnancy health (Schölmerich et al. 2014).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Schölmerich VLN, et al. (2014) Neighborhood Social Capital and Pregnancy Outcomes. PLoS ONE 9(5):e95873.</p>
                             </div>
                         </div>
                     </div>
@@ -1497,13 +1868,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">General Financial Autonomy</div>
                         <div class="variable-unit">Household Decision-Making (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">11.7% have autonomy</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">68.8%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">50.6%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">72.9%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">64.0%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Derived from the survey question: "Who makes the decisions about money in your household?" Women who identified themselves as the primary decision-maker were classified as having financial autonomy.</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Women who make household financial decisions have greater chances of receiving antenatal and delivery care. The indicator reflects women's financial autonomy, a key dimension of gender power relations.</p>
+                                <p>Women who make household financial decisions have greater chances of receiving antenatal and delivery care. The indicator reflects women's financial autonomy, a key dimension of gender power relations (Girardi et al. 2023).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Girardi G, et al. (2023) Social determinants of health in pregnant individuals. Int J Equity Health 22(1):186.</p>
                             </div>
                         </div>
                     </div>
@@ -1512,13 +1894,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Pregnancy Financial Autonomy</div>
                         <div class="variable-unit">Pregnancy-Related Decision-Making (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">16.0% have autonomy</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">62.5%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">54.2%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">81.1%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">63.7%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Derived from the survey question: "Who makes decisions about money related to pregnancy and pregnancy care?" Women who identified themselves as the primary decision-maker were classified as having pregnancy-related financial autonomy.</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Women with financial autonomy on pregnancy-related issues have greater uptake of antenatal care and positive birth outcomes.</p>
+                                <p>Women with financial autonomy on pregnancy-related issues have greater uptake of antenatal care, skilled birth attendance, use of maternal health services, and improved birth outcomes (Makanga et al. 2019).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Makanga PT, et al. (2019) Place-specific factors associated with adverse maternal and perinatal outcomes in Southern Mozambique. BMJ Open 9(2):e024042.</p>
                             </div>
                         </div>
                     </div>
@@ -1527,13 +1920,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Partner Availability</div>
                         <div class="variable-unit">Living with Partner (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">73.3% (n=3858/5264)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">80.3%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">63.1%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">66.3%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">72.1%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Derived from survey questions assessing whether the respondent currently lives alone, and if not, whether she currently lives with a partner. This indicator captures physical partner availability through shared residence but does not capture non-cohabiting partner support.</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Pregnant women with involved partners are more likely to receive prenatal care. Lack of partner involvement is associated with higher neonatal mortality and adverse birth outcomes.</p>
+                                <p>Pregnant women with involved partners are more likely to receive prenatal care. Partner involvement is associated with better neonatal outcomes and reduced maternal morbidity (Wang et al. 2020).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Wang E, et al. (2020) Social Determinants of Pregnancy-Related Mortality and Morbidity in the United States. Obstet Gynecol 135(4):896-915.</p>
                             </div>
                         </div>
                     </div>
@@ -1542,13 +1946,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Emotional Support</div>
                         <div class="variable-unit">Community Emotional Support (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">32.2% (n=1693/5264)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">39.3%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">23.8%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">28.2%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">32.5%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Derived from the survey question on types of community support received, with women classified as receiving emotional support if they selected "emotional or moral support."</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Low social support is associated with depression, anxiety, and may indirectly raise risk for adverse birth outcomes through stress-related pathways.</p>
+                                <p>Low social support is associated with depression, anxiety, and may indirectly raise risk for adverse birth outcomes through stress-related pathways (Bedaso et al. 2021).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Bedaso A, et al. (2021) The relationship between social support and mental health problems during pregnancy. Reprod Health 18(1):162.</p>
                             </div>
                         </div>
                     </div>
@@ -1557,13 +1972,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Transport Support</div>
                         <div class="variable-unit">Social Transport Access (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">22.2% (n=1170/5264)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.1%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">19.9%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">17.5%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">21.9%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Derived from the survey question on types of community support received, with women classified as having transport support if "transport" was selected as a form of assistance.</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Emergency maternal transport services are essential for improving outcomes. Transportation barriers produce delays contributing to poor perinatal outcomes.</p>
+                                <p>Emergency maternal transport services are essential for improving outcomes. Access to community-based transport support is critical for timely use of antenatal and emergency maternal health services (Girardi et al. 2023).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Girardi G, et al. (2023) Social determinants of health in pregnant individuals. Int J Equity Health 22(1):186.</p>
                             </div>
                         </div>
                     </div>
@@ -1572,13 +1998,24 @@ where a=17.625, b=243.04</div>
                         <div class="variable-name">Financial Support</div>
                         <div class="variable-unit">Social Financial Support (%)</div>
                         <div class="stats-display">
-                            <div><span class="stats-label">Overall</span><span class="stats-value">4.7% (n=250/5264)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">5.4%</span></div>
+                            <div><span class="stats-label">Mozambique</span><span class="stats-value">7.1%</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.4%</span></div>
+                            <div><span class="stats-label">All Sites</span><span class="stats-value">4.9%</span></div>
                         </div>
                         <button class="expand-btn">View Details</button>
                         <div class="variable-details">
                             <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Derived from the survey question on types of community support received, with women classified as having financial support if "financial support" was selected as a form of assistance.</p>
+                            </div>
+                            <div class="detail-section">
                                 <h4>Rationale</h4>
-                                <p>Financial constraints significantly hinder women's access to antenatal care in low- and middle-income countries.</p>
+                                <p>Financial constraints significantly hinder women's access to antenatal care in low- and middle-income countries. Access to community-based financial support can reduce economic barriers to maternal health service use (Banke-Thomas et al. 2020).</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>References</h4>
+                                <p style="font-size: 0.85rem;">Banke-Thomas A, et al. (2020) Cost of Utilising Maternal Health Services in Low- and Middle-Income Countries. Int J Health Policy Manag.</p>
                             </div>
                         </div>
                     </div>
@@ -1589,21 +2026,42 @@ where a=17.625, b=243.04</div>
         <!-- REFERENCES -->
         <div class="references-section">
             <h2>References</h2>
-            <div class="reference-item"><span class="reference-number">24.</span> Rapang A, et al. The Effect of Exposure to Carbon Monoxide Gas in Pregnant Women. J INFO Kesehat. 2023;21(4):713-20.</div>
-            <div class="reference-item"><span class="reference-number">25.</span> Zhong K, et al. Susceptible window identification of maternal ozone exposure and preterm birth. Int Health. 2025.</div>
-            <div class="reference-item"><span class="reference-number">26.</span> Aguilera J, et al. Air pollution and pregnancy. Semin Perinatol. 2023;47(8):151838.</div>
-            <div class="reference-item"><span class="reference-number">27.</span> Kaur K, et al. PM2.5 exposure during pregnancy and placental lipid metabolic genes. Environ Res. 2022;211:113066.</div>
-            <div class="reference-item"><span class="reference-number">28.</span> Galka K, et al. Carbon monoxide levels and adverse pregnancy outcomes. Acta Obstet Gynecol Scand. 2025;104(12):2237-43.</div>
-            <div class="reference-item"><span class="reference-number">29.</span> Place E, et al. Carbon monoxide exposure in pregnant women in the UK. BMC Pregnancy Childbirth. 2025;25(1):1063.</div>
-            <div class="reference-item"><span class="reference-number">30.</span> Liang Z, et al. Nitrogen dioxide exposure and spontaneous abortion risk. Ecotoxicol Environ Saf. 2021;224:112633.</div>
-            <div class="reference-item"><span class="reference-number">31.</span> Abellan A, et al. Urban environment during pregnancy and lung function in children. Environ Pollut. 2024;344:123345.</div>
-            <div class="reference-item"><span class="reference-number">32.</span> Girardi G, et al. Social determinants of health in pregnant individuals. Int J Equity Health. 2023;22(1):186.</div>
-            <div class="reference-item"><span class="reference-number">33.</span> Scholmerich VLN, et al. Neighborhood Social Capital and Pregnancy Outcomes. PLoS ONE. 2014;9(5):e95873.</div>
-            <div class="reference-item"><span class="reference-number">36.</span> Li F, et al. Effects of PM2.5 exposure on perinatal complications. BMC Pregnancy Childbirth. 2025;25(1):686.</div>
-            <div class="reference-item"><span class="reference-number">39.</span> Gage AJ, Guirlene Calixte M. Physical accessibility of maternal health services. Popul Stud. 2006;60(3):271-88.</div>
-            <div class="reference-item"><span class="reference-number">40.</span> Rylander C, et al. Climate change and maternal and pregnancy outcomes. Glob Health Action. 2013;6(1):1-9.</div>
-            <div class="reference-item"><span class="reference-number">42.</span> Wu Y, et al. Temperature and humidity effects on preterm birth. Front Public Health. 2023;11:1101283.</div>
-            <div class="reference-item"><span class="reference-number">43.</span> Olapoju OM. Transport barriers for pregnant women. Discov Health Syst. 2025;4(1):17.</div>
+            <div class="reference-item"><span class="reference-number">1.</span> Lee KJ, Moon H, Yun HR, Park EL, Park AR, Choi H, et al. Greenness, civil environment, and pregnancy outcomes: perspectives with a systematic review and meta-analysis. Environ Health. 2020;19(1):91.</div>
+            <div class="reference-item"><span class="reference-number">2.</span> Sedda L, Tatem AJ, Morley DW, Atkinson PM, Wardrop NA, Pezzulo C, et al. Poverty, health and satellite-derived vegetation indices: their inter-spatial relationship in West Africa. International Health. 2015;7(2):99-106.</div>
+            <div class="reference-item"><span class="reference-number">3.</span> Barnett AG, Plonka K, Seow WK, Wilson LA, Hansen C. Increased traffic exposure and negative birth outcomes: a prospective cohort in Australia. Environ Health. 2011;10(1):26.</div>
+            <div class="reference-item"><span class="reference-number">4.</span> Hitchins J, Morawska L, Wolff R, Gilbert D. Concentrations of submicrometre particles from vehicle emissions near a major road. Atmos Environ. 2000;34(1):51-9.</div>
+            <div class="reference-item"><span class="reference-number">5.</span> Rapang A, Bara FT, Kusmiyati Y, Supahar S, Nopiyanti N. The Effect of Exposure to Carbon Monoxide (CO) Gas in Pregnant Women on The Incident of Weight Infants Born in Makassar City. J INFO Kesehat. 2023;21(4):713-20.</div>
+            <div class="reference-item"><span class="reference-number">6.</span> Phillips BB, Bullock JM, Osborne JL, Gaston KJ. Spatial extent of road pollution: A national analysis. Sci Total Environ. 2021;773:145589.</div>
+            <div class="reference-item"><span class="reference-number">7.</span> Burton GJ, Moore LG, Giussani DA, Murray AJ. Pregnancy at high altitude: the challenge of hypoxia. Phil Trans R Soc B. 2025;380(1933):20240167.</div>
+            <div class="reference-item"><span class="reference-number">8.</span> Zhong K, Yang R, Liu X, He J, Wen C, Zhu Z, et al. Susceptible window identification of the relationship between maternal ozone exposure and preterm birth. Int Health. 2025;ihaf073.</div>
+            <div class="reference-item"><span class="reference-number">9.</span> Aguilera J, Konvinse K, Lee A, Maecker H, Prunicki M, Mahalingaiah S, et al. Air pollution and pregnancy. Semin Perinatol. 2023;47(8):151838.</div>
+            <div class="reference-item"><span class="reference-number">10.</span> Makanga PT, Sacoor C, Schuurman N, Lee T, Vilanculo FC, Munguambe K, et al. Place-specific factors associated with adverse maternal and perinatal outcomes in Southern Mozambique: a retrospective cohort study. BMJ Open. 2019;9(2):e024042.</div>
+            <div class="reference-item"><span class="reference-number">11.</span> Kaur K, Lesseur C, Deyssenroth MA, Kloog I, Schwartz JD, Marsit CJ, et al. PM2.5 exposure during pregnancy is associated with altered placental expression of lipid metabolic genes. Environ Res. 2022;211:113066.</div>
+            <div class="reference-item"><span class="reference-number">12.</span> Galka K, Shea M, Aye CYL, Impey L. Carbon monoxide levels, smoking and adverse pregnancy outcomes. Acta Obstet Gynecol Scand. 2025;104(12):2237-43.</div>
+            <div class="reference-item"><span class="reference-number">13.</span> Place E, Wareing H, Herigstad M. Carbon monoxide exposure in pregnant women in the UK. BMC Pregnancy Childbirth. 2025;25(1):1063.</div>
+            <div class="reference-item"><span class="reference-number">14.</span> Liang Z, Xu C, Liang S, Cai TJ, Yang N, Li SD, et al. Short-term ambient nitrogen dioxide exposure is associated with increased risk of spontaneous abortion. Ecotoxicol Environ Saf. 2021;224:112633.</div>
+            <div class="reference-item"><span class="reference-number">15.</span> Basu R, Malig B, Ostro B. High Ambient Temperature and the Risk of Preterm Delivery. Am J Epidemiol. 2010;172(10).</div>
+            <div class="reference-item"><span class="reference-number">16.</span> Sherwood SC, Huber M. An adaptability limit to climate change due to heat stress. PNAS. 2010;107(21):9552-5.</div>
+            <div class="reference-item"><span class="reference-number">17.</span> McElroy S, Ilango S, Dimitrova A, Gershunov A, Benmarhnia T. Extreme heat, preterm birth, and stillbirth: A global analysis across 14 lower-middle income countries. Environ Int. 2022;158:106902.</div>
+            <div class="reference-item"><span class="reference-number">18.</span> Xu Z, Hu W, Tong S. Temperature variability and childhood pneumonia: an ecological study. Environ Health. 2014;13(1):51.</div>
+            <div class="reference-item"><span class="reference-number">19.</span> Li D, Bou-Zeid E. Synergistic Interactions between Urban Heat Islands and Heat Waves: The Impact in Cities Is Larger than the Sum of Its Parts. J Appl Meteorol Climatol. 2013;52(9):2051-64.</div>
+            <div class="reference-item"><span class="reference-number">20.</span> Wu Y, Yuan J, Yuan Y, Kong C, Jing W, Liu J, et al. Effects of ambient temperature and relative humidity on preterm birth during early pregnancy and before parturition in China. Front Public Health. 2023;11:1101283.</div>
+            <div class="reference-item"><span class="reference-number">21.</span> Rashid H, Kagami M, Ferdous F, Ma E, Terao T, Hayashi T, et al. Temperature during pregnancy influences the fetal growth and birth size. Trop Med Health. 2017;45(1):1.</div>
+            <div class="reference-item"><span class="reference-number">22.</span> Olapoju OM. Access to healthcare and impediment(s) of transport: examining lived experience of pregnant women in selected local governments of Oyo state, Nigeria. Discov Health Syst. 2025;4(1):17.</div>
+            <div class="reference-item"><span class="reference-number">23.</span> Li F, Liu X, Gong S, Li P, Gao Y, Guo X, et al. The silent threat: effects of PM2.5 exposure on perinatal complications and neonatal outcomes. BMC Pregnancy Childbirth. 2025;25(1):686.</div>
+            <div class="reference-item"><span class="reference-number">24.</span> IPCC. Climate Change 2021 – The Physical Science Basis: Working Group I Contribution to the Sixth Assessment Report. Cambridge University Press; 2023.</div>
+            <div class="reference-item"><span class="reference-number">25.</span> Watts N, Amann M, Arnell N, Ayeb-Karlsson S, Belesova K, Boykoff M, et al. The 2019 report of The Lancet Countdown on health and climate change. Lancet. 2019;394(10211):1836-78.</div>
+            <div class="reference-item"><span class="reference-number">26.</span> Jean N, Burke M, Xie M, Davis WM, Lobell DB, Ermon S. Combining satellite imagery and machine learning to predict poverty. Science. 2016;353(6301):790-4.</div>
+            <div class="reference-item"><span class="reference-number">27.</span> Chen X, Nordhaus WD. Using luminosity data as a proxy for economic statistics. PNAS. 2011;108(21):8589-94.</div>
+            <div class="reference-item"><span class="reference-number">28.</span> Victora CG, Adair L, Fall C, Hallal PC, Martorell R, Richter L, et al. Maternal and child undernutrition: consequences for adult health and human capital. Lancet. 2008;371(9609):340-57.</div>
+            <div class="reference-item"><span class="reference-number">29.</span> Marmot M, Friel S, Bell R, Houweling TAJ, Taylor S. Closing the gap in a generation: health equity through action on the social determinants of health. Lancet. 2008;372(9650):1661-9.</div>
+            <div class="reference-item"><span class="reference-number">30.</span> Schölmerich VLN, Erdem Ö, Borsboom G, Ghorashi H, Groenewegen P, Steegers EAP, et al. The Association of Neighborhood Social Capital and Ethnic (Minority) Density with Pregnancy Outcomes in the Netherlands. PLoS ONE. 2014;9(5):e95873.</div>
+            <div class="reference-item"><span class="reference-number">31.</span> Girardi G, Longo M, Bremer AA. Social determinants of health in pregnant individuals from underrepresented, understudied, and underreported populations in the United States. Int J Equity Health. 2023;22(1):186.</div>
+            <div class="reference-item"><span class="reference-number">32.</span> Wang E, Glazer KB, Howell EA, Janevic TM. Social Determinants of Pregnancy-Related Mortality and Morbidity in the United States: A Systematic Review. Obstet Gynecol. 2020;135(4):896-915.</div>
+            <div class="reference-item"><span class="reference-number">33.</span> Bedaso A, Adams J, Peng W, Sibbritt D. The relationship between social support and mental health problems during pregnancy: a systematic review and meta-analysis. Reprod Health. 2021;18(1):162.</div>
+            <div class="reference-item"><span class="reference-number">34.</span> Banke-Thomas A, Ayomoh FI, Abejirinde IOO, Banke-Thomas O, Eboreime EA, Ameh CA. Cost of Utilising Maternal Health Services in Low- and Middle-Income Countries: A Systematic Review. Int J Health Policy Manag. 2020.</div>
+            <div class="reference-item"><span class="reference-number">35.</span> Gage AJ, Guirlene Calixte M. Physical accessibility of maternal health services. Popul Stud. 2006;60(3):271-88.</div>
+            <div class="reference-item"><span class="reference-number">36.</span> Rylander C, Odland JØ, Sandanger TM. Climate change and maternal and pregnancy outcomes. Glob Health Action. 2013;6(1):1-9.</div>
         </div>
 
         <footer>
@@ -1669,27 +2127,94 @@ where a=17.625, b=243.04</div>
             get apiKey() { return atob(this._k.join('')); },
             conversationHistory: [],
 
-            systemPrompt: `You are an expert research assistant for the PRECISE Network study on Environmental & Social Determinants of Maternal Health. This study analyzed data from 6,525 pregnant women across 733 villages in Kenya, Mozambique, and The Gambia.
+            systemPrompt: `You are Shmron, an expert research assistant for the PRECISE Network study on Environmental & Social Determinants of Maternal Health. This study analyzed data from 6,687 pregnant women across 733 villages in Kenya (n=3,194), Mozambique (n=2,053), and The Gambia (n=1,278).
 
-You have deep knowledge of:
-1. AIR QUALITY indicators: PM2.5, Ozone, Carbon Monoxide, Nitrogen Dioxide, Sulfur Dioxide
-2. ACCESS TO HEALTHCARE: Walking/Driving distances and times to facilities, public transport metrics, road isolation measures
-3. TEMPERATURE: Wet bulb temperature, extreme hot days, heat index, temperature variability
-4. PRECIPITATION: Total rainfall, dry spell duration, rain days percentage, rainfall variability
-5. HUMIDITY: Relative humidity, specific humidity, vapor pressure deficit, dew point
-6. SOIL CONDITIONS: Soil moisture, evapotranspiration, drought index, vegetation health (NDVI)
-7. SOCIAL FACTORS: Deprivation index, population density, infrastructure access, SES variables
-8. URBAN ENVIRONMENT: Built-up areas, green spaces, night-time lights, urbanization indices
-9. You are also able to search and source supporting literature on maternal health and environmental epidemiology topics.
-All environmental exposures use population-weighted methodology based on H3 hexagonal tessellation to account for heterogeneous population distribution.
+=== COMPLETE CATALOGUE DATA (Values shown as Median [Q1, Q3] P95: 95th percentile) ===
 
+**CATEGORY 1: AIR POLLUTION AND RELATED PROXIES**
+- NDVI (-1 to 1): Kenya 0.02 [-0.01, 0.21] P95:0.40 | Mozambique 0.14 [-0.01, 0.39] P95:0.57 | Gambia 0.13 [0.09, 0.17] P95:0.30 | All 0.12 [0.01, 0.21] P95:0.46
+- Distance to Highways (km): Kenya 1.8 [0.5, 3.1] P95:5.4 | Mozambique 1.0 [0.4, 7.2] P95:8.1 | Gambia 0.6 [0.6, 4.7] P95:8.4 | All 1.3 [0.5, 3.7] P95:8.1
+- Distance to Major Roads (km): Kenya 1.3 [0.5, 2.7] P95:4.9 | Mozambique 1.0 [0.4, 1.2] P95:4.9 | Gambia 0.5 [0.5, 2.1] P95:8.1 | All 1.0 [0.4, 2.7] P95:6.9
+- Road Network Density (km⁻¹): Kenya 4.0 [2.1, 17.5] P95:20.9 | Mozambique 9.9 [5.2, 11.7] P95:11.7 | Gambia 12.6 [7.2, 18.0] P95:18.0 | All 9.0 [2.7, 13.1] P95:19.1
+- Elevation (m): Kenya 188.8 [169.2, 192.2] P95:199.6 | Mozambique 19.0 [18.6, 33.1] P95:44.6 | Gambia 26.6 [15.3, 26.6] P95:35.6 | All 35.4 [19.9, 182.1] P95:199.6
+- CO (g/m²): Kenya 0.8 [0.7, 0.8] P95:1.0 | Mozambique 0.7 [0.7, 0.9] P95:1.1 | Gambia 1.0 [0.9, 1.0] P95:1.2 | All 0.8 [0.7, 0.9] P95:1.1
+- NO2 (μmol/m²): Kenya 0.02 [0.02, 0.03] P95:0.03 | Mozambique 0.03 [0.03, 0.04] P95:0.07 | Gambia 0.05 [0.04, 0.05] P95:0.07 | All 0.03 [0.02, 0.04] P95:0.06
+- O3 (DU): Kenya 265.2 [259.6, 270.0] P95:276.3 | Mozambique 272.1 [265.4, 283.4] P95:297.2 | Gambia 268.9 [259.6, 276.5] P95:287.0 | All 267.6 [261.2, 274.0] P95:290.0
+- SO2 (DU): Kenya 0.0 [0.0, 0.0] P95:0.0 | Mozambique 0.1 [0.0, 0.1] P95:0.3 | Gambia 0.1 [0.1, 0.2] P95:0.3 | All 0.0 [0.0, 0.1] P95:0.2
+- PM2.5 (μg/m³): Kenya 12.9 [10.2, 16.8] P95:26.9 | Mozambique 13.2 [8.7, 19.9] P95:32.9 | Gambia 47.8 [30.6, 73.5] P95:140.9 | All 14.9 [10.5, 24.4] P95:73.5
+- Fire Smoke PM2.5 (μg/m³): Kenya 0.0 [0.0, 0.1] P95:0.6 | Mozambique 0.1 [0.0, 0.4] P95:2.0 | Gambia 0.1 [0.0, 0.6] P95:1.9 | All 0.1 [0.0, 0.2] P95:1.5
+- Non-Fire Smoke PM2.5 (μg/m³): Kenya 5.2 [3.7, 8.0] P95:16.6 | Mozambique 4.2 [3.0, 6.2] P95:12.7 | Gambia 42.2 [15.4, 67.9] P95:115.5 | All 5.3 [3.6, 11.1] P95:67.1
+- Total AOD: Kenya 0.2 [0.1, 0.2] P95:0.4 | Mozambique 0.1 [0.1, 0.1] P95:0.4 | Gambia 0.3 [0.2, 0.5] P95:0.8 | All 0.2 [0.1, 0.3] P95:0.5
+- Dust AOD: Kenya 0.0 [0.0, 0.0] P95:0.1 | Mozambique 0.0 [0.0, 0.0] P95:0.0 | Gambia 0.2 [0.1, 0.3] P95:0.5 | All 0.0 [0.0, 0.0] P95:0.3
+- Black Carbon AOD: Kenya 0.0 [0.0, 0.0] P95:0.0 | Mozambique 0.0 [0.0, 0.0] P95:0.0 | Gambia 0.0 [0.0, 0.0] P95:0.0 | All 0.0 [0.0, 0.0] P95:0.0
+
+**CATEGORY 2: SPATIAL ACCESS TO CARE**
+- Road Quality Index (0-1): Kenya 0.5 [0.5, 0.6] P95:0.6 | Mozambique 0.4 [0.4, 0.5] P95:0.5 | Gambia 0.4 [0.4, 0.5] P95:0.7 | All 0.5 [0.4, 0.5] P95:0.6
+- Walking Distance to Facility (km): Kenya 3.0 [1.5, 4.4] P95:28.7 | Mozambique 3.6 [3.3, 5.6] P95:23.3 | Gambia 1.6 [1.3, 6.7] P95:11.6 | All 3.1 [1.5, 5.1] P95:22.2
+- Walking Time to Facility (min): Kenya 35.7 [18.3, 52.9] P95:344.3 | Mozambique 43.7 [39.6, 67.3] P95:280.1 | Gambia 19.2 [15.5, 80.1] P95:139.4 | All 37.7 [18.3, 61.2] P95:266.1
+- Driving Distance to Facility (km): Kenya 3.0 [1.5, 4.4] P95:28.7 | Mozambique 3.6 [3.3, 5.6] P95:23.3 | Gambia 1.6 [1.3, 6.7] P95:11.6 | All 3.1 [1.5, 5.1] P95:22.2
+- Driving Time to Facility (min): Kenya 4.6 [3.6, 6.0] P95:28.2 | Mozambique 5.8 [5.8, 9.9] P95:43.5 | Gambia 3.7 [2.1, 7.9] P95:14.2 | All 5.3 [3.6, 6.7] P95:31.7
+- Public Transport Distance (km): Kenya 5.4 [2.2, 9.7] P95:30.8 | Mozambique 3.7 [3.1, 4.2] P95:23.3 | Gambia 3.2 [1.5, 10.3] P95:22.5 | All 3.7 [1.8, 8.0] P95:23.3
+- Public Transport Time (min): Kenya 39.2 [24.8, 63.9] P95:121.2 | Mozambique 30.4 [26.6, 38.5] P95:124.4 | Gambia 29.1 [23.3, 54.1] P95:146.9 | All 33.7 [24.8, 58.0] P95:126.9
+
+**CATEGORY 3: PHYSICAL ISOLATION**
+- Walking Distance to Major Roads (km): Kenya 1.9 [0.9, 4.4] P95:10.1 | Mozambique 1.3 [0.6, 1.9] P95:15.2 | Gambia 0.7 [0.6, 2.6] P95:10.4 | All 1.3 [0.7, 3.9] P95:10.1
+- Walking Distance to Highways (km): Kenya 2.9 [0.9, 4.9] P95:10.6 | Mozambique 1.3 [0.6, 15.1] P95:16.3 | Gambia 0.7 [0.7, 5.1] P95:10.8 | All 1.9 [0.7, 5.9] P95:15.5
+
+**CATEGORY 4: HEAT EXPOSURE AND WEATHER**
+- Wet Bulb Temperature (°C) [Tier 1]: Kenya 21.4 [19.8, 22.8] P95:24.3 | Mozambique 17.1 [14.3, 20.1] P95:22.9 | Gambia 14.7 [8.6, 23.0] P95:24.6 | All 20.1 [16.4, 22.3] P95:24.3
+- Ambient Temperature (°C) [Tier 2]: Kenya 27.3 [25.7, 28.3] P95:29.3 | Mozambique 24.1 [21.5, 26.5] P95:29.1 | Gambia 27.6 [26.2, 28.7] P95:30.3 | All 26.7 [24.9, 28.2] P95:29.5
+- Diurnal Temperature (°C) [Tier 2]: Kenya 6.7 [5.6, 8.0] P95:10.3 | Mozambique 8.9 [6.4, 11.8] P95:14.9 | Gambia 12.5 [8.2, 14.5] P95:16.6 | All 7.7 [6.1, 10.8] P95:15.2
+- Land Surface Temperature (°C) [Tier 3]: Kenya 28.3 [28.3, 28.9] P95:29.1 | Mozambique 29.2 [29.2, 30.1] P95:30.3 | Gambia 26.6 [25.9, 26.6] P95:26.8 | All 28.7 [28.3, 29.2] P95:30.3
+
+**CATEGORY 5: PRECIPITATION**
+- Precipitation (mm/day): Kenya 0.0 [0.0, 0.0] P95:11.8 | Mozambique 0.0 [0.0, 0.7] P95:12.6 | Gambia 0.0 [0.0, 0.7] P95:15.9 | All 0.0 [0.0, 0.4] P95:13.0
+
+**CATEGORY 6: RELATIVE HUMIDITY**
+- Relative Humidity (%): Kenya 72.4 [68.6, 76.6] P95:82.7 | Mozambique 69.8 [63.7, 75.0] P95:82.3 | Gambia 55.6 [38.8, 77.7] P95:87.2 | All 70.9 [65.3, 76.2] P95:84.2
+
+**CATEGORY 7: SOIL MICRO-NUTRIENTS**
+- Calcium (ppm): Kenya 62.5 [61.7, 63.0] P95:64.5 | Mozambique 60.1 [60.1, 67.8] P95:68.6 | Gambia 62.7 [61.5, 62.7] P95:64.7 | All 62.5 [61.6, 63.3] P95:68.6
+- Nitrogen (g/kg): Kenya 57.7 [56.2, 72.3] P95:80.5 | Mozambique 53.8 [52.9, 62.6] P95:78.5 | Gambia 49.1 [48.3, 52.8] P95:58.2 | All 56.2 [52.9, 63.5] P95:78.5
+- Phosphorus (ppm): Kenya 25.1 [23.6, 25.3] P95:25.8 | Mozambique 24.3 [24.1, 24.6] P95:25.4 | Gambia 23.6 [23.6, 23.8] P95:24.9 | All 24.2 [23.6, 25.1] P95:25.5
+- Potassium (ppm): Kenya 46.2 [45.8, 46.4] P95:47.2 | Mozambique 45.3 [44.8, 47.8] P95:49.4 | Gambia 41.8 [41.2, 42.2] P95:42.2 | All 45.8 [44.8, 46.4] P95:48.3
+
+**CATEGORY 8: URBAN FORM**
+- Settlement Classification: Kenya (Peri-Urban 26.1%, Rural 8.0%, Urban 65.8%) | Mozambique (Peri-Urban 7.1%, Rural 20.5%, Urban 72.3%) | Gambia (Peri-Urban 0.2%, Rural 60.3%, Urban 39.5%) | All (Peri-Urban 14.7%, Rural 21.9%, Urban 63.4%)
+
+**CATEGORY 9: IPCC CLIMATE ZONE**
+- Tropical Dry: Kenya 97.2% | Mozambique 99.9% | Gambia 98.6% | All 98.4%
+- Tropical Moist: Kenya 1.0% | Mozambique 0.0% | Gambia 1.4% | All 0.8%
+- Tropical Montane: Kenya 0.4% | All 0.2%
+- Warm Temperate Dry: Kenya 1.2% | All 0.6%
+
+**CATEGORY 10: WEALTH AND DEVELOPMENT INDICATORS**
+- VIIRS Night Lights (nW/cm²/sr): Kenya 3.0 [1.1, 5.6] P95:6.7 | Mozambique 2.9 [0.6, 6.6] P95:8.7 | Gambia 0.5 [0.0, 1.6] P95:1.7 | All 1.9 [0.8, 5.5] P95:8.3
+- Relative Wealth Index: Kenya 0.6 [0.2, 0.8] P95:1.0 | Mozambique 0.3 [0.2, 0.4] P95:0.9 | Gambia -0.1 [-0.4, 0.5] P95:0.5 | All 0.3 [0.1, 0.6] P95:1.0
+
+**CATEGORY 11: SOCIO-GEOGRAPHIC CHARACTERISTICS (%)**
+- Social Inclusion: Kenya 3.8% | Mozambique 6.9% | Gambia 9.3% | All 5.9%
+- Community Help: Kenya 75.0% | Mozambique 51.3% | Gambia 49.6% | All 62.7%
+- General Financial Autonomy: Kenya 68.8% | Mozambique 50.6% | Gambia 72.9% | All 64.0%
+- Pregnancy Financial Autonomy: Kenya 62.5% | Mozambique 54.2% | Gambia 81.1% | All 63.7%
+- Partner Availability: Kenya 80.3% | Mozambique 63.1% | Gambia 66.3% | All 72.1%
+- Emotional Support: Kenya 39.3% | Mozambique 23.8% | Gambia 28.2% | All 32.5%
+- Transport Support: Kenya 25.1% | Mozambique 19.9% | Gambia 17.5% | All 21.9%
+- Financial Support: Kenya 5.4% | Mozambique 7.1% | Gambia 0.4% | All 4.9%
+
+=== METHODOLOGY ===
+All environmental exposures use population-weighted methodology based on H3 hexagonal tessellation:
+Formula: Indicator_PW = Σ(Population_i × Value_i) / Σ(Population_i)
+This accounts for heterogeneous population distribution within village boundaries.
+
+=== INSTRUCTIONS ===
 When answering:
-- Be concise but informative
-- Reference specific indicators and their values when relevant
-- Explain methodology when asked
-- For questions outside your knowledge, indicate you can provide general information but recommend consulting the original research
-- You can discuss broader maternal health topics and environmental epidemiology
-- Format responses clearly, use bullet points when listing multiple items`,
+- Reference specific indicator values from the data above when relevant
+- Compare across countries when asked
+- Explain the population-weighted methodology when asked
+- For literature questions, you can discuss general maternal health and environmental epidemiology topics
+- Be concise but informative, use natural language
+- If asked to list variables, use the exact data provided above`,
 
             init() {
                 this.render();
@@ -1710,14 +2235,14 @@ When answering:
                             <div class="chat-header-icon">&#129302;</div>
                             <div class="chat-header-text">
                                 <h3>Shmron</h3>
-                                <p>Ask about maternal health indicators</p>
+                                <p>Ask about environmental maternal health indicators</p>
                             </div>
                         </div>
                         <div class="suggested-questions">
-                            <button class="suggested-q" data-q="What is wet bulb temperature and why does it matter?">Wet bulb temp?</button>
-                            <button class="suggested-q" data-q="How is PM2.5 exposure calculated?">PM2.5 methods</button>
-                            <button class="suggested-q" data-q="Explain the population-weighted methodology">Population Methodology</button>
-                            <button class="suggested-q" data-q="What are the three study countries?">Study sites</button>
+                            <button class="suggested-q" data-q="List all the variables in this catalogue by category">List all variables</button>
+                            <button class="suggested-q" data-q="Compare PM2.5 levels across the three countries">Compare PM2.5</button>
+                            <button class="suggested-q" data-q="Which country has the best access to healthcare facilities?">Healthcare access?</button>
+                            <button class="suggested-q" data-q="What are the key socio-geographic differences between countries?">Country differences</button>
                         </div>
                         <div class="chat-messages" id="chat-messages"></div>
                         <div class="chat-input-area">
@@ -1731,7 +2256,7 @@ When answering:
                     </div>
                 `;
                 document.body.appendChild(widget);
-                this.addMessage('system', 'Hello! I can help you explore the maternal health indicators. Ask me anything about the environmental and social determinants in this study.');
+                this.addMessage('system', 'Hello! I\\'m Shmron, your guide to the PRECISE Network catalogue. I have complete knowledge of all 45+ environmental and social indicators across Kenya, Mozambique, and The Gambia (N=6,687). Ask me about specific variables, country comparisons, or methodology!');
             },
 
             attachEvents() {
