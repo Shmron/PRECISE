@@ -2090,7 +2090,7 @@ by most village residents.</div>
         }
 
         function toggleCard(card) {
-            event.stopPropagation();
+            if (window.event) window.event.stopPropagation();
             card.classList.toggle('expanded');
         }
 
@@ -2256,7 +2256,7 @@ When answering:
                     </div>
                 `;
                 document.body.appendChild(widget);
-                this.addMessage('system', 'Hello! I\\'m Shmron, your guide to the PRECISE Network catalogue. I have complete knowledge of all 45+ environmental and social indicators across Kenya, Mozambique, and The Gambia (N=6,687). Ask me about specific variables, country comparisons, or methodology!');
+                this.addMessage('system', "Hello! I'm Shmron, your guide to the PRECISE Network catalogue. I have complete knowledge of all 45+ environmental and social indicators across Kenya, Mozambique, and The Gambia (N=6,687). Ask me about specific variables, country comparisons, or methodology!");
             },
 
             attachEvents() {
@@ -2379,7 +2379,11 @@ When answering:
 
         // Initialize chatbot when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            ChatBot.init();
+            try {
+                ChatBot.init();
+            } catch (e) {
+                console.error('ChatBot initialization error:', e);
+            }
         });
     </script>
 </body>
