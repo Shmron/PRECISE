@@ -98,6 +98,30 @@
         .explorer-loading { text-align: center; padding: 3rem; color: var(--slate); }
         @media (max-width: 600px) { .results-breakdown { grid-template-columns: 1fr; } }
 
+        /* Variables at a Glance Infographic */
+        .infographic-section { padding: 3rem 4rem; background: var(--sand); border-top: 1px solid rgba(184, 115, 51, 0.15); }
+        .infographic-title { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); margin-bottom: 1.5rem; text-align: center; }
+        .infographic-container { display: flex; justify-content: center; }
+        .infographic-img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(45, 52, 54, 0.1); cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .infographic-img:hover { transform: scale(1.01); box-shadow: 0 8px 30px rgba(45, 52, 54, 0.15); }
+        .infographic-caption { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: var(--slate); }
+
+        /* Lightbox for enlarged view */
+        .lightbox { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.97); z-index: 10001; display: none; align-items: center; justify-content: center; overflow: hidden; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { position: relative; width: 100%; height: 100%; overflow: auto; display: flex; align-items: flex-start; justify-content: center; padding: 60px 20px 80px; }
+        .lightbox-content img { max-width: none; width: 95vw; height: auto; transform-origin: top left; cursor: zoom-in; transition: transform 0.3s ease; }
+        .lightbox-content img.zoomed { transform: scale(1.5); cursor: zoom-out; }
+        .lightbox-close { position: fixed; top: 15px; right: 25px; color: white; font-size: 36px; font-weight: bold; cursor: pointer; z-index: 10002; background: rgba(184, 115, 51, 0.9); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+        .lightbox-close:hover { background: var(--terracotta); transform: scale(1.1); }
+        .lightbox-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10002; }
+        .lightbox-btn { background: rgba(184, 115, 51, 0.9); color: white; border: 2px solid white; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 600; }
+        .lightbox-btn:hover { background: var(--terracotta); }
+        .lightbox-hint { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.9); font-size: 14px; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 25px; z-index: 10002; }
+
+        /* Methodology image replacement */
+        .methodology-img { width: 100%; max-width: 400px; border-radius: 6px; box-shadow: 0 2px 12px rgba(45, 52, 54, 0.1); }
+
         main { padding: 4rem; }
         .category-section { margin-bottom: 4rem; opacity: 0; transform: translateY(30px); animation: fadeSlideIn 0.7s ease forwards; }
         @keyframes fadeSlideIn { to { opacity: 1; transform: translateY(0); } }
@@ -489,6 +513,10 @@
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                     Data Explorer
                 </button>
+                <button onclick="openLightbox('https://raw.githubusercontent.com/Shmron/PRECISE/main/env_paper_inforgraphic2.jpg')" class="header-btn header-btn-secondary">
+                    <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                    Variables at a Glance
+                </button>
                 <button onclick="sendInquiry()" class="header-btn header-btn-secondary">
                     <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                     Inquire About Catalogue
@@ -586,77 +614,13 @@
             <div class="methodology-sidebar">
                 <h3>Population-Weighted Methodology Example</h3>
                 <p class="methodology-intro">Environmental exposures are calculated using Carto's H3 hexagonal tessellation to account for heterogeneous population distribution within village boundaries. Each metric is weighted by the population residing in each grid cell, ensuring that densely populated areas have proportionally greater influence on the village-level estimate.</p>
-                <div class="methodology-grid">
-                    <div class="hex-visual">
-                        <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M 20 130 Q 20 50 70 35 Q 140 10 190 50 Q 220 70 220 130 Q 220 200 170 220 Q 100 250 50 210 Q 20 185 20 130 Z" fill="rgba(78,205,196,0.08)" stroke="#4ECDC4" stroke-width="1.5" stroke-dasharray="6,3"/>
-                            <polygon points="60,130 75,115 100,115 115,130 100,145 75,145" fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
-                            <text x="87" y="125" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">D</text>
-                            <text x="87" y="138" text-anchor="middle" fill="#1A535C" font-size="8">400 | 5.8km</text>
-                            <polygon points="60,80 75,65 100,65 115,80 100,95 75,95" fill="#FFE4B5" stroke="#2D3436" stroke-width="1"/>
-                            <text x="87" y="75" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">E</text>
-                            <text x="87" y="88" text-anchor="middle" fill="#1A535C" font-size="8">600 | 5.5km</text>
-                            <polygon points="105,175 120,160 145,160 160,175 145,190 120,190" fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
-                            <text x="132" y="170" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">B</text>
-                            <text x="132" y="183" text-anchor="middle" fill="#1A535C" font-size="8">800 | 4.2km</text>
-                            <polygon points="105,105 120,90 145,90 160,105 145,120 120,120" fill="#FFA07A" stroke="#2D3436" stroke-width="1"/>
-                            <text x="132" y="100" text-anchor="middle" fill="#2D3436" font-size="11" font-weight="bold">C</text>
-                            <text x="132" y="113" text-anchor="middle" fill="#1A535C" font-size="8">1,200 | 4.0km</text>
-                            <polygon points="150,138 165,123 190,123 205,138 190,153 165,153" fill="#CD853F" stroke="#2D3436" stroke-width="1"/>
-                            <text x="177" y="133" text-anchor="middle" fill="white" font-size="11" font-weight="bold">A</text>
-                            <text x="177" y="146" text-anchor="middle" fill="white" font-size="8">1,500 | 2.8km</text>
-                            <circle cx="120" cy="130" r="8" fill="#E07A5F" stroke="#722F37" stroke-width="1.5"/>
-                            <text x="120" y="134" text-anchor="middle" fill="white" font-size="8" font-weight="bold">C</text>
-                            <text x="120" y="155" text-anchor="middle" fill="#722F37" font-size="7">Centroid</text>
-                            <line x1="120" y1="130" x2="270" y2="130" stroke="#E07A5F" stroke-width="1.2" stroke-dasharray="4,2"/>
-                            <line x1="87" y1="130" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
-                            <line x1="87" y1="80" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
-                            <line x1="132" y1="175" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
-                            <line x1="132" y1="105" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
-                            <line x1="177" y1="138" x2="270" y2="130" stroke="#78909c" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.4"/>
-                            <polygon points="270,115 285,130 270,145 255,130" fill="#4ECDC4" stroke="#1A535C" stroke-width="1.5"/>
-                            <text x="270" y="134" text-anchor="middle" fill="#1A535C" font-size="12" font-weight="bold">+</text>
-                            <text x="270" y="160" text-anchor="middle" fill="#1A535C" font-size="8" font-weight="600">Facility</text>
-                            <rect x="240" y="20" width="12" height="10" fill="#FFE4B5" stroke="#2D3436" stroke-width="0.5"/>
-                            <text x="256" y="28" fill="#2D3436" font-size="7">Low Pop</text>
-                            <rect x="240" y="34" width="12" height="10" fill="#FFA07A" stroke="#2D3436" stroke-width="0.5"/>
-                            <text x="256" y="42" fill="#2D3436" font-size="7">Med Pop</text>
-                            <rect x="240" y="48" width="12" height="10" fill="#CD853F" stroke="#2D3436" stroke-width="0.5"/>
-                            <text x="256" y="56" fill="#2D3436" font-size="7">High Pop</text>
-                        </svg>
-                        <div class="hex-visual-caption">H3 Hexagons with Population &amp; Distance to Facility</div>
-                    </div>
-                    <div class="methodology-right">
-                        <table class="calc-table">
-                            <thead><tr><th>Hex</th><th>Population</th><th>Distance (km)</th><th>Pop x Dist</th></tr></thead>
-                            <tbody>
-                                <tr><td class="hex-label">A</td><td>1,500</td><td>2.8</td><td>4,200</td></tr>
-                                <tr><td class="hex-label">B</td><td>800</td><td>4.2</td><td>3,360</td></tr>
-                                <tr><td class="hex-label">C</td><td>1,200</td><td>4.0</td><td>4,800</td></tr>
-                                <tr><td class="hex-label">D</td><td>400</td><td>5.8</td><td>2,320</td></tr>
-                                <tr><td class="hex-label">E</td><td>600</td><td>5.5</td><td>3,300</td></tr>
-                                <tr><td><strong>SUM</strong></td><td><strong>4,500</strong></td><td>-</td><td><strong>17,980</strong></td></tr>
-                            </tbody>
-                        </table>
-                        <div class="formula-compact">Sum(Pop_i x Dist_i) / Sum(Pop_i) = 17,980 / 4,500 = <strong>3.99 km</strong></div>
-                        <div class="comparison-compact">
-                            <div class="comp-item centroid">
-                                <div class="comp-label">Centroid-Based</div>
-                                <div class="comp-value">5.2 <span class="comp-unit">km</span></div>
-                                <div class="comp-note">Single point, ignores distribution</div>
-                            </div>
-                            <div class="comp-item">
-                                <div class="comp-label">Simple Average</div>
-                                <div class="comp-value">4.46 <span class="comp-unit">km</span></div>
-                                <div class="comp-note">(2.8+4.2+4.0+5.8+5.5)/5</div>
-                            </div>
-                            <div class="comp-item weighted">
-                                <div class="comp-label">Population-Weighted</div>
-                                <div class="comp-value">3.99 <span class="comp-unit">km</span></div>
-                                <div class="comp-note">More people live closer</div>
-                            </div>
-                        </div>
-                    </div>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <img src="https://raw.githubusercontent.com/Shmron/PRECISE/main/Popullation%20Weighting%20Demo.png"
+                         alt="Population Weighting Methodology using Carto H3 Hexagonal Tessellation"
+                         style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(45, 52, 54, 0.1); cursor: pointer;"
+                         onclick="openLightbox(this.src)"
+                         title="Click to enlarge">
+                    <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--slate);">Click image to enlarge</p>
                 </div>
             </div>
 
@@ -2211,6 +2175,20 @@ by most village residents.</div>
         </footer>
     </div>
 
+    <!-- Lightbox for Image Enlargement -->
+    <div class="lightbox" id="imageLightbox" onclick="closeLightbox()">
+        <span class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">&times;</span>
+        <div class="lightbox-hint">Click image to zoom in/out &bull; Scroll to navigate &bull; Click outside to close</div>
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <img id="lightboxImg" src="" alt="Enlarged view" onclick="toggleZoom(this)">
+        </div>
+        <div class="lightbox-controls" onclick="event.stopPropagation()">
+            <button class="lightbox-btn" onclick="zoomIn()">🔍+ Zoom In</button>
+            <button class="lightbox-btn" onclick="zoomOut()">🔍- Zoom Out</button>
+            <button class="lightbox-btn" onclick="resetZoom()">↺ Reset</button>
+        </div>
+    </div>
+
     <!-- Data Explorer Modal -->
     <div class="explorer-overlay" id="explorerOverlay">
         <div class="explorer-modal">
@@ -2295,6 +2273,63 @@ by most village residents.</div>
         function toggleCard(card) {
             if (window.event) window.event.stopPropagation();
             card.classList.toggle('expanded');
+        }
+
+        // ============================================
+        // IMAGE LIGHTBOX WITH ZOOM
+        // ============================================
+        let currentZoom = 1;
+        const zoomStep = 0.5;
+        const maxZoom = 4;
+        const minZoom = 0.5;
+
+        function openLightbox(src) {
+            currentZoom = 1;
+            const img = document.getElementById('lightboxImg');
+            img.src = src;
+            img.style.transform = 'scale(1)';
+            img.classList.remove('zoomed');
+            document.getElementById('imageLightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('imageLightbox').classList.remove('active');
+            document.body.style.overflow = '';
+            currentZoom = 1;
+        }
+
+        function toggleZoom(img) {
+            if (currentZoom === 1) {
+                currentZoom = 2;
+                img.style.transform = 'scale(2)';
+                img.classList.add('zoomed');
+            } else {
+                currentZoom = 1;
+                img.style.transform = 'scale(1)';
+                img.classList.remove('zoomed');
+            }
+        }
+
+        function zoomIn() {
+            if (currentZoom < maxZoom) {
+                currentZoom += zoomStep;
+                document.getElementById('lightboxImg').style.transform = `scale(${currentZoom})`;
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoom > minZoom) {
+                currentZoom -= zoomStep;
+                document.getElementById('lightboxImg').style.transform = `scale(${currentZoom})`;
+            }
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            const img = document.getElementById('lightboxImg');
+            img.style.transform = 'scale(1)';
+            img.classList.remove('zoomed');
         }
 
         // ============================================
