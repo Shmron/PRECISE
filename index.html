@@ -50,6 +50,54 @@
         .header-btn-secondary:hover { background: var(--teal-deep); color: white; transform: translateY(-2px); }
         .header-btn svg { width: 18px; height: 18px; fill: currentColor; }
         .btn-note { font-size: 0.75rem; font-weight: 400; opacity: 0.8; margin-left: 0.3rem; }
+        .regional-breakdown { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(184, 115, 51, 0.15); }
+        .regional-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); margin-bottom: 1.2rem; }
+        .region-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .region-card { background: white; border-radius: 8px; padding: 1.5rem; border-left: 4px solid; box-shadow: 0 2px 12px rgba(45, 52, 54, 0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .region-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(45, 52, 54, 0.1); }
+        .region-card.kenya { border-color: var(--teal-deep); }
+        .region-card.mozambique { border-color: var(--coral); }
+        .region-card.gambia { border-color: var(--copper); }
+        .region-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+        .region-flag { font-size: 1.2rem; }
+        .region-stats { display: flex; flex-direction: column; gap: 0.5rem; }
+        .region-stat { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+        .region-stat-label { color: var(--slate); }
+        .region-stat-value { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--charcoal); }
+        .region-bar { height: 6px; background: var(--mist); border-radius: 3px; margin-top: 0.8rem; overflow: hidden; }
+        .region-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+        .region-card.kenya .region-bar-fill { background: var(--teal-deep); width: 47.8%; }
+        .region-card.mozambique .region-bar-fill { background: var(--coral); width: 30.7%; }
+        .region-card.gambia .region-bar-fill { background: var(--copper); width: 19.1%; }
+        @media (max-width: 900px) { .region-cards { grid-template-columns: 1fr; } }
+
+        /* Data Explorer Modal */
+        .explorer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(45,52,54,0.7); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
+        .explorer-overlay.active { display: flex; }
+        .explorer-modal { background: var(--ivory); border-radius: 12px; max-width: 900px; width: 100%; max-height: 85vh; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
+        .explorer-header { padding: 1.5rem 2rem; background: var(--teal-deep); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .explorer-header h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 0; }
+        .explorer-close { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
+        .explorer-close:hover { opacity: 1; }
+        .explorer-body { padding: 2rem; overflow-y: auto; flex: 1; }
+        .explorer-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .filter-group label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate); }
+        .filter-group select, .filter-group input { padding: 0.75rem 1rem; border: 1px solid var(--mist); border-radius: 6px; font-family: inherit; font-size: 0.95rem; background: white; }
+        .filter-group select:focus, .filter-group input:focus { outline: none; border-color: var(--teal-deep); }
+        .explorer-btn { background: var(--teal-deep); color: white; border: none; padding: 0.9rem 2rem; border-radius: 6px; font-family: inherit; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+        .explorer-btn:hover { background: var(--copper); }
+        .explorer-btn:disabled { background: var(--mist); cursor: not-allowed; }
+        .explorer-results { background: white; border: 1px solid var(--mist); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; }
+        .results-summary { font-size: 1.1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--mist); }
+        .results-summary strong { color: var(--teal-deep); font-size: 1.4rem; }
+        .results-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .results-country { padding: 1rem; background: var(--sand); border-radius: 6px; text-align: center; }
+        .results-country-name { font-weight: 600; margin-bottom: 0.5rem; }
+        .results-country-value { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--teal-deep); }
+        .explorer-loading { text-align: center; padding: 3rem; color: var(--slate); }
+        @media (max-width: 600px) { .results-breakdown { grid-template-columns: 1fr; } }
+
         main { padding: 4rem; }
         .category-section { margin-bottom: 4rem; opacity: 0; transform: translateY(30px); animation: fadeSlideIn 0.7s ease forwards; }
         @keyframes fadeSlideIn { to { opacity: 1; transform: translateY(0); } }
@@ -425,7 +473,7 @@
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Villages</div>
-                    <div class="meta-value">733 communities</div>
+                    <div class="meta-value">525 communities</div>
                 </div>
                 <div class="meta-item">
                     <div class="meta-label">Indicators</div>
@@ -433,14 +481,77 @@
                 </div>
             </div>
             <div class="header-actions">
-                <a href="https://docs.google.com/spreadsheets/d/17kBpA3A-0cB2sGmmo9m44FKkPNMln3j5/edit?usp=sharing&ouid=109068792255983589019&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="header-btn header-btn-primary">
+                <a href="https://docs.google.com/spreadsheets/d/1OuLxf76aZOfC74k85AkwM75pueAHXJPz/edit?usp=sharing&ouid=109068792255983589019&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="header-btn header-btn-primary">
                     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg>
                     Data Dictionary <span class="btn-note">(updating)</span>
                 </a>
+                <button onclick="openDataExplorer()" class="header-btn header-btn-primary">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    Data Explorer
+                </button>
                 <button onclick="sendInquiry()" class="header-btn header-btn-secondary">
                     <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                     Inquire About Catalogue
                 </button>
+            </div>
+            <div class="regional-breakdown">
+                <div class="regional-title">Regional Distribution</div>
+                <div class="region-cards">
+                    <div class="region-card kenya">
+                        <div class="region-name"><span class="region-flag">&#127472;&#127466;</span> Kenya</div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <span class="region-stat-label">Participants</span>
+                                <span class="region-stat-value">3,194 (47.8%)</span>
+                            </div>
+                            <div class="region-stat">
+                                <span class="region-stat-label">Communities</span>
+                                <span class="region-stat-value">370</span>
+                            </div>
+                            <div class="region-stat">
+                                <span class="region-stat-label">Settlement</span>
+                                <span class="region-stat-value">66% Urban</span>
+                            </div>
+                        </div>
+                        <div class="region-bar"><div class="region-bar-fill"></div></div>
+                    </div>
+                    <div class="region-card mozambique">
+                        <div class="region-name"><span class="region-flag">&#127474;&#127487;</span> Mozambique</div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <span class="region-stat-label">Participants</span>
+                                <span class="region-stat-value">2,053 (30.7%)</span>
+                            </div>
+                            <div class="region-stat">
+                                <span class="region-stat-label">Communities</span>
+                                <span class="region-stat-value">74</span>
+                            </div>
+                            <div class="region-stat">
+                                <span class="region-stat-label">Settlement</span>
+                                <span class="region-stat-value">72% Urban</span>
+                            </div>
+                        </div>
+                        <div class="region-bar"><div class="region-bar-fill"></div></div>
+                    </div>
+                    <div class="region-card gambia">
+                        <div class="region-name"><span class="region-flag">&#127468;&#127474;</span> The Gambia</div>
+                        <div class="region-stats">
+                            <div class="region-stat">
+                                <span class="region-stat-label">Participants</span>
+                                <span class="region-stat-value">1,278 (19.1%)</span>
+                            </div>
+                            <div class="region-stat">
+                                <span class="region-stat-label">Communities</span>
+                                <span class="region-stat-value">81</span>
+                            </div>
+                            <div class="region-stat">
+                                <span class="region-stat-label">Settlement</span>
+                                <span class="region-stat-value">60% Rural</span>
+                            </div>
+                        </div>
+                        <div class="region-bar"><div class="region-bar-fill"></div></div>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -2100,6 +2211,80 @@ by most village residents.</div>
         </footer>
     </div>
 
+    <!-- Data Explorer Modal -->
+    <div class="explorer-overlay" id="explorerOverlay">
+        <div class="explorer-modal">
+            <div class="explorer-header">
+                <h2>Participant Data Explorer</h2>
+                <button class="explorer-close" onclick="closeDataExplorer()">&times;</button>
+            </div>
+            <div class="explorer-body">
+                <div class="explorer-loading" id="explorerLoading">Loading participant data (3.5 MB)...</div>
+                <div id="explorerContent" style="display:none;">
+                    <div class="explorer-filters">
+                        <div class="filter-group">
+                            <label>Country</label>
+                            <select id="filterCountry">
+                                <option value="all">All Countries</option>
+                                <option value="Ken">Kenya</option>
+                                <option value="Moz">Mozambique</option>
+                                <option value="Gam">The Gambia</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>PM2.5 Mean (ug/m3)</label>
+                            <select id="filterPM25">
+                                <option value="all">Any level</option>
+                                <option value="15">Above 15 (WHO guideline)</option>
+                                <option value="25">Above 25 (Unhealthy)</option>
+                                <option value="50">Above 50 (Very Unhealthy)</option>
+                                <option value="100">Above 100 (Hazardous)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Temperature Mean (C)</label>
+                            <select id="filterTemp">
+                                <option value="all">Any temperature</option>
+                                <option value="25">Above 25C</option>
+                                <option value="28">Above 28C</option>
+                                <option value="30">Above 30C</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Settlement Type</label>
+                            <select id="filterSettlement">
+                                <option value="all">All Types</option>
+                                <option value="Urban">Urban</option>
+                                <option value="Rural">Rural</option>
+                                <option value="Peri-Urban">Peri-Urban</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="explorer-btn" onclick="runQuery()">Query Data</button>
+                    <div class="explorer-results" id="explorerResults" style="display:none;">
+                        <div class="results-summary">
+                            Matching participants: <strong id="resultCount">0</strong> of 6,687 (<span id="resultPercent">0</span>%)
+                        </div>
+                        <div class="results-breakdown">
+                            <div class="results-country">
+                                <div class="results-country-name">Kenya</div>
+                                <div class="results-country-value" id="resultKenya">0</div>
+                            </div>
+                            <div class="results-country">
+                                <div class="results-country-name">Mozambique</div>
+                                <div class="results-country-value" id="resultMoz">0</div>
+                            </div>
+                            <div class="results-country">
+                                <div class="results-country-name">The Gambia</div>
+                                <div class="results-country-value" id="resultGam">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleCategory(header) {
             header.classList.toggle('active');
@@ -2111,6 +2296,71 @@ by most village residents.</div>
             if (window.event) window.event.stopPropagation();
             card.classList.toggle('expanded');
         }
+
+        // ============================================
+        // DATA EXPLORER
+        // ============================================
+        let participantData = null;
+
+        function openDataExplorer() {
+            document.getElementById('explorerOverlay').classList.add('active');
+            if (!participantData) {
+                loadParticipantData();
+            }
+        }
+
+        function closeDataExplorer() {
+            document.getElementById('explorerOverlay').classList.remove('active');
+        }
+
+        async function loadParticipantData() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/Shmron/PRECISE/main/participant_data_light.json');
+                const json = await response.json();
+                participantData = json.data;
+                document.getElementById('explorerLoading').style.display = 'none';
+                document.getElementById('explorerContent').style.display = 'block';
+            } catch (error) {
+                document.getElementById('explorerLoading').textContent = 'Error loading data. Please try again.';
+                console.error('Failed to load participant data:', error);
+            }
+        }
+
+        function runQuery() {
+            if (!participantData) return;
+
+            const country = document.getElementById('filterCountry').value;
+            const pm25 = document.getElementById('filterPM25').value;
+            const temp = document.getElementById('filterTemp').value;
+            const settlement = document.getElementById('filterSettlement').value;
+
+            let filtered = participantData.filter(p => {
+                if (country !== 'all' && p.c !== country) return false;
+                if (pm25 !== 'all' && (p.pm25 === null || p.pm25 < parseFloat(pm25))) return false;
+                if (temp !== 'all' && (p.temp === null || p.temp < parseFloat(temp))) return false;
+                if (settlement !== 'all' && p.set !== settlement) return false;
+                return true;
+            });
+
+            const total = filtered.length;
+            const kenya = filtered.filter(p => p.c === 'Ken').length;
+            const moz = filtered.filter(p => p.c === 'Moz').length;
+            const gam = filtered.filter(p => p.c === 'Gam').length;
+
+            document.getElementById('resultCount').textContent = total.toLocaleString();
+            document.getElementById('resultPercent').textContent = ((total / 6687) * 100).toFixed(1);
+            document.getElementById('resultKenya').textContent = kenya.toLocaleString();
+            document.getElementById('resultMoz').textContent = moz.toLocaleString();
+            document.getElementById('resultGam').textContent = gam.toLocaleString();
+            document.getElementById('explorerResults').style.display = 'block';
+        }
+
+        // Close modal on overlay click
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'explorerOverlay') {
+                closeDataExplorer();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
@@ -2163,7 +2413,7 @@ by most village residents.</div>
             get apiKey() { return atob(this._k.join('')); },
             conversationHistory: [],
 
-            systemPrompt: `You are Shmron, an expert research assistant for the PRECISE Network study on Environmental & Social Determinants of Maternal Health. This study analyzed data from 6,687 pregnant women across 733 villages in Kenya (n=3,194), Mozambique (n=2,053), and The Gambia (n=1,278).
+            systemPrompt: `You are Shmron, an expert research assistant for the PRECISE Network study on Environmental & Social Determinants of Maternal Health. This study analyzed data from 6,687 pregnant women across 525 communities in Kenya (n=3,194 participants, 370 communities), Mozambique (n=2,053 participants, 74 communities), and The Gambia (n=1,278 participants, 81 communities).
 
 === COMPLETE CATALOGUE DATA (Values shown as Median [Q1, Q3] P95: 95th percentile) ===
 
@@ -2238,6 +2488,38 @@ by most village residents.</div>
 - Transport Support: Kenya 25.1% | Mozambique 19.9% | Gambia 17.5% | All 21.9%
 - Financial Support: Kenya 5.4% | Mozambique 7.1% | Gambia 0.4% | All 4.9%
 
+=== PARTICIPANT-LEVEL EXPOSURE STATISTICS (EXACT COUNTS) ===
+These are exact counts of individual participants exceeding key thresholds:
+
+**AMBIENT TEMPERATURE (Mean during pregnancy):**
+- Temp > 20C: 6,657 total (99.6%) | Kenya 3,164 | Mozambique 2,053 | Gambia 1,278
+- Temp > 22C: 6,640 total (99.3%) | Kenya 3,150 | Mozambique 2,050 | Gambia 1,278
+- Temp > 25C: 4,583 total (68.5%) | Kenya 3,130 | Mozambique 14 | Gambia 1,277
+- Temp > 28C: 68 total (1.0%) | Kenya 1 | Mozambique 0 | Gambia 61
+- Temp > 30C: 0 total | No participants had mean temp above 30C
+
+**WET BULB TEMPERATURE (Heat stress indicator):**
+- Wet Bulb > 20C: 2,305 total (34.5%) | Kenya 2,189 | Mozambique 1 | Gambia 8
+- Wet Bulb > 22C: 1,443 total (21.6%) | Kenya 1,388 | Mozambique 0 | Gambia 3
+- Wet Bulb > 25C: 0 total | No participants exceeded dangerous wet bulb threshold
+
+**PM2.5 AIR POLLUTION:**
+- PM2.5 > 10 ug/m3: 6,683 total (99.9%) | Kenya 3,191 | Mozambique 2,052 | Gambia 1,278
+- PM2.5 > 15 ug/m3 (WHO guideline): 2,814 total (42.1%) | Kenya 234 | Mozambique 1,248 | Gambia 1,278
+- PM2.5 > 25 ug/m3 (Unhealthy): 1,376 total (20.6%) | Kenya 51 | Mozambique 0 | Gambia 1,278
+- PM2.5 > 35 ug/m3: 1,351 total (20.2%) | Kenya 27 | Mozambique 0 | Gambia 1,277
+- PM2.5 > 50 ug/m3 (Very Unhealthy): 1,200 total (17.9%) | Kenya 5 | Mozambique 0 | Gambia 1,155
+
+**SETTLEMENT TYPE:**
+- Kenya: 2,102 Urban (66%) | 256 Rural (8%) | 836 Peri-Urban (26%)
+- Mozambique: 1,484 Urban (72%) | 421 Rural (21%) | 148 Peri-Urban (7%)
+- Gambia: 505 Urban (40%) | 771 Rural (60%) | 2 Peri-Urban (0.2%)
+
+**KEY INSIGHTS:**
+- The Gambia has critical PM2.5 levels: ALL 1,278 participants (100%) exceed WHO guidelines, 90% exceed "Very Unhealthy" threshold
+- Kenya has highest wet bulb temperatures: 2,189 participants (69%) exceed 20C wet bulb
+- Mozambique has the mildest climate with lowest temperature and PM2.5 exposures
+
 === METHODOLOGY ===
 All environmental exposures use population-weighted methodology based on H3 hexagonal tessellation:
 Formula: Indicator_PW = Σ(Population_i × Value_i) / Σ(Population_i)
@@ -2245,12 +2527,13 @@ This accounts for heterogeneous population distribution within village boundarie
 
 === INSTRUCTIONS ===
 When answering:
-- Reference specific indicator values from the data above when relevant
-- Compare across countries when asked
+- For threshold questions (e.g., "how many participants have temperature above 20?"), use the EXACT COUNTS from the PARTICIPANT-LEVEL EXPOSURE STATISTICS section
+- Reference specific indicator values from the catalogue data when relevant
+- Compare across countries when asked - highlight The Gambia's critical PM2.5 levels
 - Explain the population-weighted methodology when asked
-- For literature questions, you can discuss general maternal health and environmental epidemiology topics
-- Be concise but informative, use natural language
-- If asked to list variables, use the exact data provided above`,
+- Be concise and give specific numbers when available
+- If asked about a threshold not in your data, interpolate from the closest thresholds or suggest using the Data Explorer
+- The Data Explorer button allows users to run custom queries on the full participant dataset`,
 
             init() {
                 this.render();
