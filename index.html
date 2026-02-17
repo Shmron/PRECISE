@@ -42,6 +42,14 @@
         .meta-item { display: flex; flex-direction: column; gap: 0.4rem; }
         .meta-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--slate); }
         .meta-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--charcoal); }
+        .header-actions { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+        .header-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.9rem 1.6rem; border-radius: 4px; font-family: 'Source Sans 3', sans-serif; font-size: 0.95rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.3s ease; border: none; }
+        .header-btn-primary { background: var(--teal-deep); color: white; }
+        .header-btn-primary:hover { background: var(--copper); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(184, 115, 51, 0.3); }
+        .header-btn-secondary { background: white; color: var(--teal-deep); border: 2px solid var(--teal-deep); }
+        .header-btn-secondary:hover { background: var(--teal-deep); color: white; transform: translateY(-2px); }
+        .header-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .btn-note { font-size: 0.75rem; font-weight: 400; opacity: 0.8; margin-left: 0.3rem; }
         main { padding: 4rem; }
         .category-section { margin-bottom: 4rem; opacity: 0; transform: translateY(30px); animation: fadeSlideIn 0.7s ease forwards; }
         @keyframes fadeSlideIn { to { opacity: 1; transform: translateY(0); } }
@@ -423,6 +431,16 @@
                     <div class="meta-label">Indicators</div>
                     <div class="meta-value">11 categories, 45+ variables</div>
                 </div>
+            </div>
+            <div class="header-actions">
+                <a href="https://docs.google.com/spreadsheets/d/17kBpA3A-0cB2sGmmo9m44FKkPNMln3j5/edit?usp=sharing&ouid=109068792255983589019&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="header-btn header-btn-primary">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg>
+                    Data Dictionary <span class="btn-note">(updating)</span>
+                </a>
+                <button onclick="sendInquiry()" class="header-btn header-btn-secondary">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    Inquire About Catalogue
+                </button>
             </div>
         </header>
 
@@ -2116,6 +2134,24 @@ by most village residents.</div>
             section.style.animationPlayState = 'paused';
             observer.observe(section);
         });
+
+        // ============================================
+        // EMAIL INQUIRY (Obfuscated to prevent spam)
+        // ============================================
+        function sendInquiry() {
+            // Email addresses encoded to prevent harvesting by bots
+            var p2 = ['rutendo', 'sibanda'].join('.');
+            var p1 = ['tatenda', 'makanga'].join('.');
+            var p3 = ['zororo', 'chinwadzimba'].join('.');
+            var d1 = ['ceshhar', 'org'].join('.');
+            var d2 = ['ceshhar', 'org'].join('.');
+            var d3 = ['ceshhar', 'org'].join('.');
+            var to = p1 + '@' + d1;
+            var cc = p2 + '@' + d2 + ',' + p3 + '@' + d3;
+            var subject = encodeURIComponent('Inquiry: PRECISE Network Environmental & Social Determinants Catalogue');
+            var body = encodeURIComponent('Dear PRECISE Network Team,\n\nI am writing to inquire about the Environmental & Social Determinants of Maternal Health catalogue.\n\n[Please describe your inquiry here]\n\nBest regards,\n[Your name]');
+            window.location.href = 'mail' + 'to:' + to + '?cc=' + cc + '&subject=' + subject + '&body=' + body;
+        }
 
         // ============================================
         // AI CHATBOT - Powered by Claude (Anthropic)
