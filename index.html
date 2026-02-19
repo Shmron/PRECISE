@@ -2220,6 +2220,24 @@ by most village residents.</div>
                             </select>
                         </div>
                         <div class="filter-group">
+                            <label>PM2.5 Peak (95th percentile)</label>
+                            <select id="filterPM25P95">
+                                <option value="all">Any level</option>
+                                <option value="50">P95 above 50</option>
+                                <option value="100">P95 above 100 (Hazardous)</option>
+                                <option value="150">P95 above 150</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Days with PM2.5 > 100</label>
+                            <select id="filterPM25D100">
+                                <option value="all">Any</option>
+                                <option value="1">At least 1 day</option>
+                                <option value="10">At least 10 days</option>
+                                <option value="30">At least 30 days</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
                             <label>Temperature Mean (C)</label>
                             <select id="filterTemp">
                                 <option value="all">Any temperature</option>
@@ -2366,12 +2384,16 @@ by most village residents.</div>
 
             const country = document.getElementById('filterCountry').value;
             const pm25 = document.getElementById('filterPM25').value;
+            const pm25p95 = document.getElementById('filterPM25P95').value;
+            const pm25d100 = document.getElementById('filterPM25D100').value;
             const temp = document.getElementById('filterTemp').value;
             const settlement = document.getElementById('filterSettlement').value;
 
             let filtered = participantData.filter(p => {
                 if (country !== 'all' && p.c !== country) return false;
                 if (pm25 !== 'all' && (p.pm25 === null || p.pm25 < parseFloat(pm25))) return false;
+                if (pm25p95 !== 'all' && (p.pm25_p95 === null || p.pm25_p95 === undefined || p.pm25_p95 < parseFloat(pm25p95))) return false;
+                if (pm25d100 !== 'all' && (p.pm25_d100 === null || p.pm25_d100 === undefined || p.pm25_d100 < parseInt(pm25d100))) return false;
                 if (temp !== 'all' && (p.temp === null || p.temp < parseFloat(temp))) return false;
                 if (settlement !== 'all' && p.set !== settlement) return false;
                 return true;
@@ -2538,12 +2560,17 @@ These are exact counts of individual participants exceeding key thresholds:
 - Wet Bulb > 22C: 1,443 total (21.6%) | Kenya 1,388 | Mozambique 0 | Gambia 3
 - Wet Bulb > 25C: 0 total | No participants exceeded dangerous wet bulb threshold
 
-**PM2.5 AIR POLLUTION:**
+**PM2.5 AIR POLLUTION (Mean values during pregnancy):**
 - PM2.5 > 10 ug/m3: 6,683 total (99.9%) | Kenya 3,191 | Mozambique 2,052 | Gambia 1,278
 - PM2.5 > 15 ug/m3 (WHO guideline): 2,814 total (42.1%) | Kenya 234 | Mozambique 1,248 | Gambia 1,278
 - PM2.5 > 25 ug/m3 (Unhealthy): 1,376 total (20.6%) | Kenya 51 | Mozambique 0 | Gambia 1,278
 - PM2.5 > 35 ug/m3: 1,351 total (20.2%) | Kenya 27 | Mozambique 0 | Gambia 1,277
 - PM2.5 > 50 ug/m3 (Very Unhealthy): 1,200 total (17.9%) | Kenya 5 | Mozambique 0 | Gambia 1,155
+- PM2.5 > 100 ug/m3 (Hazardous mean): 0 total | Kenya 0 | Mozambique 0 | Gambia 0
+
+**PM2.5 PEAK EXPOSURES (95th percentile > 100 ug/m3):**
+- Participants with p95 PM2.5 > 100: 1,275 total (19.1%) | Kenya 0 | Mozambique 0 | Gambia 1,275
+- This means 99.8% of Gambian participants experienced days with PM2.5 exceeding 100 ug/m3 (hazardous level)
 
 **SETTLEMENT TYPE:**
 - Kenya: 2,102 Urban (66%) | 256 Rural (8%) | 836 Peri-Urban (26%)
@@ -2552,8 +2579,10 @@ These are exact counts of individual participants exceeding key thresholds:
 
 **KEY INSIGHTS:**
 - The Gambia has critical PM2.5 levels: ALL 1,278 participants (100%) exceed WHO guidelines, 90% exceed "Very Unhealthy" threshold
+- CRITICAL: 1,275 Gambian participants (99.8%) have 95th percentile PM2.5 > 100 ug/m3 (hazardous level)
 - Kenya has highest wet bulb temperatures: 2,189 participants (69%) exceed 20C wet bulb
 - Mozambique has the mildest climate with lowest temperature and PM2.5 exposures
+- When asked about PM2.5 > 100: No participants have MEAN PM2.5 > 100, but 1,275 Gambian participants experienced PEAK days > 100
 
 === METHODOLOGY ===
 All environmental exposures use population-weighted methodology based on H3 hexagonal tessellation:
