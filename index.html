@@ -71,32 +71,82 @@
         .region-card.gambia .region-bar-fill { background: var(--copper); width: 19.1%; }
         @media (max-width: 900px) { .region-cards { grid-template-columns: 1fr; } }
 
-        /* Data Explorer Modal */
-        .explorer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(45,52,54,0.7); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
+        /* Query Builder Modal */
+        .explorer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(45,52,54,0.85); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 1.5rem; }
         .explorer-overlay.active { display: flex; }
-        .explorer-modal { background: var(--ivory); border-radius: 12px; max-width: 900px; width: 100%; max-height: 85vh; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
-        .explorer-header { padding: 1.5rem 2rem; background: var(--teal-deep); color: white; display: flex; justify-content: space-between; align-items: center; }
-        .explorer-header h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 0; }
+        .explorer-modal { background: var(--ivory); border-radius: 12px; max-width: 1000px; width: 100%; max-height: 90vh; overflow: hidden; box-shadow: 0 25px 80px rgba(0,0,0,0.4); display: flex; flex-direction: column; }
+        .explorer-header { padding: 1.25rem 2rem; background: linear-gradient(135deg, var(--teal-deep) 0%, #2a6b75 100%); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .explorer-header h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 0; }
         .explorer-close { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
         .explorer-close:hover { opacity: 1; }
-        .explorer-body { padding: 2rem; overflow-y: auto; flex: 1; }
-        .explorer-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .filter-group label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate); }
-        .filter-group select, .filter-group input { padding: 0.75rem 1rem; border: 1px solid var(--mist); border-radius: 6px; font-family: inherit; font-size: 0.95rem; background: white; }
-        .filter-group select:focus, .filter-group input:focus { outline: none; border-color: var(--teal-deep); }
-        .explorer-btn { background: var(--teal-deep); color: white; border: none; padding: 0.9rem 2rem; border-radius: 6px; font-family: inherit; font-weight: 600; cursor: pointer; transition: background 0.3s; }
-        .explorer-btn:hover { background: var(--copper); }
-        .explorer-btn:disabled { background: var(--mist); cursor: not-allowed; }
-        .explorer-results { background: white; border: 1px solid var(--mist); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; }
-        .results-summary { font-size: 1.1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--mist); }
-        .results-summary strong { color: var(--teal-deep); font-size: 1.4rem; }
-        .results-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-        .results-country { padding: 1rem; background: var(--sand); border-radius: 6px; text-align: center; }
-        .results-country-name { font-weight: 600; margin-bottom: 0.5rem; }
-        .results-country-value { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--teal-deep); }
+        .explorer-body { padding: 1.5rem 2rem; overflow-y: auto; flex: 1; }
         .explorer-loading { text-align: center; padding: 3rem; color: var(--slate); }
-        @media (max-width: 600px) { .results-breakdown { grid-template-columns: 1fr; } }
+
+        /* Query Builder Sections */
+        .qb-section { margin-bottom: 1.5rem; }
+        .qb-section-title { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--slate); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .qb-section-title::after { content: ''; flex: 1; height: 1px; background: var(--mist); }
+
+        /* Base Filters Row */
+        .qb-base-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1rem; background: var(--sand); border-radius: 8px; }
+        .qb-filter { display: flex; flex-direction: column; gap: 0.4rem; }
+        .qb-filter label { font-size: 0.75rem; font-weight: 600; color: var(--charcoal); }
+        .qb-filter select { padding: 0.6rem 0.8rem; border: 1px solid var(--mist); border-radius: 5px; font-size: 0.9rem; background: white; cursor: pointer; }
+        .qb-filter select:focus { outline: none; border-color: var(--teal-deep); box-shadow: 0 0 0 2px rgba(26,83,92,0.1); }
+
+        /* Add Filter Row */
+        .qb-add-filter { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; padding: 1rem; background: white; border: 2px dashed var(--mist); border-radius: 8px; }
+        .qb-add-filter select, .qb-add-filter input { padding: 0.6rem 0.8rem; border: 1px solid var(--mist); border-radius: 5px; font-size: 0.9rem; }
+        .qb-add-filter select { min-width: 180px; }
+        .qb-add-filter input[type="number"] { width: 100px; }
+        .qb-add-btn { background: var(--teal-deep); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 5px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; }
+        .qb-add-btn:hover { background: var(--copper); transform: translateY(-1px); }
+
+        /* Active Filters */
+        .qb-active-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; min-height: 40px; padding: 0.75rem; background: #f8f9fa; border-radius: 6px; }
+        .qb-active-filters:empty::before { content: 'No filters added yet. Add filters above.'; color: var(--slate); font-size: 0.85rem; font-style: italic; }
+        .qb-filter-tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem 0.4rem 0.9rem; background: var(--teal-deep); color: white; border-radius: 20px; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; }
+        .qb-filter-tag .remove { background: rgba(255,255,255,0.2); border: none; color: white; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; line-height: 1; display: flex; align-items: center; justify-content: center; }
+        .qb-filter-tag .remove:hover { background: rgba(255,255,255,0.4); }
+
+        /* Action Buttons */
+        .qb-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+        .qb-btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-size: 0.95rem; }
+        .qb-btn-primary { background: var(--teal-deep); color: white; }
+        .qb-btn-primary:hover { background: #2a6b75; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,83,92,0.3); }
+        .qb-btn-secondary { background: white; color: var(--charcoal); border: 1px solid var(--mist); }
+        .qb-btn-secondary:hover { background: var(--sand); }
+        .qb-btn-export { background: var(--copper); color: white; }
+        .qb-btn-export:hover { background: #a66429; }
+
+        /* Results */
+        .qb-results { background: white; border: 1px solid var(--mist); border-radius: 8px; padding: 1.5rem; margin-top: 1rem; display: none; }
+        .qb-results.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .qb-results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--mist); }
+        .qb-results-count { font-size: 1.1rem; }
+        .qb-results-count strong { color: var(--teal-deep); font-size: 1.5rem; font-family: 'JetBrains Mono', monospace; }
+        .qb-results-percent { background: var(--teal-deep); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.85rem; font-weight: 600; }
+        .qb-results-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+        .qb-country-card { padding: 1rem; background: linear-gradient(135deg, var(--sand) 0%, #f5ebe0 100%); border-radius: 8px; text-align: center; border-left: 4px solid var(--teal-deep); }
+        .qb-country-card.kenya { border-left-color: var(--sage); }
+        .qb-country-card.mozambique { border-left-color: var(--coral); }
+        .qb-country-card.gambia { border-left-color: var(--copper); }
+        .qb-country-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .qb-country-value { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--teal-deep); }
+        .qb-country-pct { font-size: 0.8rem; color: var(--slate); }
+
+        /* Stats Grid */
+        .qb-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--mist); }
+        .qb-stat { text-align: center; padding: 0.75rem; background: #f8f9fa; border-radius: 6px; }
+        .qb-stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--slate); margin-bottom: 0.3rem; }
+        .qb-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--charcoal); }
+
+        @media (max-width: 600px) {
+            .qb-results-breakdown { grid-template-columns: 1fr; }
+            .qb-add-filter { flex-direction: column; align-items: stretch; }
+            .qb-add-filter select, .qb-add-filter input { width: 100%; }
+        }
 
         /* Variables at a Glance Infographic */
         .infographic-section { padding: 3rem 4rem; background: var(--sand); border-top: 1px solid rgba(184, 115, 51, 0.15); }
@@ -2189,93 +2239,150 @@ by most village residents.</div>
         </div>
     </div>
 
-    <!-- Data Explorer Modal -->
+    <!-- Query Builder Modal -->
     <div class="explorer-overlay" id="explorerOverlay">
         <div class="explorer-modal">
             <div class="explorer-header">
-                <h2>Participant Data Explorer</h2>
+                <h2>Participant Data Query Builder</h2>
                 <button class="explorer-close" onclick="closeDataExplorer()">&times;</button>
             </div>
             <div class="explorer-body">
-                <div class="explorer-loading" id="explorerLoading">Loading participant data (3.5 MB)...</div>
+                <div class="explorer-loading" id="explorerLoading">Loading participant data (3.7 MB)...</div>
                 <div id="explorerContent" style="display:none;">
-                    <div class="explorer-filters">
-                        <div class="filter-group">
-                            <label>Country</label>
-                            <select id="filterCountry">
-                                <option value="all">All Countries</option>
-                                <option value="Ken">Kenya</option>
-                                <option value="Moz">Mozambique</option>
-                                <option value="Gam">The Gambia</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>PM2.5 Mean (ug/m3)</label>
-                            <select id="filterPM25">
-                                <option value="all">Any level</option>
-                                <option value="15">Above 15 (WHO guideline)</option>
-                                <option value="25">Above 25 (Unhealthy)</option>
-                                <option value="50">Above 50 (Very Unhealthy)</option>
-                                <option value="100">Above 100 (Hazardous)</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>PM2.5 Peak (95th percentile)</label>
-                            <select id="filterPM25P95">
-                                <option value="all">Any level</option>
-                                <option value="50">P95 above 50</option>
-                                <option value="100">P95 above 100 (Hazardous)</option>
-                                <option value="150">P95 above 150</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Days with PM2.5 > 100</label>
-                            <select id="filterPM25D100">
-                                <option value="all">Any</option>
-                                <option value="1">At least 1 day</option>
-                                <option value="10">At least 10 days</option>
-                                <option value="30">At least 30 days</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Temperature Mean (C)</label>
-                            <select id="filterTemp">
-                                <option value="all">Any temperature</option>
-                                <option value="25">Above 25C</option>
-                                <option value="28">Above 28C</option>
-                                <option value="30">Above 30C</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Settlement Type</label>
-                            <select id="filterSettlement">
-                                <option value="all">All Types</option>
-                                <option value="Urban">Urban</option>
-                                <option value="Rural">Rural</option>
-                                <option value="Peri-Urban">Peri-Urban</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="explorer-btn" onclick="runQuery()">Query Data</button>
-                    <div class="explorer-results" id="explorerResults" style="display:none;">
-                        <div class="results-summary">
-                            Matching participants: <strong id="resultCount">0</strong> of 6,687 (<span id="resultPercent">0</span>%)
-                        </div>
-                        <div class="results-breakdown">
-                            <div class="results-country">
-                                <div class="results-country-name">Kenya</div>
-                                <div class="results-country-value" id="resultKenya">0</div>
+
+                    <!-- Base Filters -->
+                    <div class="qb-section">
+                        <div class="qb-section-title">Base Filters</div>
+                        <div class="qb-base-filters">
+                            <div class="qb-filter">
+                                <label>Country</label>
+                                <select id="qbCountry">
+                                    <option value="all">All Countries</option>
+                                    <option value="Ken">Kenya</option>
+                                    <option value="Moz">Mozambique</option>
+                                    <option value="Gam">The Gambia</option>
+                                </select>
                             </div>
-                            <div class="results-country">
-                                <div class="results-country-name">Mozambique</div>
-                                <div class="results-country-value" id="resultMoz">0</div>
+                            <div class="qb-filter">
+                                <label>Settlement</label>
+                                <select id="qbSettlement">
+                                    <option value="all">All Types</option>
+                                    <option value="Urban">Urban</option>
+                                    <option value="Rural">Rural</option>
+                                    <option value="Peri-Urban">Peri-Urban</option>
+                                </select>
                             </div>
-                            <div class="results-country">
-                                <div class="results-country-name">The Gambia</div>
-                                <div class="results-country-value" id="resultGam">0</div>
+                            <div class="qb-filter">
+                                <label>Climate Zone</label>
+                                <select id="qbClimate">
+                                    <option value="all">All Zones</option>
+                                    <option value="Tropical Dry">Tropical Dry</option>
+                                    <option value="Tropical Moist">Tropical Moist</option>
+                                    <option value="Warm Temperate Moist">Warm Temperate Moist</option>
+                                </select>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Custom Filter Builder -->
+                    <div class="qb-section">
+                        <div class="qb-section-title">Add Custom Filters</div>
+                        <div class="qb-add-filter">
+                            <select id="qbVariable">
+                                <optgroup label="Air Quality">
+                                    <option value="pm25">PM2.5 Mean (ug/m3)</option>
+                                    <option value="pm25_p95">PM2.5 95th Percentile</option>
+                                    <option value="pm25_d25">Days PM2.5 > 25</option>
+                                    <option value="pm25_d50">Days PM2.5 > 50</option>
+                                    <option value="pm25_d100">Days PM2.5 > 100</option>
+                                    <option value="no2">NO2 (umol/m2)</option>
+                                    <option value="o3">Ozone (DU)</option>
+                                    <option value="aod">Aerosol Optical Depth</option>
+                                </optgroup>
+                                <optgroup label="Temperature">
+                                    <option value="temp">Temperature Mean (C)</option>
+                                    <option value="temp_max">Temperature Max (C)</option>
+                                    <option value="temp_d28">Days Temp > 28C</option>
+                                    <option value="temp_d30">Days Temp > 30C</option>
+                                    <option value="temp_d35">Days Temp > 35C</option>
+                                    <option value="wetbulb">Wet Bulb Temp (C)</option>
+                                    <option value="wb_d25">Days Wet Bulb > 25C</option>
+                                </optgroup>
+                                <optgroup label="Environment">
+                                    <option value="humidity">Humidity (%)</option>
+                                    <option value="hum_d80">Days Humidity > 80%</option>
+                                    <option value="precip">Precipitation (mm/day)</option>
+                                    <option value="rain_d5">Days Rainfall > 5mm</option>
+                                    <option value="ndvi">NDVI (Vegetation)</option>
+                                    <option value="elevation">Elevation (m)</option>
+                                </optgroup>
+                                <optgroup label="Access & Infrastructure">
+                                    <option value="walk_dist">Walking Distance (km)</option>
+                                    <option value="walk_time">Walking Time (min)</option>
+                                    <option value="drive_time">Driving Time (min)</option>
+                                    <option value="dist_hwy">Distance to Highway (km)</option>
+                                    <option value="road_dens">Road Density</option>
+                                </optgroup>
+                                <optgroup label="Socioeconomic">
+                                    <option value="rwi">Relative Wealth Index</option>
+                                    <option value="viirs">Night Lights (VIIRS)</option>
+                                    <option value="age">Age at Enrollment</option>
+                                    <option value="n">Exposure Days</option>
+                                </optgroup>
+                            </select>
+                            <select id="qbOperator">
+                                <option value=">">&gt; Greater than</option>
+                                <option value=">=">&ge; Greater or equal</option>
+                                <option value="<">&lt; Less than</option>
+                                <option value="<=">&le; Less or equal</option>
+                                <option value="=">&equals; Equal to</option>
+                            </select>
+                            <input type="number" id="qbValue" placeholder="Value" step="any">
+                            <button class="qb-add-btn" onclick="addFilter()">+ Add Filter</button>
+                        </div>
+                    </div>
+
+                    <!-- Active Filters -->
+                    <div class="qb-section">
+                        <div class="qb-section-title">Active Filters</div>
+                        <div class="qb-active-filters" id="qbActiveFilters"></div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="qb-actions">
+                        <button class="qb-btn qb-btn-primary" onclick="runQuery()">Run Query</button>
+                        <button class="qb-btn qb-btn-secondary" onclick="clearFilters()">Clear All</button>
+                        <button class="qb-btn qb-btn-export" onclick="exportResults()">Export Results (CSV)</button>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="qb-results" id="qbResults">
+                        <div class="qb-results-header">
+                            <div class="qb-results-count">
+                                Matching: <strong id="resultCount">0</strong> of 6,687 participants
+                            </div>
+                            <div class="qb-results-percent" id="resultPercent">0%</div>
+                        </div>
+                        <div class="qb-results-breakdown">
+                            <div class="qb-country-card kenya">
+                                <div class="qb-country-name">Kenya</div>
+                                <div class="qb-country-value" id="resultKenya">0</div>
+                                <div class="qb-country-pct" id="resultKenyaPct">0% of Kenya</div>
+                            </div>
+                            <div class="qb-country-card mozambique">
+                                <div class="qb-country-name">Mozambique</div>
+                                <div class="qb-country-value" id="resultMoz">0</div>
+                                <div class="qb-country-pct" id="resultMozPct">0% of Mozambique</div>
+                            </div>
+                            <div class="qb-country-card gambia">
+                                <div class="qb-country-name">The Gambia</div>
+                                <div class="qb-country-value" id="resultGam">0</div>
+                                <div class="qb-country-pct" id="resultGamPct">0% of Gambia</div>
+                            </div>
+                        </div>
+                        <div class="qb-stats" id="qbStats"></div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -2351,12 +2458,30 @@ by most village residents.</div>
         }
 
         // ============================================
-        // DATA EXPLORER
+        // QUERY BUILDER
         // ============================================
         let participantData = null;
+        let filteredData = null;
+        let activeFilters = [];
+        const countryTotals = { Ken: 3194, Moz: 2053, Gam: 1278 };
+
+        const variableLabels = {
+            pm25: 'PM2.5 Mean', pm25_p95: 'PM2.5 P95', pm25_d25: 'Days PM2.5>25',
+            pm25_d50: 'Days PM2.5>50', pm25_d100: 'Days PM2.5>100',
+            no2: 'NO2', o3: 'Ozone', aod: 'AOD',
+            temp: 'Temp Mean', temp_max: 'Temp Max', temp_d28: 'Days T>28',
+            temp_d30: 'Days T>30', temp_d35: 'Days T>35',
+            wetbulb: 'Wet Bulb', wb_d25: 'Days WB>25',
+            humidity: 'Humidity', hum_d80: 'Days Hum>80',
+            precip: 'Precip', rain_d5: 'Days Rain>5', ndvi: 'NDVI', elevation: 'Elevation',
+            walk_dist: 'Walk Dist', walk_time: 'Walk Time', drive_time: 'Drive Time',
+            dist_hwy: 'Dist Highway', road_dens: 'Road Density',
+            rwi: 'RWI', viirs: 'VIIRS', age: 'Age', n: 'Exposure Days'
+        };
 
         function openDataExplorer() {
             document.getElementById('explorerOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
             if (!participantData) {
                 loadParticipantData();
             }
@@ -2364,13 +2489,16 @@ by most village residents.</div>
 
         function closeDataExplorer() {
             document.getElementById('explorerOverlay').classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         async function loadParticipantData() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/Shmron/PRECISE/main/participant_data_light.json');
+                const url = 'https://raw.githubusercontent.com/Shmron/PRECISE/main/participant_data_light.json?v=' + Date.now();
+                const response = await fetch(url);
                 const json = await response.json();
                 participantData = json.data;
+                console.log('Loaded', participantData.length, 'participants');
                 document.getElementById('explorerLoading').style.display = 'none';
                 document.getElementById('explorerContent').style.display = 'block';
             } catch (error) {
@@ -2379,37 +2507,151 @@ by most village residents.</div>
             }
         }
 
+        function addFilter() {
+            const variable = document.getElementById('qbVariable').value;
+            const operator = document.getElementById('qbOperator').value;
+            const value = document.getElementById('qbValue').value;
+
+            if (!value || isNaN(parseFloat(value))) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            const filter = { variable, operator, value: parseFloat(value) };
+            activeFilters.push(filter);
+            renderFilters();
+            document.getElementById('qbValue').value = '';
+        }
+
+        function removeFilter(index) {
+            activeFilters.splice(index, 1);
+            renderFilters();
+        }
+
+        function clearFilters() {
+            activeFilters = [];
+            document.getElementById('qbCountry').value = 'all';
+            document.getElementById('qbSettlement').value = 'all';
+            document.getElementById('qbClimate').value = 'all';
+            renderFilters();
+            document.getElementById('qbResults').classList.remove('active');
+        }
+
+        function renderFilters() {
+            const container = document.getElementById('qbActiveFilters');
+            container.innerHTML = activeFilters.map((f, i) =>
+                `<span class="qb-filter-tag">
+                    ${variableLabels[f.variable] || f.variable} ${f.operator} ${f.value}
+                    <button class="remove" onclick="removeFilter(${i})">&times;</button>
+                </span>`
+            ).join('');
+        }
+
+        function evaluateFilter(participant, filter) {
+            const val = participant[filter.variable];
+            if (val === null || val === undefined) return false;
+
+            switch (filter.operator) {
+                case '>': return val > filter.value;
+                case '>=': return val >= filter.value;
+                case '<': return val < filter.value;
+                case '<=': return val <= filter.value;
+                case '=': return val === filter.value;
+                default: return false;
+            }
+        }
+
         function runQuery() {
             if (!participantData) return;
 
-            const country = document.getElementById('filterCountry').value;
-            const pm25 = document.getElementById('filterPM25').value;
-            const pm25p95 = document.getElementById('filterPM25P95').value;
-            const pm25d100 = document.getElementById('filterPM25D100').value;
-            const temp = document.getElementById('filterTemp').value;
-            const settlement = document.getElementById('filterSettlement').value;
+            const country = document.getElementById('qbCountry').value;
+            const settlement = document.getElementById('qbSettlement').value;
+            const climate = document.getElementById('qbClimate').value;
 
-            let filtered = participantData.filter(p => {
+            filteredData = participantData.filter(p => {
+                // Base filters
                 if (country !== 'all' && p.c !== country) return false;
-                if (pm25 !== 'all' && (p.pm25 === null || p.pm25 < parseFloat(pm25))) return false;
-                if (pm25p95 !== 'all' && (p.pm25_p95 === null || p.pm25_p95 === undefined || p.pm25_p95 < parseFloat(pm25p95))) return false;
-                if (pm25d100 !== 'all' && (p.pm25_d100 === null || p.pm25_d100 === undefined || p.pm25_d100 < parseInt(pm25d100))) return false;
-                if (temp !== 'all' && (p.temp === null || p.temp < parseFloat(temp))) return false;
                 if (settlement !== 'all' && p.set !== settlement) return false;
+                if (climate !== 'all' && p.clim !== climate) return false;
+
+                // Custom filters
+                for (const filter of activeFilters) {
+                    if (!evaluateFilter(p, filter)) return false;
+                }
                 return true;
             });
 
-            const total = filtered.length;
-            const kenya = filtered.filter(p => p.c === 'Ken').length;
-            const moz = filtered.filter(p => p.c === 'Moz').length;
-            const gam = filtered.filter(p => p.c === 'Gam').length;
+            displayResults();
+        }
+
+        function displayResults() {
+            const total = filteredData.length;
+            const kenya = filteredData.filter(p => p.c === 'Ken').length;
+            const moz = filteredData.filter(p => p.c === 'Moz').length;
+            const gam = filteredData.filter(p => p.c === 'Gam').length;
 
             document.getElementById('resultCount').textContent = total.toLocaleString();
-            document.getElementById('resultPercent').textContent = ((total / 6687) * 100).toFixed(1);
+            document.getElementById('resultPercent').textContent = ((total / 6687) * 100).toFixed(1) + '%';
+
             document.getElementById('resultKenya').textContent = kenya.toLocaleString();
             document.getElementById('resultMoz').textContent = moz.toLocaleString();
             document.getElementById('resultGam').textContent = gam.toLocaleString();
-            document.getElementById('explorerResults').style.display = 'block';
+
+            document.getElementById('resultKenyaPct').textContent = ((kenya / countryTotals.Ken) * 100).toFixed(1) + '% of Kenya';
+            document.getElementById('resultMozPct').textContent = ((moz / countryTotals.Moz) * 100).toFixed(1) + '% of Mozambique';
+            document.getElementById('resultGamPct').textContent = ((gam / countryTotals.Gam) * 100).toFixed(1) + '% of Gambia';
+
+            // Calculate summary stats for matching participants
+            if (filteredData.length > 0) {
+                const stats = calculateStats(filteredData);
+                document.getElementById('qbStats').innerHTML = `
+                    <div class="qb-stat"><div class="qb-stat-label">Avg PM2.5</div><div class="qb-stat-value">${stats.pm25.toFixed(1)}</div></div>
+                    <div class="qb-stat"><div class="qb-stat-label">Avg Temp</div><div class="qb-stat-value">${stats.temp.toFixed(1)}°C</div></div>
+                    <div class="qb-stat"><div class="qb-stat-label">Avg Age</div><div class="qb-stat-value">${stats.age.toFixed(0)}</div></div>
+                    <div class="qb-stat"><div class="qb-stat-label">Avg Exposure Days</div><div class="qb-stat-value">${stats.n.toFixed(0)}</div></div>
+                    <div class="qb-stat"><div class="qb-stat-label">Avg Walk Time</div><div class="qb-stat-value">${stats.walk_time.toFixed(0)} min</div></div>
+                `;
+            } else {
+                document.getElementById('qbStats').innerHTML = '<div class="qb-stat"><div class="qb-stat-label">No matching participants</div></div>';
+            }
+
+            document.getElementById('qbResults').classList.add('active');
+        }
+
+        function calculateStats(data) {
+            const sum = (arr, key) => {
+                const valid = arr.filter(p => p[key] !== null && p[key] !== undefined);
+                return valid.length ? valid.reduce((s, p) => s + p[key], 0) / valid.length : 0;
+            };
+            return {
+                pm25: sum(data, 'pm25'),
+                temp: sum(data, 'temp'),
+                age: sum(data, 'age'),
+                n: sum(data, 'n'),
+                walk_time: sum(data, 'walk_time')
+            };
+        }
+
+        function exportResults() {
+            if (!filteredData || filteredData.length === 0) {
+                alert('No results to export. Run a query first.');
+                return;
+            }
+
+            const headers = ['id', 'country', 'village', 'settlement', 'age', 'exposure_days', 'pm25_mean', 'pm25_p95', 'temp_mean', 'wetbulb', 'walk_time'];
+            const rows = filteredData.map(p => [
+                p.id, p.c, p.v || '', p.set || '', p.age || '', p.n || '',
+                p.pm25 || '', p.pm25_p95 || '', p.temp || '', p.wetbulb || '', p.walk_time || ''
+            ]);
+
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `precise_query_results_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         // Close modal on overlay click
@@ -2770,4 +3012,4 @@ When answering:
         });
     </script>
 </body>
-</html>S
+</html>
