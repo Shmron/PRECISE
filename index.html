@@ -103,8 +103,7 @@
         .qb-add-btn:hover { background: var(--copper); transform: translateY(-1px); }
 
         /* Active Filters */
-        .qb-active-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; min-height: 40px; padding: 0.75rem; background: #f8f9fa; border-radius: 6px; }
-        .qb-active-filters:empty::before { content: 'No filters added yet. Add filters above.'; color: var(--slate); font-size: 0.85rem; font-style: italic; }
+        .qb-active-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; min-height: 44px; padding: 0.75rem 1rem; background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-radius: 6px; border: 1px solid var(--mist); align-items: center; }
         .qb-filter-tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem 0.4rem 0.9rem; background: var(--teal-deep); color: white; border-radius: 20px; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; }
         .qb-filter-tag .remove { background: rgba(255,255,255,0.2); border: none; color: white; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 0.9rem; line-height: 1; display: flex; align-items: center; justify-content: center; }
         .qb-filter-tag .remove:hover { background: rgba(255,255,255,0.4); }
@@ -2501,6 +2500,7 @@ by most village residents.</div>
                 console.log('Loaded', participantData.length, 'participants');
                 document.getElementById('explorerLoading').style.display = 'none';
                 document.getElementById('explorerContent').style.display = 'block';
+                renderFilters(); // Initialize the filters display
             } catch (error) {
                 document.getElementById('explorerLoading').textContent = 'Error loading data. Please try again.';
                 console.error('Failed to load participant data:', error);
@@ -2521,7 +2521,22 @@ by most village residents.</div>
             activeFilters.push(filter);
             renderFilters();
             document.getElementById('qbValue').value = '';
+
+            // Auto-run query after adding filter
+            runQuery();
         }
+
+        // Allow Enter key to add filter
+        document.addEventListener('DOMContentLoaded', function() {
+            const valueInput = document.getElementById('qbValue');
+            if (valueInput) {
+                valueInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addFilter();
+                    }
+                });
+            }
+        });
 
         function removeFilter(index) {
             activeFilters.splice(index, 1);
@@ -2539,12 +2554,16 @@ by most village residents.</div>
 
         function renderFilters() {
             const container = document.getElementById('qbActiveFilters');
-            container.innerHTML = activeFilters.map((f, i) =>
-                `<span class="qb-filter-tag">
-                    ${variableLabels[f.variable] || f.variable} ${f.operator} ${f.value}
-                    <button class="remove" onclick="removeFilter(${i})">&times;</button>
-                </span>`
-            ).join('');
+            if (activeFilters.length === 0) {
+                container.innerHTML = '<span style="color: var(--slate); font-style: italic;">No custom filters. Add filters above or use base filters.</span>';
+            } else {
+                container.innerHTML = activeFilters.map((f, i) =>
+                    `<span class="qb-filter-tag">
+                        ${variableLabels[f.variable] || f.variable} ${f.operator} ${f.value}
+                        <button class="remove" onclick="removeFilter(${i})">&times;</button>
+                    </span>`
+                ).join('');
+            }
         }
 
         function evaluateFilter(participant, filter) {
@@ -2564,9 +2583,23 @@ by most village residents.</div>
         function runQuery() {
             if (!participantData) return;
 
+            // Auto-add any pending filter in the input field
+            const pendingValue = document.getElementById('qbValue').value;
+            if (pendingValue && !isNaN(parseFloat(pendingValue))) {
+                const variable = document.getElementById('qbVariable').value;
+                const operator = document.getElementById('qbOperator').value;
+                activeFilters.push({ variable, operator, value: parseFloat(pendingValue) });
+                renderFilters();
+                document.getElementById('qbValue').value = '';
+            }
+
             const country = document.getElementById('qbCountry').value;
             const settlement = document.getElementById('qbSettlement').value;
             const climate = document.getElementById('qbClimate').value;
+
+            // Debug: Show active filters
+            console.log('Running query with filters:', activeFilters);
+            console.log('Base filters - Country:', country, 'Settlement:', settlement, 'Climate:', climate);
 
             filteredData = participantData.filter(p => {
                 // Base filters
@@ -2581,6 +2614,7 @@ by most village residents.</div>
                 return true;
             });
 
+            console.log('Results:', filteredData.length, 'participants');
             displayResults();
         }
 
