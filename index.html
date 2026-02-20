@@ -101,7 +101,9 @@
         .qb-add-filter input[type="number"] { width: 100px; }
         /* Natural Language Query */
         .qb-nl-query { display: flex; gap: 0.75rem; align-items: center; }
-        .qb-btn-ai { padding: 0.7rem 1.2rem !important; }
+        .qb-btn-ai { padding: 0.7rem 1.2rem !important; transition: opacity 0.2s; }
+        .qb-btn-ai:disabled { cursor: wait; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .qb-add-btn { background: var(--teal-deep); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 5px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem; }
         .qb-add-btn:hover { background: var(--copper); transform: translateY(-1px); }
 
@@ -2245,132 +2247,68 @@ by most village residents.</div>
     <div class="explorer-overlay" id="explorerOverlay">
         <div class="explorer-modal">
             <div class="explorer-header">
-                <h2>Participant Data Query Builder</h2>
+                <h2>Explore Participant Data</h2>
                 <button class="explorer-close" onclick="closeDataExplorer()">&times;</button>
             </div>
             <div class="explorer-body">
                 <div class="explorer-loading" id="explorerLoading">Loading participant data (3.7 MB)...</div>
                 <div id="explorerContent" style="display:none;">
 
-                    <!-- Base Filters -->
+                    <!-- Ask Shmron - Primary Query Interface -->
                     <div class="qb-section">
-                        <div class="qb-section-title">Base Filters</div>
-                        <div class="qb-base-filters">
-                            <div class="qb-filter">
-                                <label>Country</label>
-                                <select id="qbCountry">
-                                    <option value="all">All Countries</option>
-                                    <option value="Ken">Kenya</option>
-                                    <option value="Moz">Mozambique</option>
-                                    <option value="Gam">The Gambia</option>
-                                </select>
-                            </div>
-                            <div class="qb-filter">
-                                <label>Settlement</label>
-                                <select id="qbSettlement">
-                                    <option value="all">All Types</option>
-                                    <option value="Urban">Urban</option>
-                                    <option value="Rural">Rural</option>
-                                    <option value="Peri-Urban">Peri-Urban</option>
-                                </select>
-                            </div>
-                            <div class="qb-filter">
-                                <label>Climate Zone</label>
-                                <select id="qbClimate">
-                                    <option value="all">All Zones</option>
-                                    <option value="Tropical Dry">Tropical Dry</option>
-                                    <option value="Tropical Moist">Tropical Moist</option>
-                                    <option value="Warm Temperate Moist">Warm Temperate Moist</option>
-                                </select>
-                            </div>
+                        <div class="qb-section-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.2rem;">&#129302;</span>
+                            Ask Shmron
+                            <span style="font-weight: normal; font-size: 0.75rem; color: var(--teal-mid); margin-left: 0.5rem;">AI-powered queries</span>
                         </div>
-                    </div>
-
-                    <!-- Custom Filter Builder -->
-                    <div class="qb-section">
-                        <div class="qb-section-title">Add Custom Filters</div>
-                        <div class="qb-add-filter">
-                            <select id="qbVariable">
-                                <optgroup label="Air Quality">
-                                    <option value="pm25">PM2.5 Mean (ug/m3)</option>
-                                    <option value="pm25_p95">PM2.5 95th Percentile</option>
-                                    <option value="pm25_d25">Days PM2.5 > 25</option>
-                                    <option value="pm25_d50">Days PM2.5 > 50</option>
-                                    <option value="pm25_d100">Days PM2.5 > 100</option>
-                                    <option value="no2">NO2 (umol/m2)</option>
-                                    <option value="o3">Ozone (DU)</option>
-                                    <option value="aod">Aerosol Optical Depth</option>
-                                </optgroup>
-                                <optgroup label="Temperature">
-                                    <option value="temp">Temperature Mean (C)</option>
-                                    <option value="temp_max">Temperature Max (C)</option>
-                                    <option value="temp_d28">Days Temp > 28C</option>
-                                    <option value="temp_d30">Days Temp > 30C</option>
-                                    <option value="temp_d35">Days Temp > 35C</option>
-                                    <option value="wetbulb">Wet Bulb Temp (C)</option>
-                                    <option value="wb_d25">Days Wet Bulb > 25C</option>
-                                </optgroup>
-                                <optgroup label="Environment">
-                                    <option value="humidity">Humidity (%)</option>
-                                    <option value="hum_d80">Days Humidity > 80%</option>
-                                    <option value="precip">Precipitation (mm/day)</option>
-                                    <option value="rain_d5">Days Rainfall > 5mm</option>
-                                    <option value="ndvi">NDVI (Vegetation)</option>
-                                    <option value="elevation">Elevation (m)</option>
-                                </optgroup>
-                                <optgroup label="Access & Infrastructure">
-                                    <option value="walk_dist">Walking Distance (km)</option>
-                                    <option value="walk_time">Walking Time (min)</option>
-                                    <option value="drive_time">Driving Time (min)</option>
-                                    <option value="dist_hwy">Distance to Highway (km)</option>
-                                    <option value="road_dens">Road Density</option>
-                                </optgroup>
-                                <optgroup label="Socioeconomic">
-                                    <option value="rwi">Relative Wealth Index</option>
-                                    <option value="viirs">Night Lights (VIIRS)</option>
-                                    <option value="age">Age at Enrollment</option>
-                                    <option value="n">Exposure Days</option>
-                                </optgroup>
-                            </select>
-                            <select id="qbOperator" onchange="toggleBetweenInput()">
-                                <option value=">">&gt; Greater than</option>
-                                <option value=">=">&ge; Greater or equal</option>
-                                <option value="<">&lt; Less than</option>
-                                <option value="<=">&le; Less or equal</option>
-                                <option value="=">&equals; Equal to</option>
-                                <option value="between">Between (range)</option>
-                                <option value="top%">Top % (percentile)</option>
-                                <option value="bottom%">Bottom % (percentile)</option>
-                            </select>
-                            <input type="number" id="qbValue" placeholder="Value" step="any">
-                            <input type="number" id="qbValue2" placeholder="Max value" step="any" style="display:none; width:100px;">
-                            <button class="qb-add-btn" onclick="addFilter()">+ Add Filter</button>
-                        </div>
-                    </div>
-
-                    <!-- Natural Language Query -->
-                    <div class="qb-section">
-                        <div class="qb-section-title">Or Ask in Plain English <span style="font-weight:normal; color:var(--teal-mid);">(AI-powered)</span></div>
                         <div class="qb-nl-query">
-                            <input type="text" id="qbNLQuery" placeholder="e.g., 'Rural participants in Kenya with PM2.5 above 30'" style="flex:1; padding: 0.7rem 1rem; border: 2px solid var(--teal-mid); border-radius: 6px; font-size: 0.95rem;">
-                            <button class="qb-btn qb-btn-ai" onclick="runNLQuery()" style="background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal-mid) 100%); color: white; display: flex; align-items: center; gap: 0.5rem;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                                Ask AI
+                            <input type="text" id="qbNLQuery" placeholder="e.g., 'Rural participants in Kenya with PM2.5 above 30' or 'Compare temperature across countries'" style="flex:1; padding: 0.8rem 1rem; border: 2px solid var(--teal-mid); border-radius: 6px; font-size: 0.95rem;">
+                            <button class="qb-btn qb-btn-ai" onclick="runNLQuery()" style="background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal-mid) 100%); color: white; display: flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.2rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                Ask
                             </button>
                         </div>
-                        <div id="qbNLResponse" style="margin-top: 0.75rem; padding: 0.75rem; background: var(--sand); border-radius: 6px; display: none; font-size: 0.9rem;"></div>
+                        <div class="qb-suggestions" style="margin-top: 0.6rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button onclick="document.getElementById('qbNLQuery').value='How many participants have PM2.5 above WHO guidelines (15)?'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">PM2.5 > WHO limit</button>
+                            <button onclick="document.getElementById('qbNLQuery').value='Compare walking time to facilities between urban and rural'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Urban vs Rural access</button>
+                            <button onclick="document.getElementById('qbNLQuery').value='Which country has highest heat exposure?'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Heat by country</button>
+                            <button onclick="document.getElementById('qbNLQuery').value='Top 10% of temperature exposure'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Top 10% heat</button>
+                        </div>
+                        <div id="qbNLResponse" style="margin-top: 0.75rem; padding: 1rem; background: var(--sand); border-radius: 6px; display: none; font-size: 0.9rem; line-height: 1.6;"></div>
                     </div>
 
-                    <!-- Active Filters -->
+                    <!-- Quick Filters -->
                     <div class="qb-section">
-                        <div class="qb-section-title">Active Filters</div>
-                        <div class="qb-active-filters" id="qbActiveFilters"></div>
+                        <div class="qb-section-title">Quick Filters</div>
+                        <div class="qb-base-filters" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="qb-filter">
+                                <label>Country</label>
+                                <select id="qbCountry" onchange="runQuery()">
+                                    <option value="all">All Countries</option>
+                                    <option value="Ken">Kenya (n=3,194)</option>
+                                    <option value="Moz">Mozambique (n=2,053)</option>
+                                    <option value="Gam">The Gambia (n=1,278)</option>
+                                </select>
+                            </div>
+                            <div class="qb-filter">
+                                <label>Settlement Type</label>
+                                <select id="qbSettlement" onchange="runQuery()">
+                                    <option value="all">All Types</option>
+                                    <option value="Urban">Urban (63%)</option>
+                                    <option value="Rural">Rural (22%)</option>
+                                    <option value="Peri-Urban">Peri-Urban (15%)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Hidden elements for compatibility -->
+                    <select id="qbClimate" style="display:none;"><option value="all">All</option></select>
+                    <div id="qbActiveFilters" style="display:none;"></div>
 
                     <!-- Action Buttons -->
                     <div class="qb-actions">
-                        <button class="qb-btn qb-btn-primary" onclick="runQuery()">Run Query</button>
-                        <button class="qb-btn qb-btn-secondary" onclick="clearFilters()">Clear All</button>
+                        <button class="qb-btn qb-btn-secondary" onclick="clearFilters()">Reset Filters</button>
                         <button class="qb-btn qb-btn-export" onclick="exportResults()">Export Results (CSV)</button>
                     </div>
 
@@ -2485,17 +2423,46 @@ by most village residents.</div>
         const countryTotals = { Ken: 3194, Moz: 2053, Gam: 1278 };
 
         const variableLabels = {
-            pm25: 'PM2.5 Mean', pm25_p95: 'PM2.5 P95', pm25_d25: 'Days PM2.5>25',
-            pm25_d50: 'Days PM2.5>50', pm25_d100: 'Days PM2.5>100',
-            no2: 'NO2', o3: 'Ozone', aod: 'AOD',
-            temp: 'Temp Mean', temp_max: 'Temp Max', temp_d28: 'Days T>28',
-            temp_d30: 'Days T>30', temp_d35: 'Days T>35',
-            wetbulb: 'Wet Bulb', wb_d25: 'Days WB>25',
-            humidity: 'Humidity', hum_d80: 'Days Hum>80',
-            precip: 'Precip', rain_d5: 'Days Rain>5', ndvi: 'NDVI', elevation: 'Elevation',
-            walk_dist: 'Walk Dist', walk_time: 'Walk Time', drive_time: 'Drive Time',
-            dist_hwy: 'Dist Highway', road_dens: 'Road Density',
-            rwi: 'RWI', viirs: 'VIIRS', age: 'Age', n: 'Exposure Days'
+            // Air Quality
+            pm25: 'PM2.5 Mean', pm25_p95: 'PM2.5 P95', pm25_max: 'PM2.5 Max',
+            pm25_d15: 'Days PM2.5>15 (WHO)', pm25_d25: 'Days PM2.5>25',
+            pm25_d35: 'Days PM2.5>35', pm25_d50: 'Days PM2.5>50', pm25_d100: 'Days PM2.5>100',
+            pm25_fire: 'Fire Smoke PM2.5', pm25_nonfire: 'Non-Fire PM2.5',
+            no2: 'NO2', o3: 'Ozone', co: 'CO', so2: 'SO2',
+            aod: 'AOD Total', aod_dust: 'Dust AOD', aod_bc: 'Black Carbon AOD',
+            // Temperature
+            temp: 'Temp Mean', temp_max: 'Temp Max', temp_min: 'Temp Min', temp_p95: 'Temp P95',
+            temp_diurnal: 'Diurnal Temp Range',
+            temp_d28: 'Days T>28°C', temp_d30: 'Days T>30°C', temp_d32: 'Days T>32°C', temp_d35: 'Days T>35°C',
+            // Wet Bulb / Heat Stress
+            wetbulb: 'Wet Bulb Mean', wetbulb_max: 'Wet Bulb Max',
+            wb_d20: 'Days WB>20°C', wb_d25: 'Days WB>25°C', wb_d28: 'Days WB>28°C',
+            lst: 'Land Surface Temp',
+            // Heatwave
+            extreme_hot_days: 'Extreme Hot Days', heatwave_days: 'Heatwave Days',
+            temp_deviation: 'Temp Deviation',
+            // Weather
+            humidity: 'Humidity', hum_d80: 'Days Hum>80%', hum_d90: 'Days Hum>90%',
+            precip: 'Precipitation', rain_d1: 'Rainy Days (>1mm)', rain_d5: 'Heavy Rain Days (>5mm)', rain_d10: 'Very Heavy Rain (>10mm)',
+            // Environment
+            ndvi: 'NDVI (Vegetation)', elevation: 'Elevation',
+            // Access
+            walk_dist: 'Walking Distance', walk_time: 'Walking Time',
+            drive_dist: 'Driving Distance', drive_time: 'Driving Time',
+            pt_dist: 'Public Transport Dist', pt_time: 'Public Transport Time',
+            dist_hwy: 'Distance to Highway', dist_road: 'Distance to Major Road',
+            road_dens: 'Road Density', road_qual: 'Road Quality Index',
+            // Isolation
+            walk_iso_rd: 'Walk Isolation (Road)', walk_iso_hwy: 'Walk Isolation (Highway)',
+            drive_iso_rd: 'Drive Isolation (Road)', drive_iso_hwy: 'Drive Isolation (Highway)',
+            isolation: 'Isolation Index',
+            // Socioeconomic
+            rwi: 'Relative Wealth Index', viirs: 'Night Lights (VIIRS)', ppi: 'Poverty Probability Index',
+            // Soil
+            soil_ca: 'Soil Calcium', soil_n: 'Soil Nitrogen',
+            soil_p: 'Soil Phosphorus', soil_k: 'Soil Potassium',
+            // Demographics
+            age: 'Age at Enrollment', n: 'Exposure Days'
         };
 
         function openDataExplorer() {
@@ -2640,8 +2607,10 @@ by most village residents.</div>
             document.getElementById('qbCountry').value = 'all';
             document.getElementById('qbSettlement').value = 'all';
             document.getElementById('qbClimate').value = 'all';
+            document.getElementById('qbNLQuery').value = '';
+            document.getElementById('qbNLResponse').style.display = 'none';
             renderFilters();
-            document.getElementById('qbResults').classList.remove('active');
+            runQuery(); // Refresh results to show all participants
         }
 
         function renderFilters() {
@@ -2687,12 +2656,18 @@ by most village residents.</div>
         async function runNLQuery() {
             const input = document.getElementById('qbNLQuery');
             const responseDiv = document.getElementById('qbNLResponse');
+            const askBtn = document.querySelector('.qb-btn-ai');
             const query = input.value.trim();
 
             if (!query) {
                 alert('Please enter a question');
                 return;
             }
+
+            // Disable button and show loading state
+            askBtn.disabled = true;
+            askBtn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;"></span> Thinking...';
+            askBtn.style.opacity = '0.7';
 
             responseDiv.style.display = 'block';
 
@@ -2711,7 +2686,22 @@ by most village residents.</div>
                 }
             }
 
-            responseDiv.innerHTML = '<em>Analyzing your query...</em>';
+            responseDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="shmron-thinking" style="display: flex; gap: 4px;">
+                        <span style="width: 8px; height: 8px; background: var(--teal-deep); border-radius: 50%; animation: bounce 1.4s ease-in-out infinite;"></span>
+                        <span style="width: 8px; height: 8px; background: var(--teal-deep); border-radius: 50%; animation: bounce 1.4s ease-in-out 0.2s infinite;"></span>
+                        <span style="width: 8px; height: 8px; background: var(--teal-deep); border-radius: 50%; animation: bounce 1.4s ease-in-out 0.4s infinite;"></span>
+                    </div>
+                    <span style="color: var(--teal-deep); font-weight: 500;">Shmron is analyzing your query...</span>
+                </div>
+                <style>
+                    @keyframes bounce {
+                        0%, 80%, 100% { transform: translateY(0); }
+                        40% { transform: translateY(-6px); }
+                    }
+                </style>
+            `;
 
             try {
                 // Use the chatbot's API key and send the query
@@ -2730,7 +2720,17 @@ by most village residents.</div>
                         max_tokens: 2048,
                         system: `You are a query assistant for a participant database. When given a natural language query, analyze it and execute appropriate data queries.
 
-Available variables: pm25, pm25_p95, pm25_d25, pm25_d50, pm25_d100, no2, o3, aod, temp, temp_max, temp_d28, temp_d30, temp_d35, wetbulb, wb_d25, humidity, hum_d80, precip, rain_d5, ndvi, elevation, walk_dist, walk_time, drive_time, dist_hwy, road_dens, rwi, viirs, age, n
+Available variables:
+- Air Quality: pm25, pm25_p95, pm25_max, pm25_d15 (WHO), pm25_d25, pm25_d35, pm25_d50, pm25_d100, pm25_fire, pm25_nonfire, no2, o3, co, so2, aod, aod_dust, aod_bc (black carbon)
+- Temperature: temp, temp_max, temp_min, temp_p95, temp_diurnal, temp_d28, temp_d30, temp_d32, temp_d35
+- Heat Stress: wetbulb, wetbulb_max, wb_d20, wb_d25, wb_d28, lst, extreme_hot_days, heatwave_days
+- Weather: humidity, hum_d80, hum_d90, precip, rain_d1, rain_d5, rain_d10
+- Environment: ndvi, elevation
+- Access: walk_dist, walk_time, drive_dist, drive_time, pt_dist, pt_time, dist_hwy, dist_road, road_dens, road_qual
+- Isolation: walk_iso_rd, walk_iso_hwy, drive_iso_rd, drive_iso_hwy, isolation
+- Socioeconomic: rwi, viirs, ppi
+- Soil: soil_ca, soil_n, soil_p, soil_k
+- Demographics: age, n (exposure days)
 
 Countries: Ken (Kenya), Moz (Mozambique), Gam (The Gambia)
 Settlements: Urban, Rural, Peri-Urban
@@ -2794,6 +2794,12 @@ Always use the tools to answer data questions. Be concise in your response.`,
             } catch (error) {
                 responseDiv.innerHTML = `<span style="color: var(--coral);">Error: ${error.message}</span>`;
                 console.error('NL Query error:', error);
+            } finally {
+                // Restore button state
+                const askBtn = document.querySelector('.qb-btn-ai');
+                askBtn.disabled = false;
+                askBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Ask';
+                askBtn.style.opacity = '1';
             }
         }
 
@@ -2991,7 +2997,7 @@ Always use the tools to answer data questions. Be concise in your response.`,
                                     properties: {
                                         variable: {
                                             type: "string",
-                                            enum: ["pm25", "pm25_p95", "pm25_d25", "pm25_d50", "pm25_d100", "no2", "o3", "aod", "temp", "temp_max", "temp_d28", "temp_d30", "temp_d35", "wetbulb", "wb_d25", "humidity", "hum_d80", "precip", "rain_d5", "ndvi", "elevation", "walk_dist", "walk_time", "drive_time", "dist_hwy", "road_dens", "rwi", "viirs", "age", "n"],
+                                            enum: ["pm25", "pm25_p95", "pm25_max", "pm25_d15", "pm25_d25", "pm25_d35", "pm25_d50", "pm25_d100", "pm25_fire", "pm25_nonfire", "no2", "o3", "co", "so2", "aod", "aod_dust", "aod_bc", "temp", "temp_max", "temp_min", "temp_p95", "temp_diurnal", "temp_d28", "temp_d30", "temp_d32", "temp_d35", "wetbulb", "wetbulb_max", "wb_d20", "wb_d25", "wb_d28", "lst", "extreme_hot_days", "heatwave_days", "temp_deviation", "humidity", "hum_d80", "hum_d90", "precip", "rain_d1", "rain_d5", "rain_d10", "ndvi", "elevation", "walk_dist", "walk_time", "drive_dist", "drive_time", "pt_dist", "pt_time", "dist_hwy", "dist_road", "road_dens", "road_qual", "walk_iso_rd", "walk_iso_hwy", "drive_iso_rd", "drive_iso_hwy", "isolation", "rwi", "viirs", "ppi", "soil_ca", "soil_n", "soil_p", "soil_k", "age", "n"],
                                             description: "Variable to filter on"
                                         },
                                         operator: {
@@ -3037,7 +3043,7 @@ Always use the tools to answer data questions. Be concise in your response.`,
                         properties: {
                             variable: {
                                 type: "string",
-                                enum: ["pm25", "pm25_p95", "pm25_d25", "pm25_d50", "pm25_d100", "no2", "o3", "aod", "temp", "temp_max", "temp_d28", "temp_d30", "temp_d35", "wetbulb", "wb_d25", "humidity", "hum_d80", "precip", "rain_d5", "ndvi", "elevation", "walk_dist", "walk_time", "drive_time", "dist_hwy", "road_dens", "rwi", "viirs", "age", "n"],
+                                enum: ["pm25", "pm25_p95", "pm25_max", "pm25_d15", "pm25_d25", "pm25_d35", "pm25_d50", "pm25_d100", "pm25_fire", "pm25_nonfire", "no2", "o3", "co", "so2", "aod", "aod_dust", "aod_bc", "temp", "temp_max", "temp_min", "temp_p95", "temp_diurnal", "temp_d28", "temp_d30", "temp_d32", "temp_d35", "wetbulb", "wetbulb_max", "wb_d20", "wb_d25", "wb_d28", "lst", "extreme_hot_days", "heatwave_days", "temp_deviation", "humidity", "hum_d80", "hum_d90", "precip", "rain_d1", "rain_d5", "rain_d10", "ndvi", "elevation", "walk_dist", "walk_time", "drive_dist", "drive_time", "pt_dist", "pt_time", "dist_hwy", "dist_road", "road_dens", "road_qual", "walk_iso_rd", "walk_iso_hwy", "drive_iso_rd", "drive_iso_hwy", "isolation", "rwi", "viirs", "ppi", "soil_ca", "soil_n", "soil_p", "soil_k", "age", "n"],
                                 description: "Variable to analyze"
                             },
                             group_by: {
@@ -3062,7 +3068,7 @@ Always use the tools to answer data questions. Be concise in your response.`,
                         properties: {
                             variable: {
                                 type: "string",
-                                enum: ["pm25", "pm25_p95", "pm25_d25", "pm25_d50", "pm25_d100", "no2", "o3", "aod", "temp", "temp_max", "temp_d28", "temp_d30", "temp_d35", "wetbulb", "wb_d25", "humidity", "hum_d80", "precip", "rain_d5", "ndvi", "elevation", "walk_dist", "walk_time", "drive_time", "dist_hwy", "road_dens", "rwi", "viirs", "age", "n"],
+                                enum: ["pm25", "pm25_p95", "pm25_max", "pm25_d15", "pm25_d25", "pm25_d35", "pm25_d50", "pm25_d100", "pm25_fire", "pm25_nonfire", "no2", "o3", "co", "so2", "aod", "aod_dust", "aod_bc", "temp", "temp_max", "temp_min", "temp_p95", "temp_diurnal", "temp_d28", "temp_d30", "temp_d32", "temp_d35", "wetbulb", "wetbulb_max", "wb_d20", "wb_d25", "wb_d28", "lst", "extreme_hot_days", "heatwave_days", "temp_deviation", "humidity", "hum_d80", "hum_d90", "precip", "rain_d1", "rain_d5", "rain_d10", "ndvi", "elevation", "walk_dist", "walk_time", "drive_dist", "drive_time", "pt_dist", "pt_time", "dist_hwy", "dist_road", "road_dens", "road_qual", "walk_iso_rd", "walk_iso_hwy", "drive_iso_rd", "drive_iso_hwy", "isolation", "rwi", "viirs", "ppi", "soil_ca", "soil_n", "soil_p", "soil_k", "age", "n"],
                                 description: "Variable to compare"
                             },
                             compare_by: {
@@ -3082,7 +3088,7 @@ Always use the tools to answer data questions. Be concise in your response.`,
                         properties: {
                             variable: {
                                 type: "string",
-                                enum: ["pm25", "pm25_p95", "pm25_d25", "pm25_d50", "pm25_d100", "no2", "o3", "aod", "temp", "temp_max", "temp_d28", "temp_d30", "temp_d35", "wetbulb", "wb_d25", "humidity", "hum_d80", "precip", "rain_d5", "ndvi", "elevation", "walk_dist", "walk_time", "drive_time", "dist_hwy", "road_dens", "rwi", "viirs", "age", "n"],
+                                enum: ["pm25", "pm25_p95", "pm25_max", "pm25_d15", "pm25_d25", "pm25_d35", "pm25_d50", "pm25_d100", "pm25_fire", "pm25_nonfire", "no2", "o3", "co", "so2", "aod", "aod_dust", "aod_bc", "temp", "temp_max", "temp_min", "temp_p95", "temp_diurnal", "temp_d28", "temp_d30", "temp_d32", "temp_d35", "wetbulb", "wetbulb_max", "wb_d20", "wb_d25", "wb_d28", "lst", "extreme_hot_days", "heatwave_days", "temp_deviation", "humidity", "hum_d80", "hum_d90", "precip", "rain_d1", "rain_d5", "rain_d10", "ndvi", "elevation", "walk_dist", "walk_time", "drive_dist", "drive_time", "pt_dist", "pt_time", "dist_hwy", "dist_road", "road_dens", "road_qual", "walk_iso_rd", "walk_iso_hwy", "drive_iso_rd", "drive_iso_hwy", "isolation", "rwi", "viirs", "ppi", "soil_ca", "soil_n", "soil_p", "soil_k", "age", "n"],
                                 description: "Variable to analyze"
                             },
                             percentile: {
@@ -3555,11 +3561,16 @@ You have access to tools that let you query the actual participant database (6,6
 - Highlight notable findings (e.g., Gambia's high PM2.5)
 
 **AVAILABLE VARIABLES FOR QUERIES:**
-Air Quality: pm25, pm25_p95, pm25_d25, pm25_d50, pm25_d100, no2, o3, aod
-Temperature: temp, temp_max, temp_d28, temp_d30, temp_d35, wetbulb, wb_d25
-Environment: humidity, hum_d80, precip, rain_d5, ndvi, elevation
-Access: walk_dist, walk_time, drive_time, dist_hwy, road_dens
-Socioeconomic: rwi, viirs, age, n (exposure days)`,
+Air Quality: pm25, pm25_p95, pm25_max, pm25_d15 (WHO guideline), pm25_d25, pm25_d35, pm25_d50, pm25_d100, pm25_fire (fire smoke), pm25_nonfire, no2, o3, co, so2, aod, aod_dust, aod_bc (black carbon)
+Temperature: temp, temp_max, temp_min, temp_p95, temp_diurnal, temp_d28, temp_d30, temp_d32, temp_d35
+Heat Stress: wetbulb, wetbulb_max, wb_d20, wb_d25, wb_d28, lst, extreme_hot_days, heatwave_days, temp_deviation
+Weather: humidity, hum_d80, hum_d90, precip, rain_d1, rain_d5, rain_d10
+Environment: ndvi, elevation
+Access: walk_dist, walk_time, drive_dist, drive_time, pt_dist, pt_time, dist_hwy, dist_road, road_dens, road_qual
+Isolation: walk_iso_rd, walk_iso_hwy, drive_iso_rd, drive_iso_hwy, isolation
+Socioeconomic: rwi, viirs, ppi (poverty probability)
+Soil Nutrients: soil_ca, soil_n, soil_p, soil_k
+Demographics: age, n (exposure days)`,
 
             init() {
                 this.render();
