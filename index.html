@@ -2486,7 +2486,7 @@ by most village residents.</div>
         async function loadParticipantData() {
             const loadingEl = document.getElementById('explorerLoading');
             try {
-                loadingEl.innerHTML = 'Loading participant data (3.7 MB)...<br><small style="color: var(--slate);">This may take a moment on slower connections</small>';
+                loadingEl.innerHTML = 'Loading participant data...<br><small style="color: var(--slate);">This may take a moment on slower connections</small>';
 
                 const url = 'https://raw.githubusercontent.com/Shmron/PRECISE/main/participant_data_expanded.json?v=' + Date.now();
                 console.log('Fetching participant data from:', url);
