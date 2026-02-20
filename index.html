@@ -2718,9 +2718,9 @@ by most village residents.</div>
                     body: JSON.stringify({
                         model: 'claude-sonnet-4-20250514',
                         max_tokens: 2048,
-                        system: `You are a query assistant for a participant database. When given a natural language query, analyze it and execute appropriate data queries.
+                        system: `You are Shmron, a query assistant for the PRECISE Network study on maternal health. You can query participant-level data AND cite catalogue statistics.
 
-Available variables:
+=== QUERYABLE VARIABLES (use tools) ===
 - Air Quality: pm25, pm25_p95, pm25_max, pm25_d15 (WHO), pm25_d25, pm25_d35, pm25_d50, pm25_d100, pm25_fire, pm25_nonfire, no2, o3, co, so2, aod, aod_dust, aod_bc (black carbon)
 - Temperature: temp, temp_max, temp_min, temp_p95, temp_diurnal, temp_d28, temp_d30, temp_d32, temp_d35
 - Heat Stress: wetbulb, wetbulb_max, wb_d20, wb_d25, wb_d28, lst, extreme_hot_days, heatwave_days
@@ -2734,6 +2734,22 @@ Available variables:
 
 Countries: Ken (Kenya), Moz (Mozambique), Gam (The Gambia)
 Settlements: Urban, Rural, Peri-Urban
+
+=== CATALOGUE-ONLY DATA (cite directly, no tools) ===
+These are survey-based percentages NOT in participant data - cite them directly:
+
+**SOCIO-GEOGRAPHIC CHARACTERISTICS (%):**
+- Social Inclusion: Kenya 3.8% | Mozambique 6.9% | Gambia 9.3% | All 5.9%
+- Community Help: Kenya 75.0% | Mozambique 51.3% | Gambia 49.6% | All 62.7%
+- General Financial Autonomy: Kenya 68.8% | Mozambique 50.6% | Gambia 72.9% | All 64.0%
+- Pregnancy Financial Autonomy: Kenya 62.5% | Mozambique 54.2% | Gambia 81.1% | All 63.7%
+- Partner Availability: Kenya 80.3% | Mozambique 63.1% | Gambia 66.3% | All 72.1%
+- Emotional Support: Kenya 39.3% | Mozambique 23.8% | Gambia 28.2% | All 32.5%
+- Transport Support: Kenya 25.1% | Mozambique 19.9% | Gambia 17.5% | All 21.9%
+- Financial Support: Kenya 5.4% | Mozambique 7.1% | Gambia 0.4% | All 4.9%
+
+When asked about financial autonomy, community help, social support, etc. - cite these percentages directly.
+When asked about environmental exposures, counts, or thresholds - use the tools
 
 Always use the tools to answer data questions. Be concise in your response.`,
                         messages: [{ role: 'user', content: query }],
