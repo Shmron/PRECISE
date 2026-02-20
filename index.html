@@ -2254,91 +2254,74 @@ by most village residents.</div>
                 <div class="explorer-loading" id="explorerLoading">Loading participant data...</div>
                 <div id="explorerContent" style="display:none;">
 
-                    <!-- Ask Shmron - Primary Query Interface -->
-                    <div class="qb-section">
-                        <div class="qb-section-title" style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.2rem;">&#129302;</span>
-                            Ask Shmron
-                            <span style="font-weight: normal; font-size: 0.75rem; color: var(--teal-mid); margin-left: 0.5rem;">AI-powered queries</span>
-                        </div>
-                        <div class="qb-nl-query">
-                            <input type="text" id="qbNLQuery" placeholder="e.g., 'Rural participants in Kenya with PM2.5 above 30' or 'Compare temperature across countries'" style="flex:1; padding: 0.8rem 1rem; border: 2px solid var(--teal-mid); border-radius: 6px; font-size: 0.95rem;">
-                            <button class="qb-btn qb-btn-ai" onclick="runNLQuery()" style="background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal-mid) 100%); color: white; display: flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.2rem;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                                Ask
+                    <!-- Welcome Section -->
+                    <div style="text-align: center; padding: 1.5rem 0 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">&#129302;</div>
+                        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--charcoal); margin-bottom: 0.5rem;">Ask Shmron</h3>
+                        <p style="color: var(--slate); font-size: 0.95rem; max-width: 450px; margin: 0 auto;">
+                            Query <strong>6,687 participants</strong> across Kenya, Mozambique & The Gambia using natural language
+                        </p>
+                    </div>
+
+                    <!-- Query Input -->
+                    <div style="background: linear-gradient(135deg, rgba(26,83,92,0.03) 0%, rgba(78,205,196,0.05) 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(78,205,196,0.2);">
+                        <div style="display: flex; gap: 0.75rem; align-items: stretch;">
+                            <input type="text" id="qbNLQuery" placeholder="Ask anything... e.g., 'How many rural participants have high PM2.5 exposure?'" style="flex:1; padding: 1rem 1.25rem; border: 2px solid var(--mist); border-radius: 8px; font-size: 1rem; background: white; transition: border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='var(--teal-mid)'; this.style.boxShadow='0 0 0 3px rgba(78,205,196,0.15)';" onblur="this.style.borderColor='var(--mist)'; this.style.boxShadow='none';">
+                            <button class="qb-btn qb-btn-ai" onclick="runNLQuery()" style="background: linear-gradient(135deg, var(--teal-deep) 0%, var(--teal-mid) 100%); color: white; display: flex; align-items: center; gap: 0.6rem; padding: 1rem 1.5rem; border-radius: 8px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 15px rgba(26,83,92,0.25); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(26,83,92,0.35)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 15px rgba(26,83,92,0.25)';">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                Ask Shmron
                             </button>
                         </div>
-                        <div class="qb-suggestions" style="margin-top: 0.6rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button onclick="document.getElementById('qbNLQuery').value='How many participants have PM2.5 above WHO guidelines (15)?'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">PM2.5 > WHO limit</button>
-                            <button onclick="document.getElementById('qbNLQuery').value='Compare walking time to facilities between urban and rural'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Urban vs Rural access</button>
-                            <button onclick="document.getElementById('qbNLQuery').value='Which country has highest heat exposure?'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Heat by country</button>
-                            <button onclick="document.getElementById('qbNLQuery').value='Top 10% of temperature exposure'; runNLQuery();" style="padding: 0.3rem 0.7rem; background: var(--sand); border: 1px solid var(--mist); border-radius: 15px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">Top 10% heat</button>
-                        </div>
-                        <div id="qbNLResponse" style="margin-top: 0.75rem; padding: 1rem; background: var(--sand); border-radius: 6px; display: none; font-size: 0.9rem; line-height: 1.6;"></div>
-                    </div>
 
-                    <!-- Quick Filters -->
-                    <div class="qb-section">
-                        <div class="qb-section-title">Quick Filters</div>
-                        <div class="qb-base-filters" style="grid-template-columns: repeat(2, 1fr);">
-                            <div class="qb-filter">
-                                <label>Country</label>
-                                <select id="qbCountry" onchange="runQuery()">
-                                    <option value="all">All Countries</option>
-                                    <option value="Ken">Kenya (n=3,194)</option>
-                                    <option value="Moz">Mozambique (n=2,053)</option>
-                                    <option value="Gam">The Gambia (n=1,278)</option>
-                                </select>
-                            </div>
-                            <div class="qb-filter">
-                                <label>Settlement Type</label>
-                                <select id="qbSettlement" onchange="runQuery()">
-                                    <option value="all">All Types</option>
-                                    <option value="Urban">Urban (63%)</option>
-                                    <option value="Rural">Rural (22%)</option>
-                                    <option value="Peri-Urban">Peri-Urban (15%)</option>
-                                </select>
+                        <!-- Suggestion Chips -->
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(78,205,196,0.15);">
+                            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate); margin-bottom: 0.6rem;">Try asking about:</div>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button onclick="document.getElementById('qbNLQuery').value='How many participants have PM2.5 above WHO guidelines (15)?'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--teal-deep)'; this.style.color='white'; this.style.borderColor='var(--teal-deep)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Air quality</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Compare walking time to health facilities between urban and rural areas'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--coral)'; this.style.color='white'; this.style.borderColor='var(--coral)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Healthcare access</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Which country has the highest temperature exposure?'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--copper)'; this.style.color='white'; this.style.borderColor='var(--copper)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Heat exposure</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Show financial autonomy statistics by country'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--burgundy)'; this.style.color='white'; this.style.borderColor='var(--burgundy)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Social factors</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Participants in top 10% of black carbon exposure'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--slate)'; this.style.color='white'; this.style.borderColor='var(--slate)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Extreme exposures</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hidden elements for compatibility -->
+                    <!-- Response Area -->
+                    <div id="qbNLResponse" style="margin-top: 1.5rem; padding: 1.5rem; background: white; border-radius: 10px; border: 1px solid var(--mist); display: none; font-size: 0.95rem; line-height: 1.7; box-shadow: 0 2px 12px rgba(45,52,54,0.06);"></div>
+
+                    <!-- Data Overview Cards -->
+                    <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div style="background: linear-gradient(135deg, rgba(26,83,92,0.08) 0%, rgba(26,83,92,0.03) 100%); border-radius: 10px; padding: 1.25rem; text-align: center; border-left: 4px solid var(--teal-deep);">
+                            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--teal-deep);">3,194</div>
+                            <div style="font-size: 0.85rem; color: var(--slate); margin-top: 0.25rem;">Kenya</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(224,122,95,0.08) 0%, rgba(224,122,95,0.03) 100%); border-radius: 10px; padding: 1.25rem; text-align: center; border-left: 4px solid var(--coral);">
+                            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--coral);">2,053</div>
+                            <div style="font-size: 0.85rem; color: var(--slate); margin-top: 0.25rem;">Mozambique</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(184,115,51,0.08) 0%, rgba(184,115,51,0.03) 100%); border-radius: 10px; padding: 1.25rem; text-align: center; border-left: 4px solid var(--copper);">
+                            <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--copper);">1,278</div>
+                            <div style="font-size: 0.85rem; color: var(--slate); margin-top: 0.25rem;">The Gambia</div>
+                        </div>
+                    </div>
+
+                    <!-- Variables Info -->
+                    <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--sand); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span style="font-size: 1.3rem;">&#128202;</span>
+                            <span style="font-size: 0.9rem; color: var(--charcoal);"><strong>72 variables</strong> available for querying</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--slate);">
+                            Air quality &bull; Temperature &bull; Precipitation &bull; Healthcare access &bull; Social factors
+                        </div>
+                    </div>
+
+                    <!-- Hidden elements for code compatibility -->
+                    <select id="qbCountry" style="display:none;"><option value="all">All</option></select>
+                    <select id="qbSettlement" style="display:none;"><option value="all">All</option></select>
                     <select id="qbClimate" style="display:none;"><option value="all">All</option></select>
                     <div id="qbActiveFilters" style="display:none;"></div>
-
-                    <!-- Action Buttons -->
-                    <div class="qb-actions">
-                        <button class="qb-btn qb-btn-secondary" onclick="clearFilters()">Reset Filters</button>
-                        <button class="qb-btn qb-btn-export" onclick="exportResults()">Export Results (CSV)</button>
-                    </div>
-
-                    <!-- Results -->
-                    <div class="qb-results" id="qbResults">
-                        <div class="qb-results-header">
-                            <div class="qb-results-count">
-                                Matching: <strong id="resultCount">0</strong> of 6,687 participants
-                            </div>
-                            <div class="qb-results-percent" id="resultPercent">0%</div>
-                        </div>
-                        <div class="qb-results-breakdown">
-                            <div class="qb-country-card kenya">
-                                <div class="qb-country-name">Kenya</div>
-                                <div class="qb-country-value" id="resultKenya">0</div>
-                                <div class="qb-country-pct" id="resultKenyaPct">0% of Kenya</div>
-                            </div>
-                            <div class="qb-country-card mozambique">
-                                <div class="qb-country-name">Mozambique</div>
-                                <div class="qb-country-value" id="resultMoz">0</div>
-                                <div class="qb-country-pct" id="resultMozPct">0% of Mozambique</div>
-                            </div>
-                            <div class="qb-country-card gambia">
-                                <div class="qb-country-name">The Gambia</div>
-                                <div class="qb-country-value" id="resultGam">0</div>
-                                <div class="qb-country-pct" id="resultGamPct">0% of Gambia</div>
-                            </div>
-                        </div>
-                        <div class="qb-stats" id="qbStats"></div>
-                    </div>
+                    <div id="qbResults" style="display:none;"><span id="resultCount"></span><span id="resultPercent"></span><span id="resultKenya"></span><span id="resultKenyaPct"></span><span id="resultMoz"></span><span id="resultMozPct"></span><span id="resultGam"></span><span id="resultGamPct"></span><div id="qbStats"></div></div>
 
                 </div>
             </div>
@@ -2517,85 +2500,9 @@ by most village residents.</div>
             }
         }
 
-        // Toggle second value input for 'between' operator
-        function toggleBetweenInput() {
-            const operator = document.getElementById('qbOperator').value;
-            const value2Input = document.getElementById('qbValue2');
-            const value1Input = document.getElementById('qbValue');
-
-            if (operator === 'between') {
-                value2Input.style.display = 'inline-block';
-                value1Input.placeholder = 'Min value';
-            } else if (operator === 'top%' || operator === 'bottom%') {
-                value2Input.style.display = 'none';
-                value1Input.placeholder = 'Percentile (e.g., 10)';
-            } else {
-                value2Input.style.display = 'none';
-                value1Input.placeholder = 'Value';
-            }
-        }
-
-        function addFilter() {
-            const variable = document.getElementById('qbVariable').value;
-            const operator = document.getElementById('qbOperator').value;
-            const value = document.getElementById('qbValue').value;
-            const value2 = document.getElementById('qbValue2').value;
-
-            if (!value || isNaN(parseFloat(value))) {
-                alert('Please enter a valid number');
-                return;
-            }
-
-            if (operator === 'between' && (!value2 || isNaN(parseFloat(value2)))) {
-                alert('Please enter both min and max values for range filter');
-                return;
-            }
-
-            const filter = { variable, operator, value: parseFloat(value) };
-
-            if (operator === 'between') {
-                filter.value2 = parseFloat(value2);
-            }
-
-            // For percentile operators, calculate the threshold
-            if (operator === 'top%' || operator === 'bottom%') {
-                if (!participantData) {
-                    alert('Data not loaded yet. Please wait.');
-                    return;
-                }
-                const values = participantData.map(p => p[variable]).filter(v => v != null).sort((a, b) => a - b);
-                const pct = parseFloat(value) / 100;
-                if (operator === 'top%') {
-                    const idx = Math.floor(values.length * (1 - pct));
-                    filter.threshold = values[idx];
-                    filter.displayOp = `top ${value}%`;
-                } else {
-                    const idx = Math.floor(values.length * pct);
-                    filter.threshold = values[idx];
-                    filter.displayOp = `bottom ${value}%`;
-                }
-            }
-
-            activeFilters.push(filter);
-            renderFilters();
-            document.getElementById('qbValue').value = '';
-            document.getElementById('qbValue2').value = '';
-
-            // Auto-run query after adding filter
-            runQuery();
-        }
-
-        // Allow Enter key to add filter
-        document.addEventListener('DOMContentLoaded', function() {
-            const valueInput = document.getElementById('qbValue');
-            if (valueInput) {
-                valueInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        addFilter();
-                    }
-                });
-            }
-        });
+        // Legacy functions (kept for compatibility - now handled by Shmron AI)
+        function toggleBetweenInput() { /* UI removed - queries handled by Shmron */ }
+        function addFilter() { /* UI removed - queries handled by Shmron */ }
 
         function removeFilter(index) {
             activeFilters.splice(index, 1);
@@ -2834,23 +2741,12 @@ Always use the tools to answer data questions. Be concise in your response.`,
         function runQuery() {
             if (!participantData) return;
 
-            // Auto-add any pending filter in the input field (only for simple operators)
-            const pendingValue = document.getElementById('qbValue').value;
-            const pendingOp = document.getElementById('qbOperator').value;
-            if (pendingValue && !isNaN(parseFloat(pendingValue)) && !['between', 'top%', 'bottom%'].includes(pendingOp)) {
-                const variable = document.getElementById('qbVariable').value;
-                activeFilters.push({ variable, operator: pendingOp, value: parseFloat(pendingValue) });
-                renderFilters();
-                document.getElementById('qbValue').value = '';
-            }
+            // Get filter values (hidden elements for compatibility)
+            const country = document.getElementById('qbCountry')?.value || 'all';
+            const settlement = document.getElementById('qbSettlement')?.value || 'all';
+            const climate = document.getElementById('qbClimate')?.value || 'all';
 
-            const country = document.getElementById('qbCountry').value;
-            const settlement = document.getElementById('qbSettlement').value;
-            const climate = document.getElementById('qbClimate').value;
-
-            // Debug: Show active filters
             console.log('Running query with filters:', activeFilters);
-            console.log('Base filters - Country:', country, 'Settlement:', settlement, 'Climate:', climate);
 
             filteredData = participantData.filter(p => {
                 // Base filters
