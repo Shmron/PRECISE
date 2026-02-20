@@ -561,7 +561,7 @@
             <div class="header-actions">
                 <a href="https://docs.google.com/spreadsheets/d/1OuLxf76aZOfC74k85AkwM75pueAHXJPz/edit?usp=sharing&ouid=109068792255983589019&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="header-btn header-btn-primary">
                     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg>
-                    Data Dictionary <span class="btn-note">(updating)</span>
+                    Data Dictionary <span class="btn-note"></span>
                 </a>
                 <button onclick="openDataExplorer()" class="header-btn header-btn-primary">
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
@@ -3548,11 +3548,30 @@ You have access to tools that let you query the actual participant database (6,6
 5. **cross_tabulation**: Create cross-tables
    - Use for "PM2.5 by country and settlement type"
 
-**WHEN TO USE TOOLS:**
-- For ANY specific numeric query, USE THE TOOLS to get live, accurate data
-- The pre-computed statistics in this prompt are for reference - tools give you flexibility
-- For complex queries not in your reference data, ALWAYS use tools
-- When users ask about custom thresholds (e.g., "PM2.5 > 32"), use query_participants
+**CRITICAL: DAY-BASED vs PARTICIPANT-BASED STATISTICS**
+
+The CATALOGUE statistics (in this prompt) are DAY-BASED:
+- Calculated across ~2.4 million daily exposure records
+- E.g., "Median PM2.5 for Kenya = 12.9" is the median of ALL daily PM2.5 values for Kenya participants
+
+The TOOL queries are PARTICIPANT-BASED:
+- Calculated across 6,687 participant summary values (mean per participant)
+- E.g., "Median PM2.5" from tools = median of each participant's pregnancy-average PM2.5
+
+WHEN TO USE WHICH:
+1. **User asks for day-based statistics** (original study methodology) → Use CATALOGUE data
+   - "What's the median temperature in Kenya?" → Cite catalogue: 27.3°C [25.7, 28.3]
+
+2. **User asks about participants/counts/thresholds** → Use TOOLS
+   - "How many participants have PM2.5 > 25?" → Use query_participants tool
+   - "What percentage of Gambian participants exceed WHO guidelines?" → Use tools
+
+3. **Variables ONLY in catalogue** (no participant-level data) → Use CATALOGUE
+   - Social Inclusion, Community Help, Financial Autonomy (General & Pregnancy)
+   - Partner Availability, Emotional Support, Transport Support, Financial Support
+   - These are survey-based percentages, not environmental exposures
+
+If unclear, ask the user: "Do you want the day-based statistic (as reported in the study) or participant-based analysis?"
 
 **RESPONSE STYLE:**
 - Be concise but include specific numbers from tool results
