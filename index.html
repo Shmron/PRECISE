@@ -532,9 +532,116 @@
             color: white;
             border-color: var(--teal-deep);
         }
+
+        /* Login Gate Overlay */
+        .login-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--teal-deep) 0%, #1a3a40 100%);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .login-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+        .login-box .login-subtitle {
+            font-size: 0.95rem;
+            color: var(--slate);
+            margin-bottom: 2rem;
+        }
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid var(--mist);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s;
+        }
+        .login-box input[type="password"]:focus {
+            outline: none;
+            border-color: var(--teal-deep);
+        }
+        .login-box button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--teal-deep);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .login-box button:hover {
+            background: var(--copper);
+            transform: translateY(-2px);
+        }
+        .login-error {
+            color: var(--coral);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        .login-error.show { display: block; }
+        .login-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--copper) 0%, var(--copper-light) 100%);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-logo svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+        .main-content.blurred {
+            filter: blur(10px);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Login Gate Overlay -->
+    <div id="loginGate" class="login-gate">
+        <div class="login-box">
+            <div class="login-logo">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            </div>
+            <h2>PRECISE Network</h2>
+            <p class="login-subtitle">Enter access code to view research data</p>
+            <form id="loginForm">
+                <input type="password" id="accessCode" placeholder="Enter access code" autocomplete="off" required>
+                <button type="submit">Access Dashboard</button>
+            </form>
+            <p id="loginError" class="login-error">Incorrect access code. Please try again.</p>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <div class="header-label">PRECISE Network Research</div>
@@ -3761,6 +3868,67 @@ Demographics: age, n (exposure days)`,
                 console.error('ChatBot initialization error:', e);
             }
         });
+    </script>
+
+    <!-- Login Gate Script -->
+    <script>
+        (function() {
+            // ============================================
+            // CHANGE THIS PASSWORD TO YOUR DESIRED CODE
+            // ============================================
+            const ACCESS_CODE = 'PRECISE2024';
+            // ============================================
+
+            const loginGate = document.getElementById('loginGate');
+            const loginForm = document.getElementById('loginForm');
+            const accessCodeInput = document.getElementById('accessCode');
+            const loginError = document.getElementById('loginError');
+
+            // Check if already authenticated this session
+            if (sessionStorage.getItem('preciseAuth') === 'true') {
+                loginGate.classList.add('hidden');
+            }
+
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (accessCodeInput.value === ACCESS_CODE) {
+                    sessionStorage.setItem('preciseAuth', 'true');
+                    loginGate.style.opacity = '1';
+                    loginGate.style.transition = 'opacity 0.3s ease';
+                    loginGate.style.opacity = '0';
+                    setTimeout(() => {
+                        loginGate.classList.add('hidden');
+                    }, 300);
+                } else {
+                    loginError.classList.add('show');
+                    accessCodeInput.value = '';
+                    accessCodeInput.focus();
+
+                    // Shake animation
+                    loginForm.style.animation = 'shake 0.5s ease';
+                    setTimeout(() => {
+                        loginForm.style.animation = '';
+                    }, 500);
+                }
+            });
+
+            // Hide error on new input
+            accessCodeInput.addEventListener('input', function() {
+                loginError.classList.remove('show');
+            });
+
+            // Add shake animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    20%, 60% { transform: translateX(-10px); }
+                    40%, 80% { transform: translateX(10px); }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
     </script>
 </body>
 </html>
