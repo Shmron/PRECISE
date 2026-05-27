@@ -109,7 +109,14 @@ def get_api_key():
 
 
 def require_key():
-    """Returns (key_info dict, None) or (None, error response)."""
+    """Returns (key_info dict, None) or (None, error response).
+    Accepts either a researcher DB API key (X-API-Key) or a catalogue
+    session token (X-Session-Token) issued by /api/catalogue-login.
+    """
+    token = request.headers.get('X-Session-Token', '')
+    if token and _validate_catalogue_token(token):
+        return {'countries': ['Kenya', 'Mozambique', 'Gambia'], 'name': 'catalogue'}, None
+
     key = get_api_key()
     if not key:
         return None, (jsonify({'error': 'API key required. Include X-API-Key header.'}), 401)
@@ -499,15 +506,9 @@ def portal_chat():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    # Accept either a catalogue session token OR a researcher DB API key
-    session_token = request.headers.get('X-Session-Token', '')
-    if session_token and _validate_catalogue_token(session_token):
-        # Catalogue session: full access to all three countries
-        key_info = {'countries': ['Kenya', 'Mozambique', 'Gambia'], 'name': 'catalogue'}
-    else:
-        key_info, err = require_key()
-        if err:
-            return err
+    key_info, err = require_key()
+    if err:
+        return err
 
     data     = request.json or {}
     messages = data.get('messages', [])
