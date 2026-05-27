@@ -2730,6 +2730,7 @@ by most village residents.</div>
                 const response = await fetch(API_BASE + '/api/health', {
                     headers: { 'X-Session-Token': ChatBot.sessionToken }
                 });
+                if (response.status === 401) { handleExpiredSession(); return; }
                 if (!response.ok) throw new Error(`Server unavailable (${response.status})`);
                 const health = await response.json();
                 console.log('API ready:', health);
@@ -2853,6 +2854,7 @@ by most village residents.</div>
                     body: JSON.stringify({ messages: [{ role: 'user', content: query }] }),
                 });
 
+                if (resp.status === 401) { handleExpiredSession(); return; }
                 if (!resp.ok) {
                     const errBody = await resp.json().catch(() => ({}));
                     throw new Error(errBody.error || `Server error ${resp.status}`);
@@ -3649,6 +3651,7 @@ by most village residents.</div>
                     body: JSON.stringify({ messages: this.conversationHistory }),
                 });
 
+                if (response.status === 401) { handleExpiredSession(); return; }
                 if (!response.ok) {
                     const err = await response.json().catch(() => ({}));
                     throw new Error(err.error || `Server error ${response.status}`);
@@ -3709,6 +3712,21 @@ by most village residents.</div>
 
     <!-- Login Gate Script -->
     <script>
+        // Called by any fetch that gets a 401 — clears the dead token and
+        // re-shows the login gate without requiring any user action
+        function handleExpiredSession() {
+            sessionStorage.removeItem('catalogueToken');
+            const gate = document.getElementById('loginGate');
+            if (gate) {
+                gate.style.opacity = '0';
+                gate.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    gate.style.transition = 'opacity 0.3s ease';
+                    gate.style.opacity = '1';
+                });
+            }
+        }
+
         (function() {
             const loginGate       = document.getElementById('loginGate');
             const loginForm       = document.getElementById('loginForm');
