@@ -49,6 +49,12 @@
         .header-btn-primary:hover { background: var(--copper); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(184, 115, 51, 0.3); }
         .header-btn-secondary { background: white; color: var(--teal-deep); border: 2px solid var(--teal-deep); }
         .header-btn-secondary:hover { background: var(--teal-deep); color: white; transform: translateY(-2px); }
+        .cap-chip { display:inline-block; padding:0.25rem 0.65rem; background:white; border:1px solid var(--mist); border-radius:20px; font-size:0.78rem; cursor:pointer; transition:all 0.15s; color:var(--charcoal); }
+        .cap-chip:hover { background:var(--teal-deep); color:white; border-color:var(--teal-deep); }
+        .cap-chip-reg { border-color:rgba(184,115,51,0.35); }
+        .cap-chip-reg:hover { background:var(--copper); border-color:var(--copper); }
+        .cap-chip-win { border-color:rgba(26,83,92,0.3); }
+        .cap-chip-win:hover { background:var(--teal-deep); border-color:var(--teal-deep); }
         .header-btn svg { width: 18px; height: 18px; fill: currentColor; }
         .btn-note { font-size: 0.75rem; font-weight: 400; opacity: 0.8; margin-left: 0.3rem; }
         .regional-breakdown { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid rgba(184, 115, 51, 0.15); }
@@ -2543,6 +2549,67 @@ by most village residents.</div>
                         <span id="nlQueryTipText" style="font-size:0.78rem;color:var(--slate);font-style:italic;transition:opacity 0.4s;"></span>
                     </div>
 
+                    <!-- Capabilities panel -->
+                    <div style="margin-top:0.85rem;">
+                        <button onclick="toggleCapabilities()" id="capsToggleBtn"
+                            style="width:100%;text-align:left;background:rgba(26,83,92,0.04);border:1px solid rgba(78,205,196,0.25);border-radius:8px;padding:0.6rem 1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Source Sans 3',sans-serif;font-size:0.82rem;color:var(--teal-deep);font-weight:600;"
+                            onmouseover="this.style.background='rgba(26,83,92,0.08)'" onmouseout="this.style.background='rgba(26,83,92,0.04)'">
+                            <span>📋 What can Shmron analyse?</span>
+                            <span id="capsArrow" style="font-size:0.7rem;transition:transform 0.2s;">▼</span>
+                        </button>
+                        <div id="capsPanel" style="display:none;margin-top:0.4rem;border:1px solid rgba(78,205,196,0.2);border-radius:8px;overflow:hidden;font-size:0.82rem;line-height:1.6;">
+
+                            <!-- Charts & Distributions -->
+                            <div style="padding:0.75rem 1rem;border-bottom:1px solid var(--mist);">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--copper);font-weight:600;margin-bottom:0.4rem;">Charts &amp; distributions</div>
+                                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                                    <span onclick="setAndRun('Box plot of daily PM2.5 across countries')" class="cap-chip">Box plots</span>
+                                    <span onclick="setAndRun('Monthly trend of UTCI heat stress across countries')" class="cap-chip">Trend lines</span>
+                                    <span onclick="setAndRun('Correlation matrix of UTCI, PM2.5, dust AOD and relative humidity')" class="cap-chip">Correlation heatmap</span>
+                                    <span onclick="setAndRun('Scatter plot of mean RWI vs mean PM2.5 per participant by country')" class="cap-chip">Scatter plots</span>
+                                    <span onclick="setAndRun('Proportion of preterm births by country')" class="cap-chip">Pie / breakdowns</span>
+                                    <span onclick="setAndRun('Compare low birth weight rates between urban and rural participants')" class="cap-chip">Country &amp; settlement comparisons</span>
+                                </div>
+                            </div>
+
+                            <!-- Regression -->
+                            <div style="padding:0.75rem 1rem;border-bottom:1px solid var(--mist);background:rgba(184,115,51,0.03);">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--copper);font-weight:600;margin-bottom:0.4rem;">🔬 Regression &amp; statistical inference</div>
+                                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                                    <span onclick="setAndRun('Regression of gestational PM2.5 and wealth index on birth weight controlling for country')" class="cap-chip cap-chip-reg">OLS (birth weight, gestational age)</span>
+                                    <span onclick="setAndRun('Logistic regression of preterm birth on gestational UTCI and RWI controlling for country')" class="cap-chip cap-chip-reg">Logit (preterm, LBW, stillbirth)</span>
+                                    <span onclick="setAndRun('Does gestational dust exposure predict low birth weight, controlling for wealth and country?')" class="cap-chip cap-chip-reg">Forest plot with CIs</span>
+                                    <span onclick="setAndRun('Regression of PM2.5 on birth weight — add country and wealth as controls')" class="cap-chip cap-chip-reg">Confounder adjustment</span>
+                                </div>
+                            </div>
+
+                            <!-- Exposure windows -->
+                            <div style="padding:0.75rem 1rem;border-bottom:1px solid var(--mist);background:rgba(26,83,92,0.03);">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-deep);font-weight:600;margin-bottom:0.4rem;">⏱ Exposure windows</div>
+                                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                                    <span onclick="setAndRun('Preconception PM2.5 exposure and birth weight regression controlling for country')" class="cap-chip cap-chip-win">Preconception (3 months before conception)</span>
+                                    <span onclick="setAndRun('Gestational UTCI exposure and preterm birth — logistic regression')" class="cap-chip cap-chip-win">Whole pregnancy</span>
+                                    <span onclick="setAndRun('First trimester PM2.5 exposure effect on birth weight')" class="cap-chip cap-chip-win">T1 — first trimester</span>
+                                    <span onclick="setAndRun('Second trimester heat stress and gestational age regression')" class="cap-chip cap-chip-win">T2 — second trimester</span>
+                                    <span onclick="setAndRun('Third trimester UTCI exposure and preterm birth logistic regression')" class="cap-chip cap-chip-win">T3 — third trimester</span>
+                                    <span onclick="setAndRun('Compare preconception vs gestational PM2.5 effects on low birth weight')" class="cap-chip cap-chip-win">Preconception vs gestational comparison</span>
+                                </div>
+                            </div>
+
+                            <!-- Variables -->
+                            <div style="padding:0.75rem 1rem;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);font-weight:600;margin-bottom:0.4rem;">Available variables</div>
+                                <div style="color:var(--slate);font-size:0.78rem;">
+                                    <b style="color:var(--charcoal);">Air quality:</b> PM2.5, fire/non-fire PM2.5, NO₂, SO₂, CO, O₃, dust AOD &nbsp;·&nbsp;
+                                    <b style="color:var(--charcoal);">Heat:</b> UTCI, WBGT, Heat Index, apparent temperature &nbsp;·&nbsp;
+                                    <b style="color:var(--charcoal);">Climate:</b> temperature (ERA5), humidity, rainfall, NDVI &nbsp;·&nbsp;
+                                    <b style="color:var(--charcoal);">Socioeconomic:</b> RWI wealth index, urbanisation, road access &nbsp;·&nbsp;
+                                    <b style="color:var(--charcoal);">Outcomes:</b> birth weight, gestational age, preterm, LBW, SGA, stillbirth
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Response Area -->
                     <div id="qbNLResponse" style="margin-top: 1.5rem; padding: 1.5rem; background: white; border-radius: 10px; border: 1px solid var(--mist); display: none; font-size: 0.95rem; line-height: 1.7; box-shadow: 0 2px 12px rgba(45,52,54,0.06);"></div>
 
@@ -2822,6 +2889,32 @@ by most village residents.</div>
                 case 'bottom%': return val <= filter.threshold;
                 default: return false;
             }
+        }
+
+        // ── Capabilities panel toggles ────────────────────────────────────────
+        function toggleChatCaps() {
+            const panel = document.getElementById('chatCapsPanel');
+            if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleCapabilities() {
+            const panel = document.getElementById('capsPanel');
+            const arrow = document.getElementById('capsArrow');
+            const open  = panel.style.display === 'none';
+            panel.style.display = open ? 'block' : 'none';
+            arrow.style.transform = open ? 'rotate(180deg)' : 'none';
+        }
+
+        function setAndRun(query) {
+            document.getElementById('qbNLQuery').value = query;
+            // Close the capabilities panel so the response area is visible
+            const panel = document.getElementById('capsPanel');
+            const arrow = document.getElementById('capsArrow');
+            if (panel.style.display !== 'none') {
+                panel.style.display = 'none';
+                arrow.style.transform = 'none';
+            }
+            runNLQuery();
         }
 
         // ── NL Query conversation state ───────────────────────────────────────
@@ -3593,9 +3686,27 @@ by most village residents.</div>
                         </div>
                         <div class="chat-messages" id="chat-messages"></div>
                         <div class="chat-input-area">
-                            <div id="chatTip" style="padding:0.3rem 0.75rem 0;display:flex;align-items:center;gap:0.4rem;min-height:1.4rem;">
-                                <span style="font-size:0.7rem;color:var(--teal-deep);flex-shrink:0;">💡</span>
-                                <span id="chatTipText" style="font-size:0.72rem;color:var(--slate);font-style:italic;transition:opacity 0.4s;"></span>
+                            <div id="chatTip" style="padding:0.3rem 0.75rem 0;display:flex;align-items:center;justify-content:space-between;gap:0.4rem;min-height:1.4rem;">
+                                <div style="display:flex;align-items:center;gap:0.4rem;min-width:0;">
+                                    <span style="font-size:0.7rem;color:var(--teal-deep);flex-shrink:0;">💡</span>
+                                    <span id="chatTipText" style="font-size:0.72rem;color:var(--slate);font-style:italic;transition:opacity 0.4s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                                </div>
+                                <button onclick="toggleChatCaps()" title="What can I ask?" style="flex-shrink:0;font-size:0.65rem;padding:0.15rem 0.5rem;border:1px solid var(--mist);border-radius:10px;background:none;cursor:pointer;color:var(--teal-deep);white-space:nowrap;" onmouseover="this.style.background='var(--mist)'" onmouseout="this.style.background='none'">What can I ask? ▾</button>
+                            </div>
+                            <!-- Chat capabilities popover -->
+                            <div id="chatCapsPanel" style="display:none;margin:0.3rem 0.75rem 0;border:1px solid rgba(78,205,196,0.3);border-radius:8px;background:white;font-size:0.75rem;line-height:1.6;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+                                <div style="padding:0.5rem 0.75rem;background:rgba(26,83,92,0.04);border-bottom:1px solid var(--mist);font-family:'JetBrains Mono',monospace;font-size:0.63rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal-deep);font-weight:600;">Charts &amp; stats</div>
+                                <div style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--mist);color:var(--slate);">
+                                    Box plots · Trend lines · Heatmaps · Scatter plots · Pie charts
+                                </div>
+                                <div style="padding:0.5rem 0.75rem;background:rgba(184,115,51,0.04);border-bottom:1px solid var(--mist);font-family:'JetBrains Mono',monospace;font-size:0.63rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--copper);font-weight:600;">🔬 Regression</div>
+                                <div style="padding:0.4rem 0.75rem;border-bottom:1px solid var(--mist);color:var(--slate);">
+                                    OLS · Logit · Forest plots · Confounder adjustment (add "controlling for RWI/country")
+                                </div>
+                                <div style="padding:0.5rem 0.75rem;background:rgba(26,83,92,0.04);border-bottom:1px solid var(--mist);font-family:'JetBrains Mono',monospace;font-size:0.63rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal-deep);font-weight:600;">⏱ Exposure windows</div>
+                                <div style="padding:0.4rem 0.75rem;color:var(--slate);">
+                                    Say: <b>"preconception"</b> · <b>"first/second/third trimester"</b> · <b>"gestational"</b> · <b>"whole pregnancy"</b>
+                                </div>
                             </div>
                             <div class="chat-input-wrapper">
                                 <textarea class="chat-input" id="chat-input" placeholder="Ask about the indicators..." rows="1"></textarea>
