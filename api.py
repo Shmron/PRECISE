@@ -7,7 +7,6 @@ import os
 import json
 import sys
 import time
-import secrets
 from collections import defaultdict
 sys.path.insert(0, '/home/rutendo/PRECISE')
 import access_db
@@ -18,25 +17,7 @@ CORS(app)
 
 DB_PATH = '/home/rutendo/PRECISE/precise.duckdb'
 
-# ── Catalogue session tokens (in-memory, 8-hour TTL) ─────────────────────────
-_catalogue_tokens: dict = {}          # token → expiry unix timestamp
-_TOKEN_TTL = 8 * 3600
-
 CATALOGUE_ACCESS_CODE = os.environ.get('CATALOGUE_ACCESS_CODE', 'PRECISE2024')
-
-def _issue_catalogue_token() -> str:
-    token = secrets.token_urlsafe(32)
-    _catalogue_tokens[token] = time.time() + _TOKEN_TTL
-    return token
-
-def _validate_catalogue_token(token: str) -> bool:
-    expiry = _catalogue_tokens.get(token)
-    if not expiry:
-        return False
-    if time.time() > expiry:
-        _catalogue_tokens.pop(token, None)
-        return False
-    return True
 
 # ── IP rate limiter for the public portal chat ────────────────────────────────
 _ip_hits: dict = defaultdict(list)
@@ -114,7 +95,7 @@ def require_key():
     session token (X-Session-Token) issued by /api/catalogue-login.
     """
     token = request.headers.get('X-Session-Token', '')
-    if token and _validate_catalogue_token(token):
+    if token and access_db.validate_catalogue_token(token):
         return {'countries': ['Kenya', 'Mozambique', 'Gambia'], 'name': 'catalogue'}, None
 
     key = get_api_key()
@@ -470,7 +451,7 @@ def catalogue_login():
     code = (request.json or {}).get('code', '').strip()
     if code != CATALOGUE_ACCESS_CODE:
         return jsonify({'ok': False, 'error': 'Invalid access code'}), 403
-    return jsonify({'ok': True, 'token': _issue_catalogue_token()})
+    return jsonify({'ok': True, 'token': access_db.issue_catalogue_token()})
 
 
 @app.route('/portal/chat', methods=['POST'])
