@@ -3899,7 +3899,19 @@ by most village residents.</div>
                         layout.showlegend = false;
 
                     } else if (spec.chart_type === 'map') {
-                        const md = spec.map_data || [];
+                        // Validate coordinates — reject points clearly outside Africa
+                        // (catches swapped Latitude/Longitude from bad SQL aliases)
+                        const validPoint = d => d.lat >= -35 && d.lat <= 38 && d.lon >= -20 && d.lon <= 52;
+                        const rawMd = spec.map_data || [];
+                        const badPts = rawMd.filter(d => !validPoint(d));
+                        if (badPts.length > rawMd.length * 0.5 && rawMd.length > 0) {
+                            el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--coral);text-align:center;padding:1rem;font-size:0.85rem;">
+                                ⚠️ Map coordinates appear incorrect — latitude and longitude may be swapped.<br>
+                                Expected: Gambia lat 12–14°N · Kenya lat -5–5° · Mozambique lat -27 to -10°
+                            </div>`;
+                            return;
+                        }
+                        const md = rawMd.filter(validPoint);
                         const hasValue = md.some(d => d.value !== undefined && d.value !== null);
                         const hasGroup = md.some(d => d.group);
 

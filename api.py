@@ -500,8 +500,8 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
 - **map** (geographic scatter — always aggregate to village level for clean maps):
   ```sql
   SELECT Village,
-      AVG(Latitude)              AS lat,
-      AVG(Longitude)             AS lon,
+      AVG(Latitude)              AS lat,       -- Latitude → lat (ALWAYS, never swap)
+      AVG(Longitude)             AS lon,       -- Longitude → lon (ALWAYS, never swap)
       MAX(Country)               AS country,
       AVG(CAMS2_pm2p5_ugm3)      AS value,
       COUNT(DISTINCT f2a_participant_id) AS n_participants
@@ -511,8 +511,14 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
   ```
   → map_data: [{lat, lon, label: Village + " (" + country + ")", value, size: n_participants}]
   → color_label: "Mean PM2.5 (μg/m³)"
-  For binary outcomes (e.g. preterm rate): use AVG(CASE WHEN preterm='Yes' THEN 1.0 ELSE 0.0 END)*100 AS value → color_label: "Preterm Rate (%)"
-  Participant-level maps: GROUP BY f2a_participant_id — use for showing individual variation, LIMIT 3000.
+  For binary outcomes (e.g. preterm rate): AVG(CASE WHEN preterm='Yes' THEN 1.0 ELSE 0.0 END)*100 AS value → color_label: "Preterm Rate (%)"
+  Participant-level maps: GROUP BY f2a_participant_id — LIMIT 3000.
+
+  COORDINATE VALIDATION — check your map_data before rendering:
+  - Gambia:     lat 12–14°N  (positive),  lon -17 to -13°W (negative)
+  - Kenya:      lat -5 to 5°N (near zero), lon  34–42°E    (positive ~39)
+  - Mozambique: lat -27 to -10°S (negative), lon 32–41°E  (positive ~35)
+  If any point falls outside these ranges you have swapped Latitude/Longitude — fix the SQL aliases before calling render_chart.
 
 - **forest** (always call after run_regression — use the coefficients it returned):
   → forest_data: [{variable, coef, ci_lower, ci_upper, p_value, stars}] — exclude Intercept row
