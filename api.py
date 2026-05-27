@@ -473,6 +473,7 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
 | "relationship between X and Y", "does X correlate with Y" | scatter |
 | "correlation matrix", "correlations between multiple variables" | heatmap |
 | After run_regression with multiple predictors | forest |
+| "map", "where are participants", "geographic", "spatial distribution", "show on a map" | map |
 | Single scalar result (one number) | no chart needed |
 
 **How to query and build each type:**
@@ -496,6 +497,23 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
   → x_labels=y_labels=[var names], z_values=[[1,r_ab,…],[r_ab,1,…],…]
 - **scatter**: SELECT col_a, col_b FROM daily_data ORDER BY RANDOM() LIMIT 500
   → scatter_data: [{name, x:[...], y:[...]}] — one series per group if comparing countries
+- **map** (geographic scatter — always aggregate to village level for clean maps):
+  ```sql
+  SELECT Village,
+      AVG(Latitude)              AS lat,
+      AVG(Longitude)             AS lon,
+      MAX(Country)               AS country,
+      AVG(CAMS2_pm2p5_ugm3)      AS value,
+      COUNT(DISTINCT f2a_participant_id) AS n_participants
+  FROM daily_data
+  WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL AND Country IS NOT NULL
+  GROUP BY Village
+  ```
+  → map_data: [{lat, lon, label: Village + " (" + country + ")", value, size: n_participants}]
+  → color_label: "Mean PM2.5 (μg/m³)"
+  For binary outcomes (e.g. preterm rate): use AVG(CASE WHEN preterm='Yes' THEN 1.0 ELSE 0.0 END)*100 AS value → color_label: "Preterm Rate (%)"
+  Participant-level maps: GROUP BY f2a_participant_id — use for showing individual variation, LIMIT 3000.
+
 - **forest** (always call after run_regression — use the coefficients it returned):
   → forest_data: [{variable, coef, ci_lower, ci_upper, p_value, stars}] — exclude Intercept row
   → scale: 'OR' for Logit models (exponentiates to odds ratios, null line at 1), 'coef' for OLS
@@ -636,8 +654,8 @@ _CHAT_TOOLS = [
             "properties": {
                 "chart_type": {
                     "type": "string",
-                    "enum": ["bar", "line", "pie", "doughnut", "scatter", "box", "heatmap", "forest"],
-                    "description": "bar/line/pie/doughnut → use labels+datasets. box → use box_data (needs PERCENTILE_CONT query). heatmap → use x_labels+y_labels+z_values. scatter → use scatter_data. forest → use forest_data (coefficients + CIs from regression)."
+                    "enum": ["bar", "line", "pie", "doughnut", "scatter", "box", "heatmap", "forest", "map"],
+                    "description": "bar/line/pie/doughnut → use labels+datasets. box → use box_data (needs PERCENTILE_CONT query). heatmap → use x_labels+y_labels+z_values. scatter → use scatter_data. forest → use forest_data (coefficients + CIs from regression). map → use map_data (lat/lon points from village or participant aggregation)."
                 },
                 "title": {"type": "string", "description": "Chart title"},
                 "labels": {
@@ -716,6 +734,23 @@ _CHAT_TOOLS = [
                     "enum": ["coef", "OR"],
                     "description": "coef (default) — plot raw coefficients with null line at 0. OR — exponentiate to odds ratios, null line at 1. Use OR for Logit models."
                 },
+                "map_data": {
+                    "type": "array",
+                    "description": "Points for a geographic scatter map. Aggregate to village level (GROUP BY Village) for cleaner maps — 525 villages is ideal. Each point has a lat/lon, a numeric value for colour, and a label for hover.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "lat":   {"type": "number", "description": "Latitude"},
+                            "lon":   {"type": "number", "description": "Longitude"},
+                            "label": {"type": "string",  "description": "Hover label — village name, country, or participant ID"},
+                            "value": {"type": "number",  "description": "Numeric value for colour scale — e.g. mean PM2.5, preterm rate"},
+                            "size":  {"type": "number",  "description": "Optional marker size hint — e.g. n_participants"},
+                            "group": {"type": "string",  "description": "Optional category for colour — e.g. Country"}
+                        },
+                        "required": ["lat", "lon", "label"]
+                    }
+                },
+                "color_label": {"type": "string", "description": "Label for the colour scale on a map — e.g. 'Mean PM2.5 (μg/m³)'"},
                 "y_label": {"type": "string", "description": "Y-axis label"},
                 "x_label": {"type": "string", "description": "X-axis label"}
             },

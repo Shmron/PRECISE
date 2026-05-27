@@ -2569,6 +2569,8 @@ by most village residents.</div>
                                     <span onclick="setAndRun('Scatter plot of mean RWI vs mean PM2.5 per participant by country')" class="cap-chip">Scatter plots</span>
                                     <span onclick="setAndRun('Proportion of preterm births by country')" class="cap-chip">Pie / breakdowns</span>
                                     <span onclick="setAndRun('Compare low birth weight rates between urban and rural participants')" class="cap-chip">Country &amp; settlement comparisons</span>
+                                    <span onclick="setAndRun('Map of mean PM2.5 exposure by village across all countries')" class="cap-chip">Geographic maps</span>
+                                    <span onclick="setAndRun('Map of preterm birth rate by village')" class="cap-chip">Outcome maps</span>
                                 </div>
                             </div>
 
@@ -3041,6 +3043,7 @@ by most village residents.</div>
                     chartDiv.style.cssText = 'background:white;border-radius:10px;padding:0.75rem;margin-top:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);overflow:hidden;';
                     const h = spec.chart_type === 'heatmap' ? 380
                             : spec.chart_type === 'forest'  ? Math.max(280, ((spec.forest_data||[]).length * 36) + 80)
+                            : spec.chart_type === 'map'     ? 420
                             : 300;
                     chartDiv.innerHTML = `<div id="${chartId}" style="width:100%;height:${h}px;"></div>`;
                     answerArea.appendChild(chartDiv);
@@ -3823,6 +3826,7 @@ by most village residents.</div>
                 // Plotly renders into a plain div — height set on container
                 const h = spec.chart_type === 'heatmap' ? 380
                         : spec.chart_type === 'forest'  ? Math.max(280, ((spec.forest_data||[]).length * 36) + 80)
+                        : spec.chart_type === 'map'     ? 420
                         : 300;
                 msgEl.innerHTML = `
                     <div style="background:white;border-radius:10px;padding:0.75rem;
@@ -3893,6 +3897,78 @@ by most village residents.</div>
                         layout.margin = { t: 50, r: 100, b: 140, l: 140 };
                         layout.xaxis = { ...layout.xaxis, tickangle: -45 };
                         layout.showlegend = false;
+
+                    } else if (spec.chart_type === 'map') {
+                        const md = spec.map_data || [];
+                        const hasValue = md.some(d => d.value !== undefined && d.value !== null);
+                        const hasGroup = md.some(d => d.group);
+
+                        if (hasValue && !hasGroup) {
+                            // Single continuous colour scale
+                            traces = [{
+                                type: 'scattermapbox',
+                                lat:  md.map(d => d.lat),
+                                lon:  md.map(d => d.lon),
+                                mode: 'markers',
+                                marker: {
+                                    size:        md.map(d => d.size ? Math.max(6, Math.min(20, Math.sqrt(d.size) * 1.5)) : 8),
+                                    color:       md.map(d => d.value),
+                                    colorscale:  [[0,'#4ECDC4'],[0.5,'#F2CC8F'],[1,'#E07A5F']],
+                                    colorbar: {
+                                        title: { text: spec.color_label || 'Value', side: 'right', font: { size: 11 } },
+                                        thickness: 12, len: 0.7,
+                                    },
+                                    opacity: 0.85,
+                                },
+                                text: md.map(d => {
+                                    const v = d.value !== null && d.value !== undefined ? d.value.toFixed(2) : '—';
+                                    const n = d.size ? ` · n=${Math.round(d.size)}` : '';
+                                    return `<b>${d.label}</b><br>${spec.color_label || 'Value'}: ${v}${n}`;
+                                }),
+                                hovertemplate: '%{text}<extra></extra>',
+                                showlegend: false,
+                            }];
+                        } else {
+                            // Categorical groups or no value — colour by group
+                            const groups = hasGroup
+                                ? [...new Set(md.map(d => d.group))]
+                                : ['All'];
+                            traces = groups.map((g, i) => {
+                                const pts = hasGroup ? md.filter(d => d.group === g) : md;
+                                return {
+                                    type: 'scattermapbox', name: g,
+                                    lat:  pts.map(d => d.lat),
+                                    lon:  pts.map(d => d.lon),
+                                    mode: 'markers',
+                                    marker: {
+                                        size:    pts.map(d => d.size ? Math.max(6, Math.min(20, Math.sqrt(d.size) * 1.5)) : 8),
+                                        color:   P[i % P.length],
+                                        opacity: 0.8,
+                                    },
+                                    text: pts.map(d => {
+                                        const v = d.value !== null && d.value !== undefined ? ` · ${d.value.toFixed(2)}` : '';
+                                        const n = d.size ? ` · n=${Math.round(d.size)}` : '';
+                                        return `<b>${d.label}</b>${v}${n}`;
+                                    }),
+                                    hovertemplate: '%{text}<extra></extra>',
+                                };
+                            });
+                        }
+
+                        // Auto-centre on the data points
+                        const lats = md.map(d => d.lat).filter(Boolean);
+                        const lons = md.map(d => d.lon).filter(Boolean);
+                        const cLat = lats.length ? lats.reduce((a,b) => a+b,0) / lats.length : 0;
+                        const cLon = lons.length ? lons.reduce((a,b) => a+b,0) / lons.length : 20;
+
+                        layout.mapbox = {
+                            style: 'open-street-map',
+                            center: { lat: cLat, lon: cLon },
+                            zoom: 4,
+                        };
+                        layout.margin  = { t: spec.title ? 40 : 10, r: 0, b: 0, l: 0 };
+                        layout.showlegend = hasGroup;
+                        layout.legend = { orientation: 'h', y: -0.05, font: { size: 11 } };
 
                     } else if (spec.chart_type === 'forest') {
                         const fd    = (spec.forest_data || []);
@@ -4196,6 +4272,11 @@ by most village residents.</div>
             '🔬 Try: "Compare preconception vs gestational PM2.5 effects on low birth weight" — both windows in one model.',
             'Specify "first trimester", "second trimester", or "third trimester" to focus on critical developmental windows.',
             'T3 (third trimester) exposure is most linked to preterm birth; T1 matters most for structural outcomes.',
+
+            // Maps
+            '🗺 Try: "Map of mean PM2.5 exposure by village" — plots all 525 communities on an interactive map.',
+            '🗺 Try: "Map of preterm birth rate by village" — geographic view of birth outcomes.',
+            '🗺 Say "show on a map" or "geographic distribution" to get an interactive village map coloured by any variable.',
 
             // Variable hints
             'UTCI (Universal Thermal Climate Index) is the gold standard heat stress variable in this dataset.',
