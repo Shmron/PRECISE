@@ -533,28 +533,52 @@ formula syntax (R-style):
 - 'Birthweight ~ CAMS2_pm2p5_ugm3 * RWI'  — interaction term
 
 SQL rules for run_regression — ALWAYS aggregate to EXACTLY one row per participant:
-- GROUP BY f2a_participant_id only — do NOT include Country or GHSL_class in GROUP BY (they are constant per participant; include them in SELECT as MAX(Country) etc.)
-- WHERE clause must filter to non-NULL values of both outcome AND all predictors BEFORE grouping
-- LIMIT 10000
 
+**EXPOSURE WINDOW — this is the most important rule:**
+The dataset contains daily rows from preconception through ~1 month post-delivery. For any regression linking exposure to a birth outcome you MUST restrict exposure averaging to the GESTATIONAL PERIOD ONLY (conception_date to delivery_date). Averaging across preconception or post-delivery days is epidemiologically wrong.
+
+Default gestational exposure filter:
+  WHERE exposure_day::DATE >= conception_date
+    AND exposure_day::DATE <= delivery_date
+
+Trimester-specific windows (use when user asks about a specific trimester or critical window):
+  T1 (organogenesis, weeks 1–12):  DATEDIFF('day', conception_date, exposure_day::DATE) BETWEEN 0 AND 83
+  T2 (growth, weeks 13–26):         DATEDIFF('day', conception_date, exposure_day::DATE) BETWEEN 84 AND 181
+  T3 (maturation, weeks 27–birth):  DATEDIFF('day', conception_date, exposure_day::DATE) >= 182
+
+GROUP BY f2a_participant_id only — do NOT include Country, GHSL_class, or other categorical columns in GROUP BY (they are constant per participant; include them in SELECT as MAX(Country) etc.)
+
+Binary VARCHAR outcomes (lowbirthweight, preterm, stillbirth, neonataldeath, livebirth) MUST be converted with CASE WHEN col='Yes' THEN 1 ELSE 0 END.
+
+LIMIT 10000 always.
+
+**Canonical example — gestational PM2.5 exposure and low birth weight:**
 ```sql
 SELECT f2a_participant_id,
-    MAX(Country)           AS Country,
-    MAX(GHSL_class)        AS GHSL_class,
-    AVG(CAMS2_pm2p5_ugm3) AS CAMS2_pm2p5_ugm3,
-    AVG(RWI)               AS RWI,
-    MAX(Birthweight)       AS Birthweight,
-    MAX(CASE WHEN lowbirthweight='Yes' THEN 1 ELSE 0 END) AS lowbirthweight
+    MAX(Country)    AS Country,
+    MAX(GHSL_class) AS GHSL_class,
+    -- gestational-period mean exposure only
+    AVG(CASE WHEN exposure_day::DATE >= conception_date
+              AND exposure_day::DATE <= delivery_date
+             THEN CAMS2_pm2p5_ugm3 END)                          AS PM25_gestational,
+    AVG(CASE WHEN exposure_day::DATE >= conception_date
+              AND exposure_day::DATE <= delivery_date
+             THEN RWI END)                                         AS RWI,
+    MAX(Birthweight)                                               AS Birthweight,
+    MAX(CASE WHEN lowbirthweight='Yes' THEN 1 ELSE 0 END)         AS lowbirthweight,
+    MAX(CASE WHEN preterm='Yes' THEN 1 ELSE 0 END)                AS preterm
 FROM daily_data
 WHERE Country IS NOT NULL
+  AND conception_date IS NOT NULL
+  AND delivery_date IS NOT NULL
   AND Birthweight IS NOT NULL
-  AND CAMS2_pm2p5_ugm3 IS NOT NULL
 GROUP BY f2a_participant_id
 LIMIT 10000
 ```
-Binary VARCHAR outcomes (lowbirthweight, preterm, stillbirth, neonataldeath, livebirth) MUST be converted with CASE WHEN col='Yes' THEN 1 ELSE 0 END.
 
-CRITICAL — the N in the regression result should roughly equal the number of DISTINCT participants with complete data. If the reported N seems too high (e.g. > 7,000 for this 6,960-participant study), the SQL is likely generating multiple rows per participant — check GROUP BY and fix it.
+CRITICAL — the N should be the number of DISTINCT participants with complete data (≤ 6,960). If N > 6,960 the GROUP BY is wrong — fix it before proceeding.
+
+When reporting results, always state clearly: "exposure averaged over the gestational period" (or "T1/T2/T3" if trimester-specific).
 
 After run_regression returns results, ALWAYS call render_chart with chart_type='forest' using the coefficients from the result (exclude the Intercept row). Use scale='OR' for Logit models. Then write a clinical interpretation: for each significant predictor (p<0.05), state the coefficient and what it means for maternal health. Mention N and R²/pseudo-R².
 
