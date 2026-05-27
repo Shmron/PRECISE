@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
     <style>
         :root {
             --copper: #B87333;
@@ -2508,7 +2509,7 @@ by most village residents.</div>
                         <div style="font-size: 3rem; margin-bottom: 0.5rem;">&#129302;</div>
                         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--charcoal); margin-bottom: 0.5rem;">Ask Shmron</h3>
                         <p style="color: var(--slate); font-size: 0.95rem; max-width: 450px; margin: 0 auto;">
-                            Query <strong>6,960 participants</strong> across Kenya, Mozambique & The Gambia using natural language
+                            Query participants across Kenya, Mozambique & The Gambia using natural language
                         </p>
                     </div>
 
@@ -2526,46 +2527,33 @@ by most village residents.</div>
                         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(78,205,196,0.15);">
                             <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--slate); margin-bottom: 0.6rem;">Try asking about:</div>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                <button onclick="document.getElementById('qbNLQuery').value='How many participants have PM2.5 above WHO guidelines (15)?'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--teal-deep)'; this.style.color='white'; this.style.borderColor='var(--teal-deep)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Air quality</button>
-                                <button onclick="document.getElementById('qbNLQuery').value='Compare walking time to health facilities between urban and rural areas'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--coral)'; this.style.color='white'; this.style.borderColor='var(--coral)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Healthcare access</button>
-                                <button onclick="document.getElementById('qbNLQuery').value='Which country has the highest temperature exposure?'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--copper)'; this.style.color='white'; this.style.borderColor='var(--copper)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Heat exposure</button>
-                                <button onclick="document.getElementById('qbNLQuery').value='Show financial autonomy statistics by country'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--burgundy)'; this.style.color='white'; this.style.borderColor='var(--burgundy)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Social factors</button>
-                                <button onclick="document.getElementById('qbNLQuery').value='Participants in top 10% of black carbon exposure'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--slate)'; this.style.color='white'; this.style.borderColor='var(--slate)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Extreme exposures</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Box plot of mean PM2.5 per participant across countries'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--teal-deep)'; this.style.color='white'; this.style.borderColor='var(--teal-deep)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">PM2.5 by participant</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Monthly trend of UTCI heat stress across countries'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--copper)'; this.style.color='white'; this.style.borderColor='var(--copper)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Heat trend</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Correlation matrix of UTCI, PM2.5, dust AOD and relative humidity'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--slate)'; this.style.color='white'; this.style.borderColor='var(--slate)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Correlation matrix</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Compare low birth weight rates between urban and rural participants'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--burgundy)'; this.style.color='white'; this.style.borderColor='var(--burgundy)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Birth outcomes</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Scatter plot of mean RWI vs mean PM2.5 per participant by country'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--coral)'; this.style.color='white'; this.style.borderColor='var(--coral)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Wealth vs air quality</button>
+                                <button onclick="document.getElementById('qbNLQuery').value='Regression of PM2.5 and wealth index on birth weight controlling for country'; runNLQuery();" style="padding: 0.5rem 1rem; background: white; border: 1px solid var(--mist); border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; color: var(--charcoal);" onmouseover="this.style.background='var(--lavender)'; this.style.color='white'; this.style.borderColor='var(--lavender)';" onmouseout="this.style.background='white'; this.style.color='var(--charcoal)'; this.style.borderColor='var(--mist)';">Regression analysis</button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Rotating query tips -->
+                    <div id="nlQueryTip" style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;min-height:1.5rem;">
+                        <span style="font-size:0.75rem;color:var(--teal-deep);flex-shrink:0;">💡</span>
+                        <span id="nlQueryTipText" style="font-size:0.78rem;color:var(--slate);font-style:italic;transition:opacity 0.4s;"></span>
                     </div>
 
                     <!-- Response Area -->
                     <div id="qbNLResponse" style="margin-top: 1.5rem; padding: 1.5rem; background: white; border-radius: 10px; border: 1px solid var(--mist); display: none; font-size: 0.95rem; line-height: 1.7; box-shadow: 0 2px 12px rgba(45,52,54,0.06);"></div>
 
-                    <!-- Data Overview Cards -->
-                    <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                        <div style="background: rgba(26,83,92,0.07); border-radius: 6px; padding: 0.4rem 0.9rem; border-left: 3px solid var(--teal-deep); display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--teal-deep);">3,534</span>
-                            <span style="font-size: 0.8rem; color: var(--slate);">Kenya</span>
-                        </div>
-                        <div style="background: rgba(224,122,95,0.07); border-radius: 6px; padding: 0.4rem 0.9rem; border-left: 3px solid var(--coral); display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--coral);">2,097</span>
-                            <span style="font-size: 0.8rem; color: var(--slate);">Mozambique</span>
-                        </div>
-                        <div style="background: rgba(184,115,51,0.07); border-radius: 6px; padding: 0.4rem 0.9rem; border-left: 3px solid var(--copper); display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--copper);">1,328</span>
-                            <span style="font-size: 0.8rem; color: var(--slate);">The Gambia</span>
-                        </div>
-                        <div style="background: rgba(61,90,115,0.07); border-radius: 6px; padding: 0.4rem 0.9rem; border-left: 3px solid var(--slate); display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--slate);">6,960</span>
-                            <span style="font-size: 0.8rem; color: var(--slate);">Total participants</span>
-                        </div>
-                    </div>
+                    <!-- Data Overview Cards — populated from API on open -->
+                    <div id="explorerStatCards" style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;"></div>
 
-                    <!-- Variables Info -->
-                    <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--sand); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                    <!-- Variables Info — populated from schema endpoint -->
+                    <div id="explorerVarsBar" style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--sand); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                             <span style="font-size: 1.3rem;">&#128202;</span>
-                            <span style="font-size: 0.9rem; color: var(--charcoal);"><strong>72 variables</strong> available for querying</span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--slate);">
-                            Air quality &bull; Temperature &bull; Precipitation &bull; Healthcare access &bull; Social factors
+                            <span style="font-size: 0.9rem; color: var(--charcoal);">Air quality &bull; Heat stress &bull; Temperature &bull; Healthcare access &bull; Birth outcomes &bull; Social factors</span>
                         </div>
                     </div>
 
@@ -2739,6 +2727,31 @@ by most village residents.</div>
                 loadingEl.style.display = 'none';
                 document.getElementById('explorerContent').style.display = 'block';
                 renderFilters();
+
+                // Populate stat cards from live API data
+                const cards = document.getElementById('explorerStatCards');
+                if (cards) {
+                    const countries = (health.authorised_countries || []);
+                    const countryColors = {
+                        'Kenya':      { bg: 'rgba(26,83,92,0.07)',   border: 'var(--teal-deep)',  text: 'var(--teal-deep)' },
+                        'Mozambique': { bg: 'rgba(224,122,95,0.07)', border: 'var(--coral)',      text: 'var(--coral)' },
+                        'Gambia':     { bg: 'rgba(184,115,51,0.07)', border: 'var(--copper)',     text: 'var(--copper)' },
+                    };
+                    const totalParticipants = health.participants ? health.participants.toLocaleString() : '—';
+                    const totalRecords      = health.total_records ? (health.total_records / 1e6).toFixed(1) + 'M rows' : '';
+                    let html = '';
+                    for (const c of countries) {
+                        const col = countryColors[c] || { bg: 'rgba(61,90,115,0.07)', border: 'var(--slate)', text: 'var(--slate)' };
+                        html += `<div style="background:${col.bg};border-radius:6px;padding:0.4rem 0.9rem;border-left:3px solid ${col.border};display:flex;align-items:center;gap:0.5rem;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;font-weight:700;color:${col.text};">${c}</span>
+                        </div>`;
+                    }
+                    html += `<div style="background:rgba(61,90,115,0.07);border-radius:6px;padding:0.4rem 0.9rem;border-left:3px solid var(--slate);display:flex;align-items:center;gap:0.5rem;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--slate);">${totalParticipants}</span>
+                        <span style="font-size:0.8rem;color:var(--slate);">participants${totalRecords ? ' · ' + totalRecords : ''}</span>
+                    </div>`;
+                    cards.innerHTML = html;
+                }
             } catch (error) {
                 console.error('Failed to connect to data API:', error);
                 loadingEl.innerHTML = `
@@ -2811,47 +2824,81 @@ by most village residents.</div>
             }
         }
 
-        // Natural Language Query using AI
-        async function runNLQuery() {
-            const input = document.getElementById('qbNLQuery');
+        // ── NL Query conversation state ───────────────────────────────────────
+        let nlQueryHistory = [];   // persists across turns within one session
+
+        function clearNLConversation() {
+            nlQueryHistory = [];
             const responseDiv = document.getElementById('qbNLResponse');
+            responseDiv.style.display = 'none';
+            responseDiv.innerHTML = '';
+            const input = document.getElementById('qbNLQuery');
+            input.value = '';
+            input.placeholder = "Ask anything... e.g., 'How many rural participants have high PM2.5 exposure?'";
             const askBtn = document.querySelector('.qb-btn-ai');
-            const query = input.value.trim();
+            askBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Ask Shmron';
+        }
 
-            if (!query) {
-                alert('Please enter a question');
-                return;
-            }
+        // Natural Language Query using AI — stateful conversation
+        async function runNLQuery() {
+            const input     = document.getElementById('qbNLQuery');
+            const responseDiv = document.getElementById('qbNLResponse');
+            const askBtn    = document.querySelector('.qb-btn-ai');
+            const query     = input.value.trim();
 
-            // Disable button and show loading state
+            if (!query) { input.focus(); return; }
+
+            // Disable button while streaming
             askBtn.disabled = true;
-            askBtn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;"></span> Thinking...';
-            askBtn.style.opacity = '0.7';
+            askBtn.innerHTML = '<span style="width:14px;height:14px;border:2px solid rgba(255,255,255,0.35);border-top-color:white;border-radius:50%;display:inline-block;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px;"></span>Thinking…';
+            askBtn.style.opacity = '0.75';
 
+            // Show the response container
             responseDiv.style.display = 'block';
 
-            responseDiv.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div class="shmron-thinking" style="display: flex; gap: 4px;">
-                        <span style="width: 8px; height: 8px; background: var(--teal-deep); border-radius: 50%; animation: bounce 1.4s ease-in-out infinite;"></span>
-                        <span style="width: 8px; height: 8px; background: var(--teal-deep); border-radius: 50%; animation: bounce 1.4s ease-in-out 0.2s infinite;"></span>
-                        <span style="width: 8px; height: 8px; background: var(--teal-deep); border-radius: 50%; animation: bounce 1.4s ease-in-out 0.4s infinite;"></span>
+            // ── First turn: render the conversation header ────────────────────
+            if (nlQueryHistory.length === 0) {
+                responseDiv.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:0.75rem;margin-bottom:0.75rem;border-bottom:1px solid var(--mist);">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--slate);">Conversation thread</span>
+                        <button onclick="clearNLConversation()" style="font-size:0.75rem;color:var(--slate);background:none;border:1px solid var(--mist);border-radius:4px;padding:0.2rem 0.6rem;cursor:pointer;" onmouseover="this.style.background='var(--mist)'" onmouseout="this.style.background='none'">New analysis ×</button>
                     </div>
-                    <span style="color: var(--teal-deep); font-weight: 500;">Shmron is analyzing your query...</span>
+                    <div id="nlTurnContainer"></div>`;
+            }
+
+            // Append user question bubble
+            const turnContainer = document.getElementById('nlTurnContainer');
+            const turnEl = document.createElement('div');
+            turnEl.style.cssText = 'margin-bottom:1.25rem;';
+            turnEl.innerHTML = `
+                <div style="display:flex;align-items:baseline;gap:0.5rem;margin-bottom:0.5rem;">
+                    <span style="font-size:0.65rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.08em;color:var(--copper);font-weight:600;">You</span>
+                    <span style="font-size:0.88rem;color:var(--charcoal);font-weight:500;">${query}</span>
                 </div>
-                <style>
-                    @keyframes bounce {
-                        0%, 80%, 100% { transform: translateY(0); }
-                        40% { transform: translateY(-6px); }
-                    }
-                </style>
-            `;
+                <div class="nl-answer-area" style="padding-left:0.25rem;">
+                    <div class="nl-thinking" style="display:flex;align-items:center;gap:0.6rem;color:var(--teal-deep);font-weight:500;font-size:0.9rem;">
+                        <span style="display:flex;gap:3px;">
+                            <span style="width:7px;height:7px;background:var(--teal-deep);border-radius:50%;animation:bounce 1.4s ease-in-out infinite;"></span>
+                            <span style="width:7px;height:7px;background:var(--teal-deep);border-radius:50%;animation:bounce 1.4s ease-in-out 0.2s infinite;"></span>
+                            <span style="width:7px;height:7px;background:var(--teal-deep);border-radius:50%;animation:bounce 1.4s ease-in-out 0.4s infinite;"></span>
+                        </span>
+                        <span class="nl-status-text">Analysing…</span>
+                    </div>
+                </div>`;
+            turnContainer.appendChild(turnEl);
+            responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            const answerArea = turnEl.querySelector('.nl-answer-area');
+
+            // Push user turn to history
+            nlQueryHistory.push({ role: 'user', content: query });
+            input.value = '';
 
             try {
                 const resp = await fetch(API_BASE + '/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-Session-Token': ChatBot.sessionToken },
-                    body: JSON.stringify({ messages: [{ role: 'user', content: query }] }),
+                    body: JSON.stringify({ messages: nlQueryHistory }),
                 });
 
                 if (resp.status === 401) { handleExpiredSession(); return; }
@@ -2864,6 +2911,8 @@ by most village residents.</div>
                 const decoder = new TextDecoder();
                 let buffer    = '';
                 let finalText = '';
+                const chartSpecs  = [];
+                const statsTables = [];
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -2875,7 +2924,12 @@ by most village residents.</div>
                         if (!line.startsWith('data: ')) continue;
                         const evt = JSON.parse(line.slice(6));
                         if (evt.type === 'status') {
-                            responseDiv.querySelector('span').textContent = evt.text;
+                            const st = answerArea.querySelector('.nl-status-text');
+                            if (st) st.textContent = evt.text;
+                        } else if (evt.type === 'chart') {
+                            chartSpecs.push(evt.spec);
+                        } else if (evt.type === 'stats_table') {
+                            statsTables.push(evt.result);
                         } else if (evt.type === 'text') {
                             finalText = evt.text;
                         } else if (evt.type === 'error') {
@@ -2884,17 +2938,53 @@ by most village residents.</div>
                     }
                 }
 
-                responseDiv.innerHTML = ChatBot.formatMessage(finalText || 'Query completed. Check the results below.');
+                // Replace loading spinner with rendered answer
+                answerArea.innerHTML = ChatBot.formatMessage(finalText || 'Analysis complete.');
+
+                // Append charts
+                for (const spec of chartSpecs) {
+                    const chartId = 'nlchart-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+                    const chartDiv = document.createElement('div');
+                    chartDiv.style.cssText = 'background:white;border-radius:10px;padding:0.75rem;margin-top:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);overflow:hidden;';
+                    const h = (spec.chart_type === 'heatmap') ? 380 : 300;
+                    chartDiv.innerHTML = `<div id="${chartId}" style="width:100%;height:${h}px;"></div>`;
+                    answerArea.appendChild(chartDiv);
+                    ChatBot._renderChartSpec(chartId, spec);
+                }
+
+                // Append regression tables
+                for (const res of statsTables) {
+                    const tableDiv = document.createElement('div');
+                    tableDiv.style.marginTop = '1rem';
+                    tableDiv.innerHTML = ChatBot._renderStatsTableHTML(res);
+                    answerArea.appendChild(tableDiv);
+                }
+
+                // Add a separator after each turn (except the last)
+                const sep = document.createElement('div');
+                sep.style.cssText = 'margin-top:1.25rem;border-top:1px dashed rgba(78,205,196,0.25);';
+                turnContainer.appendChild(sep);
+
+                // Store assistant reply in history so follow-ups have context
+                nlQueryHistory.push({ role: 'assistant', content: finalText });
+
+                // Update input placeholder to signal follow-up mode
+                input.placeholder = 'Ask a follow-up… e.g. "Now add gestational age as a control"';
+                askBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Follow up';
 
             } catch (error) {
-                responseDiv.innerHTML = `<span style="color: var(--coral);">Error: ${error.message}</span>`;
+                answerArea.innerHTML = `<span style="color:var(--coral);">Error: ${error.message}</span>`;
+                nlQueryHistory.pop(); // remove the failed user turn
                 console.error('NL Query error:', error);
             } finally {
-                // Restore button state
-                const askBtn = document.querySelector('.qb-btn-ai');
                 askBtn.disabled = false;
-                askBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Ask';
+                if (nlQueryHistory.length > 1) {
+                    askBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Follow up';
+                } else {
+                    askBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Ask Shmron';
+                }
                 askBtn.style.opacity = '1';
+                input.focus();
             }
         }
 
@@ -2903,9 +2993,7 @@ by most village residents.</div>
             const nlInput = document.getElementById('qbNLQuery');
             if (nlInput) {
                 nlInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        runNLQuery();
-                    }
+                    if (e.key === 'Enter') { runNLQuery(); }
                 });
             }
         });
@@ -3503,6 +3591,10 @@ by most village residents.</div>
                         </div>
                         <div class="chat-messages" id="chat-messages"></div>
                         <div class="chat-input-area">
+                            <div id="chatTip" style="padding:0.3rem 0.75rem 0;display:flex;align-items:center;gap:0.4rem;min-height:1.4rem;">
+                                <span style="font-size:0.7rem;color:var(--teal-deep);flex-shrink:0;">💡</span>
+                                <span id="chatTipText" style="font-size:0.72rem;color:var(--slate);font-style:italic;transition:opacity 0.4s;"></span>
+                            </div>
                             <div class="chat-input-wrapper">
                                 <textarea class="chat-input" id="chat-input" placeholder="Ask about the indicators..." rows="1"></textarea>
                                 <button class="chat-send" id="chat-send" aria-label="Send message">
@@ -3597,6 +3689,136 @@ by most village residents.</div>
                 if (typingEl) typingEl.remove();
             },
 
+            // ── Regression stats table ────────────────────────────────────────
+            addStatsTable(result) {
+                const messagesEl = document.getElementById('chat-messages');
+                const msgEl = document.createElement('div');
+                msgEl.className = 'chat-message assistant';
+                msgEl.innerHTML = ChatBot._renderStatsTableHTML(result);
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) messagesEl.insertBefore(msgEl, typingEl);
+                else          messagesEl.appendChild(msgEl);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            },
+
+            // ── Chart rendering (Plotly.js) ───────────────────────────────────
+            addChartMessage(spec) {
+                const messagesEl = document.getElementById('chat-messages');
+                const msgEl = document.createElement('div');
+                msgEl.className = 'chat-message assistant';
+                const chartId = 'chart-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+                // Plotly renders into a plain div — height set on container
+                const h = (spec.chart_type === 'heatmap') ? 380 : 300;
+                msgEl.innerHTML = `
+                    <div style="background:white;border-radius:10px;padding:0.75rem;
+                                box-shadow:0 2px 8px rgba(0,0,0,0.07);max-width:100%;overflow:hidden;">
+                        <div id="${chartId}" style="width:100%;height:${h}px;"></div>
+                    </div>`;
+                const typingEl = document.getElementById('typing-indicator');
+                if (typingEl) messagesEl.insertBefore(msgEl, typingEl);
+                else          messagesEl.appendChild(msgEl);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+                requestAnimationFrame(() => this._renderChartSpec(chartId, spec));
+            },
+
+            _renderChartSpec(elId, spec) {
+                const el = document.getElementById(elId);
+                if (!el || typeof Plotly === 'undefined') {
+                    console.warn('Plotly not ready or element missing:', elId); return;
+                }
+                const P = ['#1A535C','#4ECDC4','#E07A5F','#F2CC8F','#3D5A73',
+                           '#6B8E6B','#B87333','#6B2737','#8338ec','#06d6a0'];
+
+                const base = {
+                    paper_bgcolor: 'white', plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { family: "'Source Sans 3',sans-serif", size: 11, color: '#3D5A73' },
+                    title: spec.title
+                        ? { text: spec.title, font: { size: 13, color: '#2D3436' }, x: 0.05 }
+                        : undefined,
+                    margin: { t: spec.title ? 45 : 20, r: 20, b: 60, l: 65 },
+                    xaxis: { title: spec.x_label || '', gridcolor: 'rgba(0,0,0,0.05)', zeroline: false },
+                    yaxis: { title: spec.y_label || '', gridcolor: 'rgba(0,0,0,0.05)', zeroline: false },
+                    showlegend: true,
+                    legend: { orientation: 'h', y: -0.25, font: { size: 11 } },
+                    colorway: P,
+                };
+                const cfg = { responsive: true, displayModeBar: false };
+
+                try {
+                    let traces = [], layout = { ...base };
+
+                    if (spec.chart_type === 'box') {
+                        traces = (spec.box_data || []).map((g, i) => ({
+                            type: 'box', name: g.name,
+                            // x positions each country on its own slot on the axis
+                            x: [g.name],
+                            lowerfence: [g.lowerfence ?? g.q1],
+                            q1: [g.q1], median: [g.median], q3: [g.q3],
+                            upperfence: [g.upperfence ?? g.q3],
+                            mean: g.mean !== undefined ? [g.mean] : undefined,
+                            // true = show mean diamond; 'sd' also needs stdev which we don't have
+                            boxmean: g.mean !== undefined,
+                            marker: { color: P[i % P.length], size: 6 },
+                            line:   { color: P[i % P.length] },
+                            fillcolor: P[i % P.length] + '55',
+                        }));
+                        layout.boxmode = 'group';
+                        layout.showlegend = true;
+
+                    } else if (spec.chart_type === 'heatmap') {
+                        const z = spec.z_values || [];
+                        traces = [{
+                            type: 'heatmap', z,
+                            x: spec.x_labels, y: spec.y_labels,
+                            colorscale: [[0,'#E07A5F'],[0.5,'#f5f5f5'],[1,'#1A535C']],
+                            zmid: 0, zmin: -1, zmax: 1,
+                            text: z.map(row => row.map(v => v != null ? v.toFixed(2) : '')),
+                            texttemplate: '%{text}', showscale: true,
+                        }];
+                        layout.margin = { t: 50, r: 100, b: 140, l: 140 };
+                        layout.xaxis = { ...layout.xaxis, tickangle: -45 };
+                        layout.showlegend = false;
+
+                    } else if (spec.chart_type === 'scatter') {
+                        traces = (spec.scatter_data || []).map((s, i) => ({
+                            type: 'scatter', mode: 'markers', name: s.name,
+                            x: s.x, y: s.y,
+                            marker: { color: P[i % P.length], size: 5, opacity: 0.6 },
+                        }));
+
+                    } else if (spec.chart_type === 'pie' || spec.chart_type === 'doughnut') {
+                        const ds = (spec.datasets || [])[0] || {};
+                        traces = [{
+                            type: 'pie', labels: spec.labels || [], values: ds.data || [],
+                            hole: spec.chart_type === 'doughnut' ? 0.42 : 0,
+                            marker: { colors: P },
+                            textinfo: 'label+percent', hoverinfo: 'label+value+percent',
+                        }];
+                        layout.showlegend = true;
+                        layout.margin = { t: 45, r: 20, b: 20, l: 20 };
+
+                    } else {
+                        // bar or line
+                        const isLine = spec.chart_type === 'line';
+                        const single = !spec.datasets || spec.datasets.length === 1;
+                        traces = (spec.datasets || []).map((ds, i) => ({
+                            type: isLine ? 'scatter' : 'bar',
+                            mode: isLine ? 'lines+markers' : undefined,
+                            name: ds.label, x: spec.labels || [], y: ds.data || [],
+                            marker: {
+                                color: single
+                                    ? (spec.labels || []).map((_, j) => P[j % P.length])
+                                    : P[i % P.length],
+                            },
+                            line: isLine ? { color: P[i % P.length], width: 2.5 } : undefined,
+                        }));
+                        if (!isLine) layout.barmode = 'group';
+                    }
+
+                    Plotly.newPlot(el, traces, layout, cfg);
+                } catch(e) { console.error('Plotly render error:', e, spec); }
+            },
+
             async sendMessage() {
                 const input = document.getElementById('chat-input');
                 const message = input.value.trim();
@@ -3676,6 +3898,10 @@ by most village residents.</div>
 
                         if (evt.type === 'status') {
                             this.updateTypingText(evt.text);
+                        } else if (evt.type === 'chart') {
+                            this.addChartMessage(evt.spec);
+                        } else if (evt.type === 'stats_table') {
+                            this.addStatsTable(evt.result);
                         } else if (evt.type === 'text') {
                             finalText = evt.text;
                         } else if (evt.type === 'error') {
@@ -3697,6 +3923,53 @@ by most village residents.</div>
                 if (typingEl) {
                     typingEl.innerHTML = `<span class="typing-text" style="font-size: 0.8rem; color: var(--slate);">${text}</span>`;
                 }
+            },
+
+            // Called as ChatBot._renderStatsTableHTML(result) from NL query path too
+            _renderStatsTableHTML(r) {
+                const { title, model_type, formula, n_obs, r_squared, pseudo_r_squared, aic, coefficients } = r;
+                const r2 = r_squared !== undefined ? r_squared : pseudo_r_squared;
+                const r2Label = r_squared !== undefined ? 'R²' : 'Pseudo-R²';
+                const rows = (coefficients || []).map(c => {
+                    const pStr = c.p_value < 0.001 ? '&lt;0.001' : c.p_value.toFixed(3);
+                    const bg   = c.stars === '***' ? 'background:rgba(26,83,92,0.06);'
+                               : c.stars === '**'  ? 'background:rgba(26,83,92,0.03);'
+                               : c.stars === '*'   ? 'background:rgba(212,175,55,0.07);' : '';
+                    const starColor = c.stars ? 'color:var(--copper);font-weight:700;' : 'color:var(--slate);';
+                    return `<tr style="${bg}">
+                        <td style="padding:0.35rem 0.7rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;border-bottom:1px solid rgba(0,0,0,0.05);">${c.variable}</td>
+                        <td style="padding:0.35rem 0.7rem;text-align:right;font-weight:600;border-bottom:1px solid rgba(0,0,0,0.05);">${c.coef.toFixed(4)}</td>
+                        <td style="padding:0.35rem 0.7rem;text-align:right;color:var(--slate);border-bottom:1px solid rgba(0,0,0,0.05);">${c.se !== undefined ? c.se.toFixed(4) : '—'}</td>
+                        <td style="padding:0.35rem 0.7rem;text-align:right;color:var(--slate);font-size:0.75rem;border-bottom:1px solid rgba(0,0,0,0.05);">[${c.ci_lower.toFixed(3)}, ${c.ci_upper.toFixed(3)}]</td>
+                        <td style="padding:0.35rem 0.7rem;text-align:right;border-bottom:1px solid rgba(0,0,0,0.05);">${pStr}</td>
+                        <td style="padding:0.35rem 0.7rem;text-align:center;${starColor}border-bottom:1px solid rgba(0,0,0,0.05);">${c.stars || 'ns'}</td>
+                    </tr>`;
+                }).join('');
+                return `
+                <div style="background:white;border-radius:10px;padding:1rem 1.1rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);max-width:100%;overflow-x:auto;">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.4rem;border-bottom:2px solid var(--teal-deep);padding-bottom:0.6rem;">
+                        <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;color:var(--charcoal);">${title}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--slate);">
+                            ${model_type} &nbsp;·&nbsp; N=${(n_obs||0).toLocaleString()} &nbsp;·&nbsp; ${r2Label}=${r2 !== undefined ? r2.toFixed(3) : '?'} &nbsp;·&nbsp; AIC=${aic !== undefined ? aic.toFixed(0) : '?'}
+                        </div>
+                    </div>
+                    <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+                        <thead>
+                            <tr style="color:var(--teal-deep);font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.04em;">
+                                <th style="padding:0.3rem 0.7rem;text-align:left;">Variable</th>
+                                <th style="padding:0.3rem 0.7rem;text-align:right;">Coef.</th>
+                                <th style="padding:0.3rem 0.7rem;text-align:right;">Std. Err.</th>
+                                <th style="padding:0.3rem 0.7rem;text-align:right;">95% CI</th>
+                                <th style="padding:0.3rem 0.7rem;text-align:right;">P-value</th>
+                                <th style="padding:0.3rem 0.7rem;text-align:center;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                    <div style="margin-top:0.55rem;font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;">
+                        *** p&lt;0.001 &nbsp;&nbsp; ** p&lt;0.01 &nbsp;&nbsp; * p&lt;0.05 &nbsp;&nbsp; ns not significant
+                    </div>
+                </div>`;
             }
         };
 
@@ -3708,6 +3981,76 @@ by most village residents.</div>
                 console.error('ChatBot initialization error:', e);
             }
         });
+    </script>
+
+    <!-- Rotating query tips -->
+    <script>
+    (function() {
+        const TIPS = [
+            // Aggregation level
+            'Say "per participant" for chronic exposure (one mean per person) — better for linking to birth outcomes.',
+            'Say "daily" or "raw" for day-to-day variability and peak exposure events.',
+            'Participant means smooth out extreme days; raw daily values capture episodic pollution spikes.',
+
+            // Chart types
+            'Ask for a "box plot" to see the full distribution — median, spread, and outliers.',
+            'Ask for a "correlation matrix" between variables to get a colour-coded heatmap.',
+            'Ask for a "scatter plot of X vs Y" to explore relationships between two variables.',
+            'Ask for a "monthly trend" to see seasonal patterns over the pregnancy period.',
+            'Ask for a "pie chart" or "breakdown" to see proportions across groups.',
+
+            // Query examples
+            'Try: "Box plot of mean PM2.5 per participant across countries" — shows chronic exposure.',
+            'Try: "Monthly trend of UTCI in Gambia" — reveals seasonal heat stress patterns.',
+            'Try: "Correlation matrix of UTCI, PM2.5, humidity and birth weight" — one heatmap.',
+            'Try: "Scatter plot of RWI vs PM2.5 per participant in Kenya" — wealth vs air quality.',
+            'Try: "Proportion of preterm births by country" — uses birth outcome data.',
+            'Try: "Compare low birth weight rates between urban and rural settlements".',
+
+            // Regression — make the capability discoverable
+            '🔬 New: Ask for a regression to get p-values and confidence intervals — e.g. "Regression of PM2.5 on birth weight".',
+            '🔬 Try: "Regression of PM2.5 and wealth index on birth weight controlling for country" — full OLS model with p-values.',
+            '🔬 Try: "Logistic regression of preterm birth on UTCI and RWI" — models binary outcomes.',
+            '🔬 Try: "Does dust exposure predict low birth weight, controlling for wealth and country?" — Shmron will run a logit model.',
+            'Add "controlling for RWI" or "adjusting for wealth" to any regression query to include the wealth index as a confounder.',
+            'Regression results appear as a publication-style table — coefficients, standard errors, 95% CIs, and significance stars.',
+
+            // Variable hints
+            'UTCI (Universal Thermal Climate Index) is the gold standard heat stress variable in this dataset.',
+            'Use MERRA2_dust_AOD550 for Saharan dust exposure — highest in The Gambia.',
+            'RWI (Relative Wealth Index) is available for all participants — useful for equity analysis.',
+            'Birth outcomes (preterm, sga, lowbirthweight) are in the same table — ask directly.',
+        ];
+
+        let tipIdx = 0;
+
+        function rotateTip(textElId) {
+            const el = document.getElementById(textElId);
+            if (!el) return;
+            el.style.opacity = '0';
+            setTimeout(() => {
+                el.textContent = TIPS[tipIdx % TIPS.length];
+                el.style.opacity = '1';
+                tipIdx++;
+            }, 400);
+        }
+
+        function startTips() {
+            // Stagger the two tips so they're never on the same message
+            rotateTip('chatTipText');
+            setTimeout(() => rotateTip('nlQueryTipText'), 3000);
+
+            setInterval(() => rotateTip('chatTipText'),    7000);
+            setInterval(() => rotateTip('nlQueryTipText'), 7000);
+        }
+
+        // Start once DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startTips);
+        } else {
+            startTips();
+        }
+    })();
     </script>
 
     <!-- Login Gate Script -->

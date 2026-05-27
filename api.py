@@ -120,6 +120,13 @@ def is_safe_query(sql):
     return True, None
 
 
+def _coerce(v):
+    """Coerce DuckDB return values to JSON-serialisable Python scalars."""
+    if hasattr(v, '__float__') and not isinstance(v, (int, str, bool, type(None))):
+        return float(v)
+    return v
+
+
 def apply_country_filter(sql, countries):
     """
     Wrap every reference to daily_data so queries are restricted to
@@ -221,11 +228,6 @@ def query():
         columns = [d[0] for d in cur.description]
 
         raw = cur.fetchmany(int(max_rows)) if max_rows else cur.fetchall()
-
-        def _coerce(v):
-            if hasattr(v, '__float__') and not isinstance(v, (int, str, bool, type(None))):
-                return float(v)
-            return v
 
         # Return rows as ordered lists (not dicts) so column order is
         # always guaranteed when the caller does pd.DataFrame(rows, columns=columns)
@@ -353,78 +355,198 @@ def query_csv():
 _CHAT_SYSTEM_PROMPT = """You are Shmron, an expert research assistant for the PRECISE Network study on Environmental & Social Determinants of Maternal Health. 6,960 pregnant women across 525 communities: Kenya (n=3,535, 370 communities), Mozambique (n=2,097, 74 communities), The Gambia (n=1,328, 81 communities).
 
 **CRITICAL RULES:**
-1. You MUST call execute_query for every question about data, exposures, counts, distributions, trends, or statistics. Never describe what you will do — just call the tool and present the results. Do not generate preamble text before calling the tool.
-2. NUMBERS MUST ADD UP: When reporting totals alongside country breakdowns, always use a single query with GROUP BY Country so all rows come from the same result set. Never compute a total in one query and country breakdown in another — they will diverge due to participants with NULL Country values. If you must use separate queries, always reconcile: total = Kenya + Mozambique + Gambia + (any NULL/unassigned). Flag discrepancies explicitly.
-3. Always include WHERE Country IS NOT NULL if you want only the three named countries, and make clear when you are excluding unassigned participants.
+1. You MUST call execute_query for every question about data, exposures, counts, distributions, trends, or statistics. Never describe what you will do — just call the tool and present the results.
+2. NUMBERS MUST ADD UP: Use GROUP BY Country in a single query when comparing countries. Never run separate queries for total vs breakdown — they diverge due to NULL Country rows. If you must use separate queries, reconcile totals explicitly.
+3. Always include WHERE Country IS NOT NULL if you want only the three named countries.
 
 Settlement breakdown (GHSL_class): Kenya 66% Urban/8% Rural/26% Peri-Urban | Mozambique 72%/21%/7% | Gambia 40%/60%/0.2%
 
-Social survey data (NOT in daily_data — cite directly if asked):
-- Financial autonomy: Kenya 68.8% | Mozambique 50.6% | Gambia 72.9%
-- Community help: Kenya 75.0% | Mozambique 51.3% | Gambia 49.6%
-- Partner availability: Kenya 80.3% | Mozambique 63.1% | Gambia 66.3%
-
 === DATABASE SCHEMA (table: daily_data, 3,129,121 rows — one row per participant per exposure day) ===
 
+ALL numeric columns below are DOUBLE unless stated otherwise. Do NOT use TRY_CAST on DOUBLE columns.
+
 **Identifiers & Geography:**
-- f2a_participant_id (VARCHAR): unique participant ID
+- f2a_participant_id, f2a_precise_id, participant_status (VARCHAR)
 - Country (VARCHAR): 'Kenya', 'Mozambique', 'Gambia'
-- Village (VARCHAR), Village code (BIGINT), Longitude/Latitude (DOUBLE)
+- Village (VARCHAR), Village code (DOUBLE), Longitude, Latitude (DOUBLE)
 - health_facility (VARCHAR), GHSL_class (VARCHAR): 'Urban', 'Rural', 'Peri-Urban'
-- climate_zone (VARCHAR), IPCC_zone (VARCHAR)
+- IPCC_zone, climate_zone, season_wb (VARCHAR)
 
 **Dates:**
-- exposure_day (DATE): the daily record date
-- conception_date (VARCHAR), delivery_date (DATE)
+- exposure_day (TIMESTAMP_NS): cast with exposure_day::DATE for date comparisons
+- conception_date (DATE), delivery_date (DATE), edd (DATE)
 
-**Air Quality:**
-- CAMS2_pm2p5_ugm3 (DOUBLE): PM2.5 μg/m³
-- Fire_Smoke_PM25, Non_Fire_Smoke_PM25 (DOUBLE)
-- CAMS2_aod550, CAMS2_bcaod550, CAMS2_duaod550 (DOUBLE): AOD
-- CAMS2_tcno2_umolm2, CAMS2_gtco3_DU, CAMS2_tcco_gm2, CAMS2_tcso2_DU (DOUBLE)
+**Air Quality (all DOUBLE):**
+- CAMS2_pm2p5_ugm3: PM2.5 μg/m³
+- Fire_Smoke_PM25, Non_Fire_Smoke_PM25
+- CAMS2_aod550: total aerosol optical depth
+- CAMS2_bcaod550: black carbon AOD
+- CAMS2_duaod550: CAMS dust AOD
+- duaod550, duaod550_village, duaod550_facility: alternative dust AOD source
+- CAMS2_tcno2_umolm2, CAMS2_gtco3_DU, CAMS2_tcco_gm2, CAMS2_tcso2_DU
 
-**Temperature:**
-- ERA5_T2M_Mean, ERA5_T2M_Max (DOUBLE)
-- ERA5_T2M_Min, ERA5_T2M_Diurnal (VARCHAR — use TRY_CAST AS DOUBLE)
-- ERA5_LST_village (VARCHAR — use TRY_CAST AS DOUBLE)
-- ERA5_T2M_deviation (DOUBLE)
-- ERA5_T2M_extreme_hot_day, ERA5_T2M_heatwave_day (BOOLEAN)
+**Dust (MERRA2 — all DOUBLE):**
+- MERRA2_dust_AOD550: dust aerosol optical depth at 550nm
+- MERRA2_dust_pm25_ugm3: dust-attributed PM2.5
+- MERRA2_dust_column_kgm2: vertically integrated dust column
 
-**Heat Stress:**
-- MERRA2_T2MWET_mean, MERRA2_T2MWET_max (DOUBLE): wet bulb temp
+**Temperature (all DOUBLE):**
+- ERA5_T2M_Mean, ERA5_T2M_Mean_village, ERA5_T2M_Mean_facility
+- ERA5_T2M_Max, ERA5_T2M_Max_village, ERA5_T2M_Max_facility
+- ERA5_T2M_Min, ERA5_T2M_Min_village, ERA5_T2M_Min_facility
+- ERA5_T2M_Diurnal: diurnal temperature range
+- ERA5_T2M_deviation, ERA5_T2M_threshold
+- ERA5_LST_mean, ERA5_LST_mean_village, ERA5_LST_mean_facility: land surface temp
+- ERA5_T2M_extreme_hot_day, ERA5_T2M_heatwave_day (VARCHAR: 'TRUE'/'FALSE' — use = 'TRUE' not = TRUE)
+- MERRA2_T2M_mean, MERRA2_T2M_max: air temperature
+- CAMS2_t2m_C, CAMS2_d2m_C: CAMS 2m temperature & dew point
 
-**Weather:**
-- Relative_Humidity (DOUBLE), Precipitation (DOUBLE)
+**Heat Stress Indices (all DOUBLE):**
+- UTCI_min, UTCI_mean, UTCI_max: Universal Thermal Climate Index (°C)
+  UTCI stress categories: <0°C cold, 9-26°C no stress, 26-32°C moderate, 32-38°C strong, 38-46°C very strong, >46°C extreme
+- WBGT_mean: Wet Bulb Globe Temperature
+- WBGTsimple_mean: simplified WBGT
+- WBT_mean: wet bulb temperature
+- humidex_mean: humidex comfort index
+- HI_mean: Heat Index
+- tasapp_mean: apparent temperature
+- tasdp_mean: dew point temperature
+- Wind_Chill_mean, MRT_mean: mean radiant temp, NET_mean, ws_mean
 
-**Environment:**
-- NDVI_village (VARCHAR — use TRY_CAST AS DOUBLE)
-- meanDEM (VARCHAR — use TRY_CAST AS DOUBLE): elevation
+**Weather (DOUBLE):**
+- Relative_Humidity, Precipitation
+- Precip_village, Precip_facility
 
-**Access to Care (all VARCHAR — use TRY_CAST AS DOUBLE):**
-- PW_WalkDist_Fac, PW_WalkTime_Fac, PW_DriveDist_Fac, PW_DriveTime_Fac
-- PW_PubTrans_Dist_Fac, PW_PubTrans_Time_Fac
-- PW_EuclMajorRd, PW_EuclHwy, PW_RoadDens, RQI
+**Environment (all DOUBLE):**
+- NDVI, NDVI_village, NDVI_facility: vegetation index
+- meanDEM: elevation (m)
+
+**Access to Care (all DOUBLE):**
+- PW_WalkDist_Fac, PW_WalkTime_Fac: walk distance (m) and time (min) to facility
+- PW_DriveDist_Fac, PW_DriveTime_Fac: drive distance and time
+- PW_PubTrans_Dist_Fac, PW_PubTrans_Time_Fac: public transport
+- PW_EuclMajorRd, PW_EuclHwy: Euclidean distance to roads
+- PW_RoadDens, RQI: road density and quality index
 - PW_WalkIso_MajorRd, PW_WalkIso_Hwy, PW_DriveIso_MajorRd, PW_DriveIso_Hwy
 
-**Socioeconomic:**
-- RWI (DOUBLE): Relative Wealth Index
-- VIIRS (DOUBLE): night lights
-- PPI_score, extreme_poverty_line, poverty_line (DOUBLE)
+**Socioeconomic (all DOUBLE):**
+- RWI: Relative Wealth Index
+- VIIRS: night-time light intensity
+- PPI_score, extreme_poverty_line, poverty_line
 
-**Soil (all VARCHAR — use TRY_CAST AS DOUBLE):**
+**Soil Nutrients (all DOUBLE):**
 - N_mean, P_mean, K_mean, Ca_mean
 
 **Demographics:**
-- age_enrolment (DOUBLE), Ethnicity, religion, marital_status (VARCHAR)
-- highest_school_level, occupation (VARCHAR)
+- age_enrolment (DOUBLE), Ethnicity, religion, marital_status, highest_school_level, occupation (VARCHAR)
+- dietary_diversity (DOUBLE), minimum_dietary_diversity (VARCHAR)
+
+**Maternal Anthropometry & Clinical (DOUBLE unless stated):**
+- maternal_height, maternal_weight, maternal_bmi, average_muac
+- maternal_bmi_categorised, average_muac_categorised (VARCHAR)
+- average_dbp, average_sbp: blood pressure
+- gh_overall, ch_overall, pe_overall, ht_overall, hdp_overall, bp_cat (VARCHAR): hypertensive disorders
+- hiv_status, deliverylocation, delivery_mode, cooking, heating, lighting (VARCHAR)
+- sanitation_jmp, water_jmp, hygiene_jmp, tobacco_use (VARCHAR)
+- parity, age_edd (DOUBLE)
+
+**Birth Outcomes:**
+- Birthweight (DOUBLE): grams
+- bwt_kg, bwt_percentile, bwt_zscore (DOUBLE)
+- GA_PRECISE, GA_clinical (DOUBLE): gestational age in weeks
+- preterm, sga, lowbirthweight, svn, neonataldeath, stillbirth, livebirth (VARCHAR: 'Yes'/'No' or '1'/'0')
+- sex_of_baby (VARCHAR), placenta_weight, placenta_weight_ratio (DOUBLE)
 
 === QUERY GUIDELINES ===
 Always use aggregations — never return more than 50 raw rows.
 
+**CHARTING RULES — MANDATORY:**
+Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in one turn). You decide the chart type — even when the user does not ask for one, pick the most appropriate type for the data returned:
+
+**AUTO-SELECT the right chart type:**
+| Situation | Chart type |
+|---|---|
+| "compare X across countries/settlements", means/counts grouped by category | bar |
+| "how does X vary", "distribution of", "spread", "outliers", "percentiles" | box |
+| "breakdown", "proportion", "share", "what percentage" | pie or doughnut |
+| "trend over time", "monthly", "seasonal", "how has X changed" | line |
+| "relationship between X and Y", "does X correlate with Y" | scatter |
+| "correlation matrix", "correlations between multiple variables" | heatmap |
+| Single scalar result (one number) | no chart needed |
+
+**How to query and build each type:**
+- **bar**: GROUP BY category → AVG/COUNT → labels=categories, datasets=[{label, data}]
+- **line**: DATE_TRUNC('month', exposure_day::DATE) as month GROUP BY month ORDER BY month → labels=months
+- **pie/doughnut**: COUNT GROUP BY → compute % → labels=groups, datasets=[{label, data:[...]}]
+- **box** (always use PERCENTILE_CONT — never pass raw rows):
+  ```sql
+  SELECT Country,
+    PERCENTILE_CONT(0.05) WITHIN GROUP (ORDER BY col) as p5,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY col) as q1,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY col) as median,
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY col) as q3,
+    PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY col) as p95,
+    AVG(col) as mean
+  FROM daily_data WHERE Country IS NOT NULL AND col IS NOT NULL GROUP BY Country
+  ```
+  → box_data: [{name, lowerfence:p5, q1, median, q3, upperfence:p95, mean}]
+  One render_chart call per variable. For multiple variables call render_chart once each.
+- **heatmap**: SELECT CORR(a,b), CORR(a,c)… FROM daily_data → build symmetric z_values matrix
+  → x_labels=y_labels=[var names], z_values=[[1,r_ab,…],[r_ab,1,…],…]
+- **scatter**: SELECT col_a, col_b FROM daily_data ORDER BY RANDOM() LIMIT 500
+  → scatter_data: [{name, x:[...], y:[...]}] — one series per group if comparing countries
+
+NEVER echo chart_type, labels, datasets, box_data, or any raw numbers/JSON in your text. Write only natural language findings.
+
+=== REGRESSION & STATISTICAL INFERENCE ===
+
+**Phase 1 — Simple regression via DuckDB (for single-predictor questions, no extra tool):**
+When asked for slope, trend, or R² between two continuous variables, use REGR_* inside execute_query:
+```sql
+SELECT Country,
+    REGR_SLOPE(Birthweight, CAMS2_pm2p5_ugm3)     AS slope,
+    REGR_INTERCEPT(Birthweight, CAMS2_pm2p5_ugm3) AS intercept,
+    REGR_R2(Birthweight, CAMS2_pm2p5_ugm3)        AS r_squared,
+    COUNT(*)                                        AS n
+FROM daily_data
+WHERE CAMS2_pm2p5_ugm3 IS NOT NULL AND Birthweight IS NOT NULL AND Country IS NOT NULL
+GROUP BY Country
+```
+Interpret: "Each 1 μg/m³ increase in PM2.5 is associated with a [slope]g change in birthweight (R²=[r_squared], n=[n])."
+
+**Phase 2 — Multivariate regression via run_regression tool:**
+Use when: user wants to control for confounders, multiple predictors in one model, binary outcomes (LBW/preterm), user asks for p-values or statistical significance.
+
+model_type:
+- OLS → continuous outcomes (Birthweight, GA_PRECISE, bwt_zscore, maternal_bmi, UTCI_mean)
+- Logit → binary 0/1 outcomes — convert VARCHAR in SQL first
+
+formula syntax (R-style):
+- 'Birthweight ~ CAMS2_pm2p5_ugm3 + RWI'  — OLS, two predictors
+- 'Birthweight ~ CAMS2_pm2p5_ugm3 + RWI + C(Country)'  — C() wraps categorical fixed effects
+- 'lowbirthweight ~ CAMS2_pm2p5_ugm3 + RWI + C(Country)'  — Logit
+- 'Birthweight ~ CAMS2_pm2p5_ugm3 * RWI'  — interaction term
+
+SQL rules for run_regression — ALWAYS aggregate to one row per participant:
+```sql
+SELECT f2a_participant_id, Country,
+    AVG(CAMS2_pm2p5_ugm3) AS CAMS2_pm2p5_ugm3,
+    AVG(RWI)               AS RWI,
+    MAX(Birthweight)       AS Birthweight,
+    MAX(CASE WHEN lowbirthweight='Yes' THEN 1 ELSE 0 END) AS lowbirthweight
+FROM daily_data
+WHERE Country IS NOT NULL AND Birthweight IS NOT NULL
+GROUP BY f2a_participant_id, Country
+LIMIT 10000
+```
+Binary VARCHAR outcomes (lowbirthweight, preterm, stillbirth, neonataldeath, livebirth) MUST be converted with CASE WHEN col='Yes' THEN 1 ELSE 0 END.
+
+After run_regression returns, write a clinical interpretation: name each significant predictor (p<0.05), state its coefficient and what it means for maternal health. Mention N and R²/pseudo-R².
+
 **RESPONSE STYLE:**
-- Always use the execute_query tool for any data question — you have the full dataset
-- Present results clearly with counts, percentages, and averages
-- Compare across countries (Kenya, Mozambique, Gambia) when relevant
+- Always query the live database — never guess or cite from memory
+- Present results with counts, percentages, and averages
+- Compare across countries when relevant
 - Highlight notable findings"""
 
 _CHAT_TOOLS = [
@@ -440,6 +562,106 @@ _CHAT_TOOLS = [
                 }
             },
             "required": ["sql"]
+        }
+    },
+    {
+        "name": "render_chart",
+        "description": "Render an interactive chart inline in the conversation. Call in the SAME response as execute_query. Supports bar, line, pie, doughnut, scatter, box plot, and heatmap/correlation matrix.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "chart_type": {
+                    "type": "string",
+                    "enum": ["bar", "line", "pie", "doughnut", "scatter", "box", "heatmap"],
+                    "description": "bar/line/pie/doughnut → use labels+datasets. box → use box_data (needs PERCENTILE_CONT query). heatmap → use x_labels+y_labels+z_values. scatter → use scatter_data."
+                },
+                "title": {"type": "string", "description": "Chart title"},
+                "labels": {
+                    "type": "array", "items": {"type": "string"},
+                    "description": "Category labels for bar/line/pie/doughnut"
+                },
+                "datasets": {
+                    "type": "array",
+                    "description": "Data series for bar/line/pie/doughnut — one per group/variable",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": {"type": "string"},
+                            "data":  {"type": "array", "items": {"type": "number"}}
+                        },
+                        "required": ["label", "data"]
+                    }
+                },
+                "box_data": {
+                    "type": "array",
+                    "description": "Pre-computed box plot stats per group. Use PERCENTILE_CONT(0.05/0.25/0.50/0.75/0.95) in SQL.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name":       {"type": "string"},
+                            "lowerfence": {"type": "number", "description": "p5"},
+                            "q1":         {"type": "number", "description": "p25"},
+                            "median":     {"type": "number", "description": "p50"},
+                            "q3":         {"type": "number", "description": "p75"},
+                            "upperfence": {"type": "number", "description": "p95"},
+                            "mean":       {"type": "number"}
+                        },
+                        "required": ["name", "q1", "median", "q3"]
+                    }
+                },
+                "x_labels": {"type": "array", "items": {"type": "string"},
+                             "description": "Column variable names for heatmap"},
+                "y_labels": {"type": "array", "items": {"type": "string"},
+                             "description": "Row variable names for heatmap"},
+                "z_values": {
+                    "type": "array",
+                    "items": {"type": "array", "items": {"type": "number"}},
+                    "description": "2D array [rows][cols] of values in [-1,1] for correlation heatmaps"
+                },
+                "scatter_data": {
+                    "type": "array",
+                    "description": "Data series for scatter — query LIMIT 500 for a representative sample",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {"type": "string"},
+                            "x":    {"type": "array", "items": {"type": "number"}},
+                            "y":    {"type": "array", "items": {"type": "number"}}
+                        },
+                        "required": ["name", "x", "y"]
+                    }
+                },
+                "y_label": {"type": "string", "description": "Y-axis label"},
+                "x_label": {"type": "string", "description": "X-axis label"}
+            },
+            "required": ["chart_type", "title"]
+        }
+    },
+    {
+        "name": "run_regression",
+        "description": "Run OLS or Logistic regression with statsmodels. Use when user wants to control for confounders, get p-values/confidence intervals, or model binary outcomes (LBW, preterm). The backend runs the model and streams a publication-quality coefficient table to the user. Do NOT use for simple single-predictor questions — use execute_query with REGR_SLOPE/REGR_R2 instead.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "model_type": {
+                    "type": "string",
+                    "enum": ["OLS", "Logit"],
+                    "description": "OLS for continuous outcomes (Birthweight, GA_PRECISE, bwt_zscore). Logit for binary 0/1 outcomes (lowbirthweight, preterm, stillbirth — must be CASE WHEN col='Yes' THEN 1 ELSE 0 END in SQL)."
+                },
+                "formula": {
+                    "type": "string",
+                    "description": "R-style formula. E.g. 'Birthweight ~ CAMS2_pm2p5_ugm3 + RWI + C(Country)' or 'lowbirthweight ~ CAMS2_pm2p5_ugm3 + RWI'. Use C(var) for categorical predictors."
+                },
+                "sql_query": {
+                    "type": "string",
+                    "description": "DuckDB SELECT that returns ONE ROW PER PARTICIPANT (GROUP BY f2a_participant_id, Country). Include all formula variables. Binary VARCHAR outcomes must be converted to 0/1 with CASE WHEN. Use LIMIT 10000."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Descriptive title for the coefficient table, e.g. 'Effect of PM2.5 on Birthweight controlling for Wealth Index'"
+                }
+            },
+            "required": ["model_type", "formula", "sql_query", "title"]
         }
     }
 ]
@@ -508,8 +730,11 @@ def chat():
             max_iterations = 8
 
             for i in range(max_iterations):
+                # Force tool use only on iteration 0 so Claude must call
+                # execute_query + render_chart together in one turn.
+                # From iteration 1 onwards Claude can write narrative freely.
                 tool_choice = {'type': 'any'} if i == 0 else {'type': 'auto'}
-                status = 'Thinking…' if i == 0 else 'Querying data…'
+                status = 'Thinking…' if i == 0 else 'Analysing…'
                 yield f"data: {json.dumps({'type': 'status', 'text': status})}\n\n"
 
                 response = client.messages.create(
@@ -541,28 +766,101 @@ def chat():
                     yield f"data: {json.dumps({'type': 'text', 'text': final_text})}\n\n"
                     break
 
-                # Execute each SQL tool call against DuckDB
+                # Execute tool calls — render_chart streams to browser, execute_query hits DuckDB
                 tool_results = []
                 conn = duckdb.connect(DB_PATH, read_only=True)
                 try:
                     for block in tool_blocks:
-                        sql = block.input.get('sql', '')
-                        safe, reason = is_safe_query(sql)
-                        if not safe:
-                            result = {'error': reason}
-                        else:
-                            filtered = apply_country_filter(sql, countries)
-                            try:
-                                cur  = conn.execute(filtered)
-                                cols = [d[0] for d in cur.description]
-                                rows = cur.fetchmany(50)
-                                result = {
-                                    'columns':   cols,
-                                    'rows':      [[_coerce(v) for v in r] for r in rows],
-                                    'row_count': len(rows),
-                                }
-                            except Exception as e:
-                                result = {'error': str(e)}
+                        if block.name == 'render_chart':
+                            yield f"data: {json.dumps({'type': 'chart', 'spec': block.input})}\n\n"
+                            result = {'rendered': True}
+                        elif block.name == 'run_regression':
+                            reg_sql    = block.input.get('sql_query', '')
+                            formula    = block.input.get('formula', '')
+                            model_type = block.input.get('model_type', 'OLS')
+                            reg_title  = block.input.get('title', 'Regression Analysis')
+                            safe, reason = is_safe_query(reg_sql)
+                            if not safe:
+                                result = {'error': reason}
+                            else:
+                                try:
+                                    import pandas as _pd
+                                    import statsmodels.formula.api as _smf
+                                    filtered_reg = apply_country_filter(reg_sql, countries)
+                                    yield f"data: {json.dumps({'type': 'status', 'text': 'Running regression model…'})}\n\n"
+                                    df = conn.execute(filtered_reg).df()
+                                    df = df.dropna()
+                                    if len(df) < 10:
+                                        result = {'error': f'Too few complete observations ({len(df)}) for regression. Check the SQL query.'}
+                                    else:
+                                        if model_type == 'Logit':
+                                            fit = _smf.logit(formula, data=df).fit(disp=False)
+                                            r2_key, r2_val = 'pseudo_r_squared', float(fit.prsquared)
+                                        else:
+                                            fit = _smf.ols(formula, data=df).fit()
+                                            r2_key, r2_val = 'r_squared', float(fit.rsquared)
+                                        ci = fit.conf_int()
+                                        coefficients = []
+                                        for var in fit.params.index:
+                                            p = float(fit.pvalues[var])
+                                            stars = '***' if p < 0.001 else '**' if p < 0.01 else '*' if p < 0.05 else ''
+                                            coefficients.append({
+                                                'variable': str(var),
+                                                'coef':     round(float(fit.params[var]), 4),
+                                                'se':       round(float(fit.bse[var]), 4),
+                                                'p_value':  round(p, 4),
+                                                'ci_lower': round(float(ci.loc[var, 0]), 4),
+                                                'ci_upper': round(float(ci.loc[var, 1]), 4),
+                                                'stars':    stars,
+                                            })
+                                        stats_table = {
+                                            'title':        reg_title,
+                                            'model_type':   model_type,
+                                            'formula':      formula,
+                                            'n_obs':        int(fit.nobs),
+                                            r2_key:         round(r2_val, 4),
+                                            'aic':          round(float(fit.aic), 1),
+                                            'coefficients': coefficients,
+                                        }
+                                        yield f"data: {json.dumps({'type': 'stats_table', 'result': stats_table})}\n\n"
+                                        # Return condensed summary to Claude for narrative
+                                        result = {
+                                            'n_obs': stats_table['n_obs'],
+                                            r2_key:  stats_table[r2_key],
+                                            'aic':   stats_table['aic'],
+                                            'coefficients': [
+                                                {k: v for k, v in c.items() if k != 'se'}
+                                                for c in coefficients
+                                            ],
+                                        }
+                                except Exception as e:
+                                    result = {'error': f'Regression failed: {str(e)}'}
+
+                        else:  # execute_query
+                            sql = block.input.get('sql', '')
+                            safe, reason = is_safe_query(sql)
+                            if not safe:
+                                result = {'error': reason}
+                            else:
+                                filtered = apply_country_filter(sql, countries)
+                                try:
+                                    cur  = conn.execute(filtered)
+                                    cols = [d[0] for d in cur.description]
+                                    rows = cur.fetchmany(50)
+                                    # Return rows as dicts so Claude reads
+                                    # {"Country":"Gambia","median":44.5} directly
+                                    # instead of parsing column-index arrays —
+                                    # prevents country↔value mix-ups in box_data.
+                                    result = {
+                                        'columns':   cols,
+                                        'rows':      [
+                                            {cols[j]: _coerce(v) for j, v in enumerate(r)}
+                                            for r in rows
+                                        ],
+                                        'row_count': len(rows),
+                                    }
+                                except Exception as e:
+                                    result = {'error': str(e)}
                         tool_results.append({
                             'type':        'tool_result',
                             'tool_use_id': block.id,
