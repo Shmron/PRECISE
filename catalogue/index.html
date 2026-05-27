@@ -2728,7 +2728,7 @@ by most village residents.</div>
                 loadingEl.innerHTML = 'Connecting to data server...<br><small style="color: var(--slate);">Checking local database</small>';
 
                 const response = await fetch(API_BASE + '/api/health', {
-                    headers: { 'X-API-Key': ChatBot.dbKey }
+                    headers: { 'X-Session-Token': ChatBot.sessionToken }
                 });
                 if (!response.ok) throw new Error(`Server unavailable (${response.status})`);
                 const health = await response.json();
@@ -2849,7 +2849,7 @@ by most village residents.</div>
             try {
                 const resp = await fetch(API_BASE + '/api/chat', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-Key': ChatBot.dbKey },
+                    headers: { 'Content-Type': 'application/json', 'X-Session-Token': ChatBot.sessionToken },
                     body: JSON.stringify({ messages: [{ role: 'user', content: query }] }),
                 });
 
@@ -3058,9 +3058,7 @@ by most village residents.</div>
         // ===================================================================
 
         const ChatBot = {
-            // DB key for authenticating against the PRECISE API
-            _dk: ['cGFsc19jNjNLUGJaLWNjbGJIbjBw', 'd085eEM3bjBKZG1mdlRHMjFEZlo1', 'cG9x'],
-            get dbKey() { return atob(this._dk.join('')); },
+            get sessionToken() { return sessionStorage.getItem('catalogueToken') || ''; },
             conversationHistory: [],
 
             // Tool definitions kept here only as documentation — execution now happens server-side
@@ -3646,7 +3644,7 @@ by most village residents.</div>
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-API-Key': this.dbKey,
+                        'X-Session-Token': this.sessionToken,
                     },
                     body: JSON.stringify({ messages: this.conversationHistory }),
                 });
@@ -3712,43 +3710,42 @@ by most village residents.</div>
     <!-- Login Gate Script -->
     <script>
         (function() {
-            // ============================================
-            // CHANGE THIS PASSWORD TO YOUR DESIRED CODE
-            // ============================================
-            const ACCESS_CODE = 'PRECISE2024';
-            // ============================================
-
-            const loginGate = document.getElementById('loginGate');
-            const loginForm = document.getElementById('loginForm');
+            const loginGate       = document.getElementById('loginGate');
+            const loginForm       = document.getElementById('loginForm');
             const accessCodeInput = document.getElementById('accessCode');
-            const loginError = document.getElementById('loginError');
+            const loginError      = document.getElementById('loginError');
 
-            // Check if already authenticated this session
-            if (sessionStorage.getItem('preciseAuth') === 'true') {
+            // Restore session if token already exists
+            if (sessionStorage.getItem('catalogueToken')) {
                 loginGate.classList.add('hidden');
             }
 
-            loginForm.addEventListener('submit', function(e) {
+            loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                const code = accessCodeInput.value.trim();
 
-                if (accessCodeInput.value === ACCESS_CODE) {
-                    sessionStorage.setItem('preciseAuth', 'true');
-                    loginGate.style.opacity = '1';
-                    loginGate.style.transition = 'opacity 0.3s ease';
-                    loginGate.style.opacity = '0';
-                    setTimeout(() => {
-                        loginGate.classList.add('hidden');
-                    }, 300);
-                } else {
+                try {
+                    const resp = await fetch(API_BASE + '/api/catalogue-login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code })
+                    });
+                    const data = await resp.json();
+
+                    if (data.ok) {
+                        sessionStorage.setItem('catalogueToken', data.token);
+                        loginGate.style.transition = 'opacity 0.3s ease';
+                        loginGate.style.opacity = '0';
+                        setTimeout(() => loginGate.classList.add('hidden'), 300);
+                    } else {
+                        throw new Error('invalid');
+                    }
+                } catch (_) {
                     loginError.classList.add('show');
                     accessCodeInput.value = '';
                     accessCodeInput.focus();
-
-                    // Shake animation
                     loginForm.style.animation = 'shake 0.5s ease';
-                    setTimeout(() => {
-                        loginForm.style.animation = '';
-                    }, 500);
+                    setTimeout(() => { loginForm.style.animation = ''; }, 500);
                 }
             });
 

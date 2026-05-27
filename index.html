@@ -1274,60 +1274,6 @@
 
     // ── Chat widget ──────────────────────────────────────────────────────────
     (function() {
-        const _k = ['c2stYW50LWFwaTAzLWZGVUtxNUhq','MjVCUW5NOTF2QnFCaUQ4Q3cxYVMy','SThHTjRzSUZqUHI2ZGVWSW9qWl95','cVByNV9XUnBMREFYOGtJN1dQTzFS','OEFwZlVhbS04cFBvTDh3LXlsbUpD','UUFB'];
-        const getKey = () => atob(_k.join(''));
-
-        const SYSTEM = `You are the Place Alert Labs (PALs) portal assistant at placealert.org. Be concise and helpful. Use markdown for links and lists.
-
-ABOUT PALs: Place Alert Labs is an initiative advancing geographically precise public health through climate, environmental, and geospatial intelligence. Funded by NIH, Google, Grand Challenges Canada, and UKRI. Team: Dr Prestige Tatenda Makanga, Liberty Makacha, Terrence Mushore, Reason Mlambo, Cherlynn Dumbura, Bongani Nyoni, Anotida Chapunza, Tendai Shangwe, Zororo Chinwadzimba, Rutendo Sibanda.
-
-PORTAL (placealert.org) — open landing page with links to all tools. No login required to view.
-
-PALS LAB HUB (pals.placealert.org):
-- JupyterHub for the research team. Python & R kernels available.
-- Sign up at pals.placealert.org — click "Sign up". Provide a username, password, and email address.
-- After signing up, an admin must approve your account. You will receive an approval email once done.
-- Forgot password: click "Forgot your password?" on the login page — a reset link will be emailed to you.
-- Once logged in, your home folder has a PALS/ directory shared with the team.
-
-DATABASE ACCESS — PostgreSQL (placealert.org/dbrequest/request):
-- Request a personal API token to query the PALS Lab research database (BigTableDaily).
-- Fill in the request form; tokens are reviewed and issued by the admin.
-- Once you have a token, use it in Python from the Hub.
-
-DATABASE ACCESS — DuckDB / Test (placealert.org/duckrequest/request):
-- Request direct access to the PRECISE Big Table (~3.2M rows, 129 columns) via DuckDB.
-- Auto-approved for testing: submit the form and instantly receive a Python or R connection snippet.
-- Use the snippet inside any PALSlab Hub notebook at pals.placealert.org to query data directly.
-- DuckDB is significantly faster than PostgreSQL for large analytical queries.
-
-PRECISE CATALOGUE (placealert.org/catalogue/):
-- Catalogue of Environmental & Social Determinants of Maternal Health across Kenya, Mozambique, The Gambia.
-- Requires an access code — use the "Request Access" button on the login screen to ask for one.
-- Contains an AI research assistant ("Shmron") for querying the PRECISE participant dataset.
-
-GIPEX (placealert.org/gipex/):
-- Geospatial Indicators for Proxy Environmental eXposure. Version 2.1.0. CHEAQI-MNCH project.
-- Geospatial platform for extracting and analysing proxy environmental exposure indicators — surface heat, air pollution (NO₂, PM₂.₅, aerosol), vegetation indices, water indicators, built-up intensity, night-time lights, and atmospheric conditions — across custom grid cells or study areas.
-- Designed for settings where no ground-based environmental monitoring stations exist, providing satellite-derived and reanalysis-based proxies for epidemiological and public health exposure assessment.
-
-SPECTRA (placealert.org/apex/):
-- Spatiotemporal Personal Exposure Characterization & TRAjectory Analyzer.
-- Open-source platform for GPS trajectory analytics, wearable sensor integration, and indoor/outdoor exposure classification.
-
-AFRICA ROAD NETWORK DENSITY MAP (placealert.org/roadnet/):
-- Interactive hexagonal map of road network density across Africa derived from OpenStreetMap.
-
-PALSEARTH (placealert.org/palsearth/):
-- Point-and-extract environmental data for any location and time window.
-- Upload a CSV or shapefile, select datasets (NDVI, temperature, rainfall, soil, air quality, elevation, and more), download analysis-ready results.
-- Powered by Google Earth Engine.
-
-HARMONAIZE (placealert.org/harmonaize/):
-- Separate project website for Climate & Health Data Harmonisation toolkit.
-
-For technical issues or account problems, contact the PALs admin.`;
-
         const widget = document.getElementById('helpWidget');
         const msgs   = document.getElementById('helpMessages');
         const input  = document.getElementById('helpInput');
@@ -1366,26 +1312,35 @@ For technical issues or account problems, contact the PALs admin.`;
             msgs.scrollTop = msgs.scrollHeight;
 
             try {
-                const res = await fetch('https://api.anthropic.com/v1/messages', {
+                const res = await fetch('/precise-api/portal/chat', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': getKey(),
-                        'anthropic-version': '2023-06-01',
-                        'anthropic-dangerous-direct-browser-access': 'true'
-                    },
-                    body: JSON.stringify({
-                        model: 'claude-haiku-4-5-20251001',
-                        max_tokens: 512,
-                        system: SYSTEM,
-                        messages: history
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: history })
                 });
-                const data = await res.json();
-                const reply = data.content?.[0]?.text || 'Sorry, I had trouble answering that.';
+                if (!res.ok) throw new Error('Server error ' + res.status);
+
+                const reader  = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buf   = '';
+                let reply = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buf += decoder.decode(value, { stream: true });
+                    const lines = buf.split('\n');
+                    buf = lines.pop();
+                    for (const line of lines) {
+                        if (!line.startsWith('data: ')) continue;
+                        const evt = JSON.parse(line.slice(6));
+                        if (evt.type === 'text') reply = evt.text;
+                        if (evt.type === 'error') throw new Error(evt.text);
+                    }
+                }
+
                 history.push({ role: 'assistant', content: reply });
                 typing.style.display = 'none';
-                addMsg('assistant', reply);
+                addMsg('assistant', reply || 'Sorry, I had trouble answering that.');
             } catch(e) {
                 typing.style.display = 'none';
                 addMsg('system', 'Could not reach the assistant. Please try again.');

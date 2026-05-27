@@ -6,6 +6,9 @@ import io
 import os
 import json
 import sys
+import time
+import secrets
+from collections import defaultdict
 sys.path.insert(0, '/home/rutendo/PRECISE')
 import access_db
 import pyarrow.ipc as _ipc
@@ -14,6 +17,86 @@ app = Flask(__name__)
 CORS(app)
 
 DB_PATH = '/home/rutendo/PRECISE/precise.duckdb'
+
+# ── Catalogue session tokens (in-memory, 8-hour TTL) ─────────────────────────
+_catalogue_tokens: dict = {}          # token → expiry unix timestamp
+_TOKEN_TTL = 8 * 3600
+
+CATALOGUE_ACCESS_CODE = os.environ.get('CATALOGUE_ACCESS_CODE', 'PRECISE2024')
+
+def _issue_catalogue_token() -> str:
+    token = secrets.token_urlsafe(32)
+    _catalogue_tokens[token] = time.time() + _TOKEN_TTL
+    return token
+
+def _validate_catalogue_token(token: str) -> bool:
+    expiry = _catalogue_tokens.get(token)
+    if not expiry:
+        return False
+    if time.time() > expiry:
+        _catalogue_tokens.pop(token, None)
+        return False
+    return True
+
+# ── IP rate limiter for the public portal chat ────────────────────────────────
+_ip_hits: dict = defaultdict(list)
+_RATE_WINDOW = 60    # seconds
+_RATE_LIMIT  = 20    # requests per window
+
+def _allow_ip(ip: str) -> bool:
+    now  = time.time()
+    hits = [t for t in _ip_hits[ip] if now - t < _RATE_WINDOW]
+    if len(hits) >= _RATE_LIMIT:
+        _ip_hits[ip] = hits
+        return False
+    hits.append(now)
+    _ip_hits[ip] = hits
+    return True
+
+# ── Portal chat system prompt (informational only, no DB access) ──────────────
+_PORTAL_SYSTEM = """You are the Place Alert Labs (PALs) portal assistant at placealert.org. Be concise and helpful. Use markdown for links and lists.
+
+ABOUT PALs: Place Alert Labs is an initiative advancing geographically precise public health through climate, environmental, and geospatial intelligence. Funded by NIH, Google, Grand Challenges Canada, and UKRI. Team: Dr Prestige Tatenda Makanga, Liberty Makacha, Terrence Mushore, Reason Mlambo, Cherlynn Dumbura, Bongani Nyoni, Anotida Chapunza, Tendai Shangwe, Zororo Chinwadzimba, Rutendo Sibanda.
+
+PORTAL (placealert.org) — open landing page with links to all tools. No login required to view.
+
+PALS LAB HUB (pals.placealert.org):
+- JupyterHub for the research team. Python & R kernels available.
+- Sign up at pals.placealert.org — click "Sign up". Provide a username, password, and email address.
+- After signing up, an admin must approve your account. You will receive an approval email once done.
+- Forgot password: click "Forgot your password?" on the login page — a reset link will be emailed to you.
+- Once logged in, your home folder has a PALS/ directory shared with the team.
+
+DATABASE ACCESS — DuckDB (placealert.org/duckrequest/request):
+- Request direct access to the PRECISE Big Table (~3.1M rows, 129 columns) via DuckDB.
+- Fill in the request form; tokens are reviewed and issued by the admin.
+- Once approved, use the provided Python or R snippet inside any PALSlab Hub notebook.
+
+PRECISE CATALOGUE (placealert.org/catalogue/):
+- Catalogue of Environmental & Social Determinants of Maternal Health across Kenya, Mozambique, The Gambia.
+- Requires an access code — use the "Request Access" tab on the login screen to ask for one.
+- Contains an AI research assistant ("Shmron") for querying the PRECISE participant dataset.
+
+PALSEARTH (placealert.org/palsearth/):
+- Point-and-extract environmental data for any location and time window.
+- Upload a CSV or shapefile, select datasets (NDVI, temperature, rainfall, soil, air quality, elevation), download results.
+- Powered by Google Earth Engine.
+
+GIPEX (placealert.org/gipex/):
+- Geospatial Indicators for Proxy Environmental eXposure.
+- Extracts satellite-derived environmental exposure indicators across custom grid cells or study areas.
+
+SPECTRA (placealert.org/apex/):
+- Spatiotemporal Personal Exposure Characterization & TRAjectory Analyzer.
+- GPS trajectory analytics, wearable sensor integration, indoor/outdoor exposure classification.
+
+AFRICA ROAD NETWORK DENSITY MAP (placealert.org/roadnet/):
+- Interactive hexagonal map of road network density across Africa derived from OpenStreetMap.
+
+HARMONAIZE (placealert.org/harmonaize/):
+- Climate & Health Data Harmonisation toolkit.
+
+For technical issues or account problems, contact the PALs admin."""
 
 
 # ── Security helpers ──────────────────────────────────────────────────────────
@@ -374,11 +457,57 @@ _CHAT_TOOLS = [
 ]
 
 
+@app.route('/api/catalogue-login', methods=['POST'])
+def catalogue_login():
+    """Exchange the catalogue access code for a short-lived session token."""
+    code = (request.json or {}).get('code', '').strip()
+    if code != CATALOGUE_ACCESS_CODE:
+        return jsonify({'ok': False, 'error': 'Invalid access code'}), 403
+    return jsonify({'ok': True, 'token': _issue_catalogue_token()})
+
+
+@app.route('/portal/chat', methods=['POST'])
+def portal_chat():
+    """Public, rate-limited informational chat for the main portal widget."""
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
+    if not _allow_ip(ip):
+        return jsonify({'error': 'Too many requests — please wait a moment.'}), 429
+
+    messages = (request.json or {}).get('messages', [])
+    if not messages or messages[-1].get('role') != 'user':
+        return jsonify({'error': 'messages must end with a user turn'}), 400
+
+    def generate():
+        try:
+            import anthropic as _anthropic
+            client = _anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY', ''))
+            response = client.messages.create(
+                model='claude-haiku-4-5-20251001',
+                max_tokens=512,
+                system=_PORTAL_SYSTEM,
+                messages=messages[-10:],
+            )
+            text = response.content[0].text if response.content else 'Sorry, I had trouble answering that.'
+            yield f"data: {json.dumps({'type': 'text', 'text': text})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'text': str(e)})}\n\n"
+
+    return Response(generate(), mimetype='text/event-stream',
+                    headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
+
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    key_info, err = require_key()
-    if err:
-        return err
+    # Accept either a catalogue session token OR a researcher DB API key
+    session_token = request.headers.get('X-Session-Token', '')
+    if session_token and _validate_catalogue_token(session_token):
+        # Catalogue session: full access to all three countries
+        key_info = {'countries': ['Kenya', 'Mozambique', 'Gambia'], 'name': 'catalogue'}
+    else:
+        key_info, err = require_key()
+        if err:
+            return err
 
     data     = request.json or {}
     messages = data.get('messages', [])
