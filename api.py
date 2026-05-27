@@ -532,19 +532,29 @@ formula syntax (R-style):
 - 'lowbirthweight ~ CAMS2_pm2p5_ugm3 + RWI + C(Country)'  — Logit
 - 'Birthweight ~ CAMS2_pm2p5_ugm3 * RWI'  — interaction term
 
-SQL rules for run_regression — ALWAYS aggregate to one row per participant:
+SQL rules for run_regression — ALWAYS aggregate to EXACTLY one row per participant:
+- GROUP BY f2a_participant_id only — do NOT include Country or GHSL_class in GROUP BY (they are constant per participant; include them in SELECT as MAX(Country) etc.)
+- WHERE clause must filter to non-NULL values of both outcome AND all predictors BEFORE grouping
+- LIMIT 10000
+
 ```sql
-SELECT f2a_participant_id, Country,
+SELECT f2a_participant_id,
+    MAX(Country)           AS Country,
+    MAX(GHSL_class)        AS GHSL_class,
     AVG(CAMS2_pm2p5_ugm3) AS CAMS2_pm2p5_ugm3,
     AVG(RWI)               AS RWI,
     MAX(Birthweight)       AS Birthweight,
     MAX(CASE WHEN lowbirthweight='Yes' THEN 1 ELSE 0 END) AS lowbirthweight
 FROM daily_data
-WHERE Country IS NOT NULL AND Birthweight IS NOT NULL
-GROUP BY f2a_participant_id, Country
+WHERE Country IS NOT NULL
+  AND Birthweight IS NOT NULL
+  AND CAMS2_pm2p5_ugm3 IS NOT NULL
+GROUP BY f2a_participant_id
 LIMIT 10000
 ```
 Binary VARCHAR outcomes (lowbirthweight, preterm, stillbirth, neonataldeath, livebirth) MUST be converted with CASE WHEN col='Yes' THEN 1 ELSE 0 END.
+
+CRITICAL — the N in the regression result should roughly equal the number of DISTINCT participants with complete data. If the reported N seems too high (e.g. > 7,000 for this 6,960-participant study), the SQL is likely generating multiple rows per participant — check GROUP BY and fix it.
 
 After run_regression returns results, ALWAYS call render_chart with chart_type='forest' using the coefficients from the result (exclude the Intercept row). Use scale='OR' for Logit models. Then write a clinical interpretation: for each significant predictor (p<0.05), state the coefficient and what it means for maternal health. Mention N and R²/pseudo-R².
 
@@ -815,6 +825,13 @@ def chat():
                                     filtered_reg = apply_country_filter(reg_sql, countries)
                                     yield f"data: {json.dumps({'type': 'status', 'text': 'Running regression model…'})}\n\n"
                                     df = conn.execute(filtered_reg).df()
+                                    # Deduplicate on participant ID if present —
+                                    # guards against GROUP BY mistakes that produce
+                                    # multiple rows per person.
+                                    id_col = next((c for c in df.columns
+                                                   if 'participant_id' in c.lower()), None)
+                                    if id_col and df[id_col].duplicated().any():
+                                        df = df.drop_duplicates(subset=[id_col])
                                     df = df.dropna()
                                     if len(df) < 10:
                                         result = {'error': f'Too few complete observations ({len(df)}) for regression. Check the SQL query.'}
