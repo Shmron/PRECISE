@@ -2946,7 +2946,9 @@ by most village residents.</div>
                     const chartId = 'nlchart-' + Date.now() + '-' + Math.random().toString(36).slice(2);
                     const chartDiv = document.createElement('div');
                     chartDiv.style.cssText = 'background:white;border-radius:10px;padding:0.75rem;margin-top:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);overflow:hidden;';
-                    const h = (spec.chart_type === 'heatmap') ? 380 : 300;
+                    const h = spec.chart_type === 'heatmap' ? 380
+                            : spec.chart_type === 'forest'  ? Math.max(280, ((spec.forest_data||[]).length * 36) + 80)
+                            : 300;
                     chartDiv.innerHTML = `<div id="${chartId}" style="width:100%;height:${h}px;"></div>`;
                     answerArea.appendChild(chartDiv);
                     ChatBot._renderChartSpec(chartId, spec);
@@ -3708,7 +3710,9 @@ by most village residents.</div>
                 msgEl.className = 'chat-message assistant';
                 const chartId = 'chart-' + Date.now() + '-' + Math.random().toString(36).slice(2);
                 // Plotly renders into a plain div — height set on container
-                const h = (spec.chart_type === 'heatmap') ? 380 : 300;
+                const h = spec.chart_type === 'heatmap' ? 380
+                        : spec.chart_type === 'forest'  ? Math.max(280, ((spec.forest_data||[]).length * 36) + 80)
+                        : 300;
                 msgEl.innerHTML = `
                     <div style="background:white;border-radius:10px;padding:0.75rem;
                                 box-shadow:0 2px 8px rgba(0,0,0,0.07);max-width:100%;overflow:hidden;">
@@ -3777,6 +3781,66 @@ by most village residents.</div>
                         }];
                         layout.margin = { t: 50, r: 100, b: 140, l: 140 };
                         layout.xaxis = { ...layout.xaxis, tickangle: -45 };
+                        layout.showlegend = false;
+
+                    } else if (spec.chart_type === 'forest') {
+                        const fd    = (spec.forest_data || []);
+                        const useOR = spec.scale === 'OR';
+                        const toX   = v => useOR ? Math.exp(v) : v;
+                        const nullX = useOR ? 1 : 0;
+
+                        // Colour by significance
+                        const sigColor = d => {
+                            if (!d.stars) return '#B0BEC5';       // ns — grey
+                            if (d.stars === '*')   return '#4ECDC4'; // * — teal
+                            if (d.stars === '**')  return '#1A535C'; // ** — deep teal
+                            return '#B87333';                         // *** — copper
+                        };
+
+                        traces = [{
+                            type: 'scatter', mode: 'markers',
+                            x: fd.map(d => toX(d.coef)),
+                            y: fd.map(d => d.variable),
+                            error_x: {
+                                type: 'data', symmetric: false,
+                                array:      fd.map(d => Math.abs(toX(d.ci_upper) - toX(d.coef))),
+                                arrayminus: fd.map(d => Math.abs(toX(d.coef) - toX(d.ci_lower))),
+                                color: '#1A535C', thickness: 1.5, width: 6,
+                            },
+                            marker: {
+                                symbol: 'square',
+                                size: fd.map(d => d.stars === '***' ? 13 : d.stars ? 11 : 9),
+                                color: fd.map(d => sigColor(d)),
+                                line: { color: fd.map(d => sigColor(d)), width: 1.5 },
+                            },
+                            text: fd.map(d => {
+                                const v = toX(d.coef).toFixed(3);
+                                const lo = toX(d.ci_lower).toFixed(3);
+                                const hi = toX(d.ci_upper).toFixed(3);
+                                const p  = d.p_value !== undefined
+                                    ? (d.p_value < 0.001 ? 'p<0.001' : `p=${d.p_value.toFixed(3)}`)
+                                    : '';
+                                return `${v} [${lo}, ${hi}] ${p}`;
+                            }),
+                            hovertemplate: '<b>%{y}</b><br>%{text}<extra></extra>',
+                            showlegend: false,
+                        },
+                        // Null-effect vertical line
+                        {
+                            type: 'scatter', mode: 'lines',
+                            x: [nullX, nullX],
+                            y: [fd.length > 0 ? fd[0].variable : '', fd.length > 0 ? fd[fd.length - 1].variable : ''],
+                            line: { color: 'rgba(224,122,95,0.6)', width: 1.5, dash: 'dot' },
+                            hoverinfo: 'none', showlegend: false,
+                        }];
+
+                        layout.xaxis = { ...layout.xaxis,
+                            title: spec.x_label || (useOR ? 'Odds Ratio' : 'Coefficient'),
+                            zeroline: false,
+                            type: useOR ? 'log' : 'linear',
+                        };
+                        layout.yaxis = { ...layout.yaxis, title: '', automargin: true };
+                        layout.margin = { t: spec.title ? 45 : 20, r: 20, b: 50, l: 180 };
                         layout.showlegend = false;
 
                     } else if (spec.chart_type === 'scatter') {

@@ -472,6 +472,7 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
 | "trend over time", "monthly", "seasonal", "how has X changed" | line |
 | "relationship between X and Y", "does X correlate with Y" | scatter |
 | "correlation matrix", "correlations between multiple variables" | heatmap |
+| After run_regression with multiple predictors | forest |
 | Single scalar result (one number) | no chart needed |
 
 **How to query and build each type:**
@@ -495,6 +496,10 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
   → x_labels=y_labels=[var names], z_values=[[1,r_ab,…],[r_ab,1,…],…]
 - **scatter**: SELECT col_a, col_b FROM daily_data ORDER BY RANDOM() LIMIT 500
   → scatter_data: [{name, x:[...], y:[...]}] — one series per group if comparing countries
+- **forest** (always call after run_regression — use the coefficients it returned):
+  → forest_data: [{variable, coef, ci_lower, ci_upper, p_value, stars}] — exclude Intercept row
+  → scale: 'OR' for Logit models (exponentiates to odds ratios, null line at 1), 'coef' for OLS
+  → x_label: e.g. "Coefficient (grams)" for OLS, "Odds Ratio" for Logit
 
 NEVER echo chart_type, labels, datasets, box_data, or any raw numbers/JSON in your text. Write only natural language findings.
 
@@ -541,7 +546,7 @@ LIMIT 10000
 ```
 Binary VARCHAR outcomes (lowbirthweight, preterm, stillbirth, neonataldeath, livebirth) MUST be converted with CASE WHEN col='Yes' THEN 1 ELSE 0 END.
 
-After run_regression returns, write a clinical interpretation: name each significant predictor (p<0.05), state its coefficient and what it means for maternal health. Mention N and R²/pseudo-R².
+After run_regression returns results, ALWAYS call render_chart with chart_type='forest' using the coefficients from the result (exclude the Intercept row). Use scale='OR' for Logit models. Then write a clinical interpretation: for each significant predictor (p<0.05), state the coefficient and what it means for maternal health. Mention N and R²/pseudo-R².
 
 **RESPONSE STYLE:**
 - Always query the live database — never guess or cite from memory
@@ -572,8 +577,8 @@ _CHAT_TOOLS = [
             "properties": {
                 "chart_type": {
                     "type": "string",
-                    "enum": ["bar", "line", "pie", "doughnut", "scatter", "box", "heatmap"],
-                    "description": "bar/line/pie/doughnut → use labels+datasets. box → use box_data (needs PERCENTILE_CONT query). heatmap → use x_labels+y_labels+z_values. scatter → use scatter_data."
+                    "enum": ["bar", "line", "pie", "doughnut", "scatter", "box", "heatmap", "forest"],
+                    "description": "bar/line/pie/doughnut → use labels+datasets. box → use box_data (needs PERCENTILE_CONT query). heatmap → use x_labels+y_labels+z_values. scatter → use scatter_data. forest → use forest_data (coefficients + CIs from regression)."
                 },
                 "title": {"type": "string", "description": "Chart title"},
                 "labels": {
@@ -630,6 +635,27 @@ _CHAT_TOOLS = [
                         },
                         "required": ["name", "x", "y"]
                     }
+                },
+                "forest_data": {
+                    "type": "array",
+                    "description": "Predictor rows for a forest plot. Use after run_regression — pull values from the coefficients it returns. Exclude Intercept. For Logit models set scale='OR' to exponentiate.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "variable": {"type": "string"},
+                            "coef":     {"type": "number", "description": "Point estimate (coefficient or log-OR)"},
+                            "ci_lower": {"type": "number", "description": "Lower 95% CI"},
+                            "ci_upper": {"type": "number", "description": "Upper 95% CI"},
+                            "p_value":  {"type": "number"},
+                            "stars":    {"type": "string", "description": "Significance stars from regression: ***, **, *, or empty"}
+                        },
+                        "required": ["variable", "coef", "ci_lower", "ci_upper"]
+                    }
+                },
+                "scale": {
+                    "type": "string",
+                    "enum": ["coef", "OR"],
+                    "description": "coef (default) — plot raw coefficients with null line at 0. OR — exponentiate to odds ratios, null line at 1. Use OR for Logit models."
                 },
                 "y_label": {"type": "string", "description": "Y-axis label"},
                 "x_label": {"type": "string", "description": "X-axis label"}
