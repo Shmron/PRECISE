@@ -461,7 +461,9 @@ ALL numeric columns below are DOUBLE unless stated otherwise. Do NOT use TRY_CAS
 Always use aggregations — never return more than 50 raw rows.
 
 **CHARTING RULES — MANDATORY:**
-Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in one turn). You decide the chart type — even when the user does not ask for one, pick the most appropriate type for the data returned:
+Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in one turn). You decide the chart type — even when the user does not ask for one, pick the most appropriate type for the data returned.
+
+CRITICAL — chart data must come from the query you just ran, not a separate unrelated query. If the analysis filtered to Country='Gambia' AND PM2.5>500, the chart/map must show those exact records — never silently run a broader query to get "nicer" chart data and then present it alongside text about a different subset.
 
 **AUTO-SELECT the right chart type:**
 | Situation | Chart type |
@@ -513,6 +515,9 @@ Always call render_chart IN THE SAME RESPONSE as execute_query (both tools in on
   → color_label: "Mean PM2.5 (μg/m³)"
   For binary outcomes (e.g. preterm rate): AVG(CASE WHEN preterm='Yes' THEN 1.0 ELSE 0.0 END)*100 AS value → color_label: "Preterm Rate (%)"
   Participant-level maps: GROUP BY f2a_participant_id — LIMIT 3000.
+
+  CONSISTENCY RULE — the map query MUST filter to the same subset as the analysis:
+  If the text analysis filtered to Country='Gambia' AND PM2.5 > 500, the map SQL must include those exact same WHERE conditions. Never render a generic all-villages map when the analysis is about a specific filtered subset — the dots on the map must represent the same records the text is describing.
 
   COORDINATE VALIDATION — check your map_data before rendering:
   - Gambia:     lat 12–14°N  (positive),  lon -17 to -13°W (negative)
