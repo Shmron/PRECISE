@@ -3861,7 +3861,13 @@ by most village residents.</div>
                     legend: { orientation: 'h', y: -0.25, font: { size: 11 } },
                     colorway: P,
                 };
-                const cfg = { responsive: true, displayModeBar: false };
+                const isMap = spec.chart_type === 'map';
+                const cfg = {
+                    responsive:     true,
+                    scrollZoom:     isMap,   // mouse-wheel / pinch zoom on maps
+                    displayModeBar: isMap,   // show +/- pan/zoom toolbar on maps only
+                    modeBarButtonsToRemove: ['toImage', 'sendDataToCloud', 'select2d', 'lasso2d'],
+                };
 
                 try {
                     let traces = [], layout = { ...base };
