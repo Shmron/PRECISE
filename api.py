@@ -535,16 +535,31 @@ formula syntax (R-style):
 SQL rules for run_regression — ALWAYS aggregate to EXACTLY one row per participant:
 
 **EXPOSURE WINDOW — this is the most important rule:**
-The dataset contains daily rows from preconception through ~1 month post-delivery. For any regression linking exposure to a birth outcome you MUST restrict exposure averaging to the GESTATIONAL PERIOD ONLY (conception_date to delivery_date). Averaging across preconception or post-delivery days is epidemiologically wrong.
+The dataset deliberately includes daily rows from preconception through ~1 month post-delivery. Each window is epidemiologically distinct and must be selected correctly using CASE WHEN inside AVG() — NEVER average across all rows indiscriminately.
 
-Default gestational exposure filter:
-  WHERE exposure_day::DATE >= conception_date
-    AND exposure_day::DATE <= delivery_date
+Named exposure windows and their SQL filters:
 
-Trimester-specific windows (use when user asks about a specific trimester or critical window):
-  T1 (organogenesis, weeks 1–12):  DATEDIFF('day', conception_date, exposure_day::DATE) BETWEEN 0 AND 83
-  T2 (growth, weeks 13–26):         DATEDIFF('day', conception_date, exposure_day::DATE) BETWEEN 84 AND 181
-  T3 (maturation, weeks 27–birth):  DATEDIFF('day', conception_date, exposure_day::DATE) >= 182
+  Preconception — 3 months before conception (default when user says "preconception"):
+    exposure_day::DATE >= (conception_date - INTERVAL '90 days')
+    AND exposure_day::DATE < conception_date
+  Preconception — 6 months (use if user specifies):
+    exposure_day::DATE >= (conception_date - INTERVAL '180 days')
+    AND exposure_day::DATE < conception_date
+  Whole gestation (default for most birth outcome analyses):
+    exposure_day::DATE >= conception_date AND exposure_day::DATE <= delivery_date
+  T1 — organogenesis, weeks 1–12:
+    DATEDIFF('day', conception_date, exposure_day::DATE) BETWEEN 0 AND 83
+  T2 — fetal growth, weeks 13–26:
+    DATEDIFF('day', conception_date, exposure_day::DATE) BETWEEN 84 AND 181
+  T3 — lung maturation/preterm risk, weeks 27–birth:
+    DATEDIFF('day', conception_date, exposure_day::DATE) >= 182
+  Post-delivery — 1 month after birth (neonatal outcomes):
+    exposure_day::DATE > delivery_date
+    AND exposure_day::DATE <= (delivery_date + INTERVAL '30 days')
+
+When user does NOT specify a window, default to whole gestation for birth outcome regressions.
+When user says "preconception", use the 3-month window unless they specify otherwise.
+When reporting results, ALWAYS state which exposure window was used: "using mean exposure over the 3-month preconception period" or "gestational mean" etc.
 
 GROUP BY f2a_participant_id only — do NOT include Country, GHSL_class, or other categorical columns in GROUP BY (they are constant per participant; include them in SELECT as MAX(Country) etc.)
 
@@ -552,12 +567,16 @@ Binary VARCHAR outcomes (lowbirthweight, preterm, stillbirth, neonataldeath, liv
 
 LIMIT 10000 always.
 
-**Canonical example — gestational PM2.5 exposure and low birth weight:**
+**Canonical example — gestational + preconception PM2.5, comparing both windows:**
 ```sql
 SELECT f2a_participant_id,
     MAX(Country)    AS Country,
     MAX(GHSL_class) AS GHSL_class,
-    -- gestational-period mean exposure only
+    -- preconception mean (3 months before conception)
+    AVG(CASE WHEN exposure_day::DATE >= (conception_date - INTERVAL '90 days')
+              AND exposure_day::DATE <  conception_date
+             THEN CAMS2_pm2p5_ugm3 END)                          AS PM25_preconception,
+    -- whole-gestation mean
     AVG(CASE WHEN exposure_day::DATE >= conception_date
               AND exposure_day::DATE <= delivery_date
              THEN CAMS2_pm2p5_ugm3 END)                          AS PM25_gestational,
