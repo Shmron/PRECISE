@@ -15,7 +15,8 @@ import pyarrow.ipc as _ipc
 app = Flask(__name__)
 CORS(app)
 
-DB_PATH = '/home/rutendo/PRECISE/precise.duckdb'
+DB_PATH        = '/home/rutendo/PRECISE/precise.duckdb'
+SENSOR_DB_PATH = '/home/rutendo/PRECISE/sensor.duckdb'
 
 CATALOGUE_ACCESS_CODE = os.environ.get('CATALOGUE_ACCESS_CODE', 'PRECISE2024')
 
@@ -122,6 +123,9 @@ def is_safe_query(sql):
 
 def _coerce(v):
     """Coerce DuckDB return values to JSON-serialisable Python scalars."""
+    import datetime as _dt
+    if isinstance(v, (_dt.date, _dt.datetime)):
+        return v.isoformat()
     if hasattr(v, '__float__') and not isinstance(v, (int, str, bool, type(None))):
         return float(v)
     return v
@@ -129,26 +133,41 @@ def _coerce(v):
 
 def apply_country_filter(sql, countries):
     """
-    Wrap every reference to daily_data so queries are restricted to
-    the caller's approved countries.  Works for both FROM and JOIN.
-
-    e.g. countries = ['Kenya', 'Gambia']
-    'SELECT * FROM daily_data LIMIT 10'
-    → 'SELECT * FROM (SELECT * FROM daily_data
-                      WHERE Country IN ('Kenya','Gambia')) AS daily_data LIMIT 10'
+    Wrap every reference to daily_data, sensor_daily, and sensor_raw so queries
+    are restricted to the caller's approved countries.  Works for both FROM and JOIN.
+    sensor_daily/sensor_raw are also rewritten to use the sensor. catalog prefix.
     """
     if not countries:
-        # No countries approved — return unsatisfiable query
         return "SELECT * FROM daily_data WHERE 1=0"
 
-    c_list  = ', '.join(f"'{c}'" for c in countries)
-    subq    = (f"(SELECT * FROM daily_data "
-               f"WHERE Country IN ({c_list})) AS daily_data")
+    c_list = ', '.join(f"'{c}'" for c in countries)
 
-    # Replace  FROM daily_data  and  JOIN daily_data
-    filtered = re.sub(r'\bFROM\s+daily_data\b',  f'FROM {subq}',  sql, flags=re.IGNORECASE)
-    filtered = re.sub(r'\bJOIN\s+daily_data\b',   f'JOIN {subq}',  filtered, flags=re.IGNORECASE)
+    # daily_data — Country column (capital C)
+    subq_daily = (f"(SELECT * FROM daily_data "
+                  f"WHERE Country IN ({c_list})) AS daily_data")
+    filtered = re.sub(r'\bFROM\s+daily_data\b', f'FROM {subq_daily}', sql, flags=re.IGNORECASE)
+    filtered = re.sub(r'\bJOIN\s+daily_data\b',  f'JOIN {subq_daily}', filtered, flags=re.IGNORECASE)
+
+    # sensor_daily — country column (lowercase c), qualify with sensor. catalog
+    subq_sensor_daily = (f"(SELECT * FROM sensor.sensor_daily "
+                         f"WHERE country IN ({c_list})) AS sensor_daily")
+    filtered = re.sub(r'\bFROM\s+sensor_daily\b', f'FROM {subq_sensor_daily}', filtered, flags=re.IGNORECASE)
+    filtered = re.sub(r'\bJOIN\s+sensor_daily\b',  f'JOIN {subq_sensor_daily}', filtered, flags=re.IGNORECASE)
+
+    # sensor_raw — country column (lowercase c), qualify with sensor. catalog
+    subq_sensor_raw = (f"(SELECT * FROM sensor.sensor_raw "
+                       f"WHERE country IN ({c_list})) AS sensor_raw")
+    filtered = re.sub(r'\bFROM\s+sensor_raw\b', f'FROM {subq_sensor_raw}', filtered, flags=re.IGNORECASE)
+    filtered = re.sub(r'\bJOIN\s+sensor_raw\b',  f'JOIN {subq_sensor_raw}', filtered, flags=re.IGNORECASE)
+
     return filtered
+
+
+def _open_conn():
+    """Open precise.duckdb read-only and attach sensor.duckdb."""
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    conn.execute(f"ATTACH '{SENSOR_DB_PATH}' AS sensor (READ_ONLY)")
+    return conn
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -160,7 +179,7 @@ def health():
         return err
 
     countries = key_info['countries']
-    conn = duckdb.connect(DB_PATH, read_only=True)
+    conn = _open_conn()
     try:
         c_list = ', '.join(f"'{c}'" for c in countries)
         count = conn.execute(
@@ -187,7 +206,7 @@ def schema():
     if err:
         return err
 
-    conn = duckdb.connect(DB_PATH, read_only=True)
+    conn = _open_conn()
     try:
         columns = conn.execute("DESCRIBE daily_data").fetchall()
         return jsonify({
@@ -221,7 +240,7 @@ def query():
     # Inject country filter — user only sees their approved countries
     filtered_sql = apply_country_filter(sql, key_info['countries'])
 
-    conn = duckdb.connect(DB_PATH, read_only=True)
+    conn = _open_conn()
     try:
         cur = conn.execute(filtered_sql)
         # Preserve original column order from the table definition
@@ -274,7 +293,7 @@ def query_arrow():
 
     filtered_sql = apply_country_filter(sql, key_info['countries'])
 
-    conn = duckdb.connect(DB_PATH, read_only=True)
+    conn = _open_conn()
     try:
         result      = conn.execute(filtered_sql)
         arrow_table = result.fetch_arrow_table()
@@ -325,7 +344,7 @@ def query_csv():
 
     filtered_sql = apply_country_filter(sql, key_info['countries'])
 
-    conn = duckdb.connect(DB_PATH, read_only=True)
+    conn = _open_conn()
     try:
         cur     = conn.execute(filtered_sql)
         columns = [d[0] for d in cur.description]
@@ -359,7 +378,7 @@ _CHAT_SYSTEM_PROMPT = """You are Shmron, an expert research assistant for the PR
 2. NUMBERS MUST ADD UP: Use GROUP BY Country in a single query when comparing countries. Never run separate queries for total vs breakdown — they diverge due to NULL Country rows. If you must use separate queries, reconcile totals explicitly.
 3. Always include WHERE Country IS NOT NULL if you want only the three named countries.
 
-Settlement breakdown (GHSL_class): Kenya 66% Urban/8% Rural/26% Peri-Urban | Mozambique 72%/21%/7% | Gambia 40%/60%/0.2%
+Settlement breakdown (GHSL_class): Kenya 66% Urban/8% Rural/26% Peri_Urban | Mozambique 72%/21%/7% | Gambia 40%/60%/0.2%
 
 === DATABASE SCHEMA (table: daily_data, 3,129,121 rows — one row per participant per exposure day) ===
 
@@ -369,7 +388,7 @@ ALL numeric columns below are DOUBLE unless stated otherwise. Do NOT use TRY_CAS
 - f2a_participant_id, f2a_precise_id, participant_status (VARCHAR)
 - Country (VARCHAR): 'Kenya', 'Mozambique', 'Gambia'
 - Village (VARCHAR), Village code (DOUBLE), Longitude, Latitude (DOUBLE)
-- health_facility (VARCHAR), GHSL_class (VARCHAR): 'Urban', 'Rural', 'Peri-Urban'
+- health_facility (VARCHAR), GHSL_class (VARCHAR): 'Urban', 'Rural', 'Peri_Urban' (underscore, not hyphen), 'No_Data'
 - IPCC_zone, climate_zone, season_wb (VARCHAR)
 
 **Dates:**
@@ -397,7 +416,7 @@ ALL numeric columns below are DOUBLE unless stated otherwise. Do NOT use TRY_CAS
 - ERA5_T2M_Diurnal: diurnal temperature range
 - ERA5_T2M_deviation, ERA5_T2M_threshold
 - ERA5_LST_mean, ERA5_LST_mean_village, ERA5_LST_mean_facility: land surface temp
-- ERA5_T2M_extreme_hot_day, ERA5_T2M_heatwave_day (VARCHAR: 'TRUE'/'FALSE' — use = 'TRUE' not = TRUE)
+- ERA5_T2M_extreme_hot_day, ERA5_T2M_heatwave_day (VARCHAR: 'Yes'/'No' — use = 'Yes' or = 'No', NOT boolean TRUE/FALSE)
 - MERRA2_T2M_mean, MERRA2_T2M_max: air temperature
 - CAMS2_t2m_C, CAMS2_d2m_C: CAMS 2m temperature & dew point
 
@@ -445,17 +464,97 @@ ALL numeric columns below are DOUBLE unless stated otherwise. Do NOT use TRY_CAS
 - maternal_height, maternal_weight, maternal_bmi, average_muac
 - maternal_bmi_categorised, average_muac_categorised (VARCHAR)
 - average_dbp, average_sbp: blood pressure
-- gh_overall, ch_overall, pe_overall, ht_overall, hdp_overall, bp_cat (VARCHAR): hypertensive disorders
-- hiv_status, deliverylocation, delivery_mode, cooking, heating, lighting (VARCHAR)
-- sanitation_jmp, water_jmp, hygiene_jmp, tobacco_use (VARCHAR)
+- gh_overall, ch_overall, pe_overall, ht_overall, hdp_overall, gh_iso_overall (VARCHAR 'Yes'/'No'): hypertensive disorders
+- ht_flag, ch_flag, gh_flag (VARCHAR 'Yes'/'No'): hypertension flags
+- bp_cat (VARCHAR): 'Normal BP', 'Elevated BP', 'Stage 1 Hypertension', 'Stage 2 Hypertension'
+- hiv_status, pre_gest_diab, previous_csection, previous_stillbirth, tobacco_use (VARCHAR 'Yes'/'No')
+- maternal_death (VARCHAR 'Yes'/'No')
+- deliverylocation (VARCHAR): 'District hospital', 'PHC', 'Regional hospital', 'Home', 'Private hospital/clinic'
+- delivery_mode (VARCHAR): 'Unassisted vaginal without episiotomy', 'Unassisted vaginal with episiotomy', 'Caesarean section', 'Operative vaginal', 'Vaginal breech'
+- cooking (VARCHAR): 'Biomass', 'Coal', 'Gas', 'Kerosene', 'Electric'
+- heating (VARCHAR): 'Not needed', 'Electric', 'Coal', 'Biomass', 'Battery'
+- lighting (VARCHAR): 'Electric', 'Battery', 'Kerosene', 'Biomass', 'Generator'
+- sanitation_jmp (VARCHAR): 'At least basic', 'Limited', 'Unimproved', 'Open defecation'
+- water_jmp (VARCHAR): 'At least basic', 'Limited', 'Unimproved', 'Surface water'
+- hygiene_jmp (VARCHAR): 'At least limited', 'No facility'
 - parity, age_edd (DOUBLE)
+- nicu_admission (VARCHAR): 'Yes', 'No', "Don't know"
 
 **Birth Outcomes:**
 - Birthweight (DOUBLE): grams
 - bwt_kg, bwt_percentile, bwt_zscore (DOUBLE)
 - GA_PRECISE, GA_clinical (DOUBLE): gestational age in weeks
-- preterm, sga, lowbirthweight, svn, neonataldeath, stillbirth, livebirth (VARCHAR: 'Yes'/'No' or '1'/'0')
-- sex_of_baby (VARCHAR), placenta_weight, placenta_weight_ratio (DOUBLE)
+- preterm, lowbirthweight, svn, neonataldeath, stillbirth, livebirth, bornalive (VARCHAR: 'Yes'/'No')
+- sga (VARCHAR): full descriptive strings — 'Appropriate for Gestational Age (10th to 90th centile)', 'Small for Gestational Age (3rd - <10th centile)', 'Severely Small for Gestational Age (<3rd centile)', 'Large for Gestational Age (>90th centile)', 'Large for Gestational Age (>97th centile)'. For binary SGA use: CASE WHEN sga LIKE 'Small%' OR sga LIKE 'Severe%' THEN 1 ELSE 0 END
+- sex_of_baby (VARCHAR): 'Male', 'Female', 'Indeterminate'
+- ageatdeath (BOOLEAN: TRUE/FALSE — one of the few actual booleans; use = TRUE or = FALSE)
+- placenta_weight, placenta_weight_ratio (DOUBLE)
+
+=== PERSONAL SENSOR DATABASE (343 participants, 3 countries) ===
+
+A subset of 343 PRECISE participants wore personal air quality and environmental sensors during a monitoring window (typically 5–7 days). Unlike the satellite/reanalysis data in daily_data, these are ground-level PERSONAL measurements — what the participant themselves breathed and experienced.
+
+**Table: sensor_daily** — 3,190 rows — ONE ROW PER PARTICIPANT PER DAY
+- pid (VARCHAR): participant ID — joins to f2a_participant_id in daily_data
+- country (VARCHAR): 'Kenya', 'Mozambique', 'Gambia'
+- exposure_date (DATE): the calendar day
+- season (VARCHAR): 'Dry' or 'Wet'
+- pm25_mean, pm25_max, pm25_min, pm25_sd (DOUBLE): personal PM2.5 μg/m³ — daily aggregate
+- no2_mean, no2_max, no2_min, no2_sd (DOUBLE): personal NO2 ppb — daily aggregate
+- temp_mean, temp_max, temp_min, temp_sd (DOUBLE): personal temperature °C — daily aggregate
+- rh_mean, rh_max, rh_min, rh_sd (DOUBLE): personal relative humidity % — daily aggregate
+- lat, lon (DOUBLE): mean GPS position for the day
+- n_readings (BIGINT): number of minute-level readings that day (use to assess data quality)
+- monitoring_start, monitoring_end (DATE): the participant's full sensor deployment window
+
+**Table: sensor_raw** — 3,723,990 rows — ONE ROW PER MINUTE (use sparingly — always add LIMIT)
+- pid, country (VARCHAR), datetime (TIMESTAMP)
+- pm25, no2, temp, rh, lat, lon (DOUBLE): raw minute-level measurements
+- season, pid_season (VARCHAR)
+- startdate, enddate (TIMESTAMP): monitoring window
+
+**WHEN TO USE EACH TABLE:**
+| Question | Table |
+|---|---|
+| Cohort characteristics, outcomes (birthweight, preterm, SGA), demographics | daily_data |
+| Area-level climate exposure (ERA5, CAMS2, MERRA2), satellite data | daily_data |
+| Participants WITHOUT personal sensor data (n=6,960 total) | daily_data |
+| Personal sensor PM2.5, NO2, temperature, humidity | sensor_daily |
+| Intra-day patterns, diurnal variation, time of peak exposure | sensor_raw |
+| Comparing satellite vs personal exposure (exposure misclassification) | JOIN both |
+
+**IMPORTANT — TEMPORAL MISMATCH:**
+The sensor monitoring window (2022–2023) was conducted AFTER most participants' pregnancy period. Do NOT join on date. Instead, join at the participant level — aggregate each participant's pregnancy-period satellite exposure from daily_data and their sensor-period personal exposure from sensor_daily separately, then compare.
+
+**CROSS-DATABASE JOIN — satellite (pregnancy period) vs personal sensor (monitoring window):**
+```sql
+-- Participant-level join: average satellite PM2.5 during pregnancy vs average personal PM2.5 during sensor window
+WITH sat AS (
+    SELECT f2a_participant_id, Country,
+           AVG(CAMS2_pm2p5_ugm3) AS satellite_pm25_pregnancy
+    FROM daily_data
+    WHERE Country IS NOT NULL AND CAMS2_pm2p5_ugm3 IS NOT NULL
+    GROUP BY f2a_participant_id, Country
+),
+sens AS (
+    SELECT pid, country,
+           AVG(pm25_mean) AS personal_pm25_sensor,
+           COUNT(*)       AS sensor_days
+    FROM sensor_daily
+    GROUP BY pid, country
+)
+SELECT sat.f2a_participant_id, sat.Country,
+       sat.satellite_pm25_pregnancy,
+       sens.personal_pm25_sensor,
+       sens.personal_pm25_sensor - sat.satellite_pm25_pregnancy AS exposure_difference
+FROM sat
+JOIN sens ON sat.f2a_participant_id = sens.pid
+ORDER BY sat.Country, sat.f2a_participant_id
+LIMIT 50
+```
+Join key: sensor_daily.pid = daily_data.f2a_participant_id (participant level only — do NOT join on date)
+
+NOTE: Only 343 participants have sensor data (Kenya=105, Mozambique=78, Gambia=160). Counts from sensor_daily/sensor_raw will be much smaller than daily_data. Always note this when reporting sensor-based results.
 
 === QUERY GUIDELINES ===
 Always use aggregations — never return more than 50 raw rows.
@@ -645,13 +744,13 @@ After run_regression returns results, ALWAYS call render_chart with chart_type='
 _CHAT_TOOLS = [
     {
         "name": "execute_query",
-        "description": "Run a SQL SELECT query against the PRECISE daily data table (daily_data). This table has 3,129,121 rows — one row per participant per exposure day. Use aggregations (COUNT, AVG, SUM, GROUP BY) to answer questions. Always write efficient queries. The table name is 'daily_data'. You can call this tool multiple times to answer different parts of a question.",
+        "description": "Run a SQL SELECT query against the PRECISE database. Three tables are available: (1) 'daily_data' — 3,129,121 rows, one per participant per exposure day, satellite/modelled exposures + outcomes; (2) 'sensor_daily' — 3,190 rows, personal sensor data aggregated to daily means/max/min/SD per participant; (3) 'sensor_raw' — 3,723,990 minute-level sensor readings (use sparingly with LIMIT). See the system prompt for which table to use. You can call this tool multiple times and can JOIN across tables.",
         "input_schema": {
             "type": "object",
             "properties": {
                 "sql": {
                     "type": "string",
-                    "description": "A DuckDB-compatible SELECT query against 'daily_data'. Use TRY_CAST(col AS DOUBLE) for VARCHAR columns that contain numbers (ERA5_T2M_Min, ERA5_T2M_Diurnal, ERA5_LST_village, RQI, meanDEM, N_mean, P_mean, K_mean, Ca_mean, PW_RoadDens, PW_EuclMajorRd, PW_EuclHwy, PW_WalkIso_MajorRd, PW_WalkIso_Hwy, PW_DriveIso_MajorRd, PW_DriveIso_Hwy, PW_WalkDist_Fac, PW_DriveDist_Fac, PW_PubTrans_Dist_Fac, PW_WalkTime_Fac, PW_DriveTime_Fac, PW_PubTrans_Time_Fac, NDVI_village). ERA5_T2M_extreme_hot_day and ERA5_T2M_heatwave_day are BOOLEAN columns."
+                    "description": "A DuckDB-compatible SELECT query. Table names: 'daily_data', 'sensor_daily', 'sensor_raw'. ALL numeric columns in daily_data are already DOUBLE — do NOT use TRY_CAST on any of them. ERA5_T2M_extreme_hot_day and ERA5_T2M_heatwave_day are VARCHAR 'Yes'/'No' columns — use = 'Yes' not = TRUE. ageatdeath is a real BOOLEAN — use = TRUE or = FALSE. sga is VARCHAR with full descriptive strings (not Yes/No) — use LIKE 'Small%' for SGA cases."
                 }
             },
             "required": ["sql"]
@@ -899,7 +998,7 @@ def chat():
 
                 # Execute tool calls — render_chart streams to browser, execute_query hits DuckDB
                 tool_results = []
-                conn = duckdb.connect(DB_PATH, read_only=True)
+                conn = _open_conn()
                 try:
                     for block in tool_blocks:
                         if block.name == 'render_chart':
@@ -1022,6 +1121,334 @@ def chat():
             'X-Accel-Buffering':  'no',   # prevents nginx from buffering the stream
         },
     )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# HE2AT CENTRE — CATALOGUE AI
+# ══════════════════════════════════════════════════════════════════════════════
+
+HE2AT_DB_PATH    = '/home/rutendo/PRECISE/he2at.duckdb'
+HE2AT_ACCESS_CODE = os.environ.get('HE2AT_ACCESS_CODE', 'HE2AT2022')
+
+_HE2AT_SYSTEM = """You are an expert research assistant for the HE²AT Centre (Heat and Health African Transdisciplinary Center). You help researchers explore environmental exposure data linked to pregnancy cohorts across Sub-Saharan Africa.
+
+**STUDY OVERVIEW:**
+74,483 pregnant women across 9 countries and 295 study locations, 21 study cohorts, 2003–2024.
+Country breakdown: Kenya 25,139 | Malawi 14,037 | Zambia 12,024 | South Africa 11,534 | The Gambia 2,987 | Ethiopia 2,547 | Burkina Faso 2,362 | Ghana 1,997 | Tanzania 1,856
+
+**CRITICAL RULES:**
+1. ALWAYS call execute_query for any question about counts, distributions, trends, or statistics. Never guess numbers.
+2. ALWAYS call render_chart in the SAME response as execute_query. Choose the best chart type automatically.
+3. CHART DATA MUST MATCH TEXT: the chart must show exactly the same filtered subset as your narrative.
+4. Use aggregations — never return more than 50 raw rows. The AI receives only up to 50 result rows.
+5. If N patients > 74,483 your query is wrong — GROUP BY Patient_Identifier to deduplicate.
+
+**DATABASES — three tables, one view:**
+
+### PRIMARY TABLE: patient_exposures  (74,483 rows — ONE ROW PER PATIENT)
+Use this for almost everything: comparisons across countries/studies, distributions, correlations.
+
+**Identifiers:**
+- Patient_Identifier (VARCHAR), Country (VARCHAR), Study (VARCHAR), Location (VARCHAR)
+- Latitude (DOUBLE), Longitude (DOUBLE)
+
+**Urbanisation & Climate Zone:**
+- urbanization (DOUBLE: 10=Very Low Density Rural, 11=Low Density Rural, 12=Rural Cluster, 13=Suburban/Peri-urban, 21=Semi-dense Urban, 22=Dense Urban Cluster, 23=Urban Centre)
+- urbanization_class (VARCHAR): 'Very Low Density Rural', 'Low Density Rural', 'Rural Cluster', 'Suburban / Peri-urban', 'Semi-dense Urban Cluster', 'Dense Urban Cluster', 'Urban Centre'
+- ipcc_climate_zone_code (DOUBLE), ipcc_climate_zone_name (VARCHAR): 'Cold', 'Polar', 'Temperate', 'Tropical'
+
+**Geography & Soil:**
+- elevation (DOUBLE): metres above sea level
+- soil_nitrogen (DOUBLE), soil_phosphorus (DOUBLE), soil_organic_carbon (DOUBLE): kg/ha or g/kg
+
+**Socioeconomic:**
+- rwi (DOUBLE): Relative Wealth Index (range −0.85 to 1.92; higher = wealthier)
+
+**Temperature (all DOUBLE — patient gestational mean):**
+- tas_mean: 2m air temperature mean (°C)
+- tas_min: 2m air temperature minimum (°C)
+- tas_max: 2m air temperature maximum (°C)
+
+**Heat Stress Indices (all DOUBLE):**
+- WBGT_mean: Wet Bulb Globe Temperature (°C) — occupational heat stress threshold: 28°C
+- humidex_mean: Humidex (°C equivalent)
+- Wind_Chill_mean, HI_mean: Heat Index (°C), tasapp_mean: apparent temperature (°C)
+- tasdp_mean: dew point temperature (°C)
+- WBGTsimple_mean: simplified WBGT (°C), WBT_mean: wet bulb temperature (°C)
+- NET_mean: Net Effective Temperature (°C)
+- ws_mean: wind speed (m/s)
+- UTCI_min, UTCI_mean, UTCI_max: Universal Thermal Climate Index (°C)
+  UTCI stress: <0 cold stress | 9–26 no stress | 26–32 moderate heat | 32–38 strong | 38–46 very strong | >46 extreme
+- MRT_min, MRT_mean, MRT_max: Mean Radiant Temperature (°C)
+
+**Air Quality (all DOUBLE):**
+- pm2p5_mean: PM2.5 μg/m³ (WHO guideline: 5 μg/m³ annual; >35 unhealthy)
+- no2as_mean: NO₂ (μg/m³)
+- aod550_mean: aerosol optical depth at 550nm
+- od550bc_mean: black carbon AOD
+
+**Dust (all DOUBLE):**
+- duaod550_nc_mean: dust AOD 550nm
+- duexttau_ee_mean: dust extinction optical depth (MERRA-2)
+- dusmass25_ee_mean: dust PM2.5 mass concentration (μg/m³)
+- ducmass_ee_mean: total dust column mass (kg/m²)
+
+**Climate & Environment (all DOUBLE):**
+- RH_mean: relative humidity (%)
+- ndvi: NDVI vegetation index (−1 to 1; >0.3 = moderate vegetation)
+- precipitation: mm/day
+
+### SECONDARY TABLE: climate_data  (305,808 rows — ONE ROW PER LOCATION PER DAY)
+Use for temporal trends (monthly/seasonal), geographic patterns across locations.
+Same climate columns as patient_exposures plus: Exposure_Date (DATE).
+Join to exposure_days on (Study, Location, Exposure_Date) if you need patient context.
+Key columns: Country, Study, Location, Latitude, Longitude, Exposure_Date, [all climate columns]
+
+### SECONDARY TABLE: exposure_days  (23M rows — ONE ROW PER PATIENT PER DAY)
+Use only with aggressive GROUP BY. Contains: Patient_Identifier, Country, Study, Location,
+Latitude, Longitude, Birth_Date (DATE), GA_Days (DOUBLE: gestational age in days),
+Exposure_Date (DATE), Window_Type ('full' or 'dob_only').
+Window_Type='full' means full gestational period; 'dob_only' means date of birth only.
+
+### VIEW: exposure_climate  (joins exposure_days + climate_data)
+Full patient-day dataset with all climate variables. Use with heavy aggregation only.
+Always add WHERE Window_Type='full' for gestational analyses.
+
+=== QUERY STRATEGY ===
+
+| Question type | Table to use |
+|---|---|
+| Mean exposure by country/study/urbanisation | patient_exposures |
+| Distribution, box plots, correlations | patient_exposures |
+| Regression (exposure → health) | patient_exposures (GROUP BY Patient_Identifier already done) |
+| Monthly/seasonal trends | climate_data (GROUP BY month/season) |
+| Geographic map of exposures | patient_exposures (Latitude, Longitude per patient) |
+| Patient count by country | patient_exposures |
+| Gestational day trajectory | exposure_climate WHERE Window_Type='full' |
+
+=== CHARTING RULES (MANDATORY) ===
+Always call render_chart IN THE SAME RESPONSE as execute_query. Pick the best type automatically:
+
+| Situation | Chart type |
+|---|---|
+| Compare means across countries/studies/urban classes | bar |
+| Distribution, spread, outliers | box |
+| Proportion, breakdown by category | pie or doughnut |
+| Trend over time (monthly, seasonal) | line |
+| Relationship between two continuous variables | scatter |
+| Correlation matrix | heatmap |
+| Regression coefficients with CIs | forest |
+| Geographic pattern, "where", "map", spatial | map |
+
+**box** — use PERCENTILE_CONT:
+```sql
+SELECT Country,
+  PERCENTILE_CONT(0.05) WITHIN GROUP (ORDER BY col) as p5,
+  PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY col) as q1,
+  PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY col) as median,
+  PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY col) as q3,
+  PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY col) as p95,
+  AVG(col) as mean
+FROM patient_exposures WHERE Country IS NOT NULL AND col IS NOT NULL GROUP BY Country
+```
+→ box_data: [{name, lowerfence:p5, q1, median, q3, upperfence:p95, mean}]
+
+**map** — aggregate to location level:
+```sql
+SELECT Location, AVG(Latitude) AS lat, AVG(Longitude) AS lon,
+       MAX(Country) AS country, AVG(pm2p5_mean) AS value,
+       COUNT(DISTINCT Patient_Identifier) AS n_patients
+FROM patient_exposures
+WHERE Latitude IS NOT NULL AND Longitude IS NOT NULL
+GROUP BY Location
+```
+→ map_data: [{lat, lon, label, value, size: n_patients}]
+
+COORDINATE VALIDATION (check before rendering):
+- Burkina Faso: lat 10–16°N, lon −6 to 2°E
+- Ethiopia:     lat 4–15°N, lon 33–48°E
+- Ghana:        lat 5–11°N, lon −4 to 1°E
+- Kenya:        lat −5 to 5°N, lon 34–42°E
+- Malawi:       lat −17 to −9°S, lon 32–36°E
+- South Africa: lat −35 to −22°S, lon 16–33°E
+- Tanzania:     lat −12 to −1°S, lon 29–41°E
+- The Gambia:   lat 13–14°N, lon −17 to −13°W
+- Zambia:       lat −18 to −8°S, lon 22–34°E
+
+NEVER echo raw chart JSON, labels, or datasets in your text. Write only natural language findings.
+
+=== REGRESSION ===
+**Simple (single predictor):** use REGR_SLOPE / REGR_R2 inside execute_query on patient_exposures.
+**Multivariate:** use run_regression tool. patient_exposures already has one row per patient — no GROUP BY needed.
+- OLS for continuous (WBGT_mean, pm2p5_mean, UTCI_mean, tas_mean)
+- Logit for binary outcomes (must be CASE WHEN ... THEN 1 ELSE 0 END)
+- Always state which exposure variable and what the coefficient means clinically.
+
+**RESPONSE STYLE:**
+- Always query the live database — never guess or cite numbers from memory.
+- Compare across countries when relevant.
+- Always state N (number of patients) in any result.
+- Highlight the most notable finding first."""
+
+
+@app.route('/api/he2at-login', methods=['POST'])
+def he2at_login():
+    """Exchange the HE2AT catalogue access code for a short-lived session token."""
+    code = (request.json or {}).get('code', '').strip()
+    if code != HE2AT_ACCESS_CODE:
+        return jsonify({'ok': False, 'error': 'Invalid access code'}), 403
+    return jsonify({'ok': True, 'token': access_db.issue_catalogue_token()})
+
+
+@app.route('/api/he2at/chat', methods=['POST'])
+def he2at_chat():
+    """HE2AT Centre AI research assistant — token-gated, streams SSE."""
+    token = request.headers.get('X-Session-Token', '')
+    if not token or not access_db.validate_catalogue_token(token):
+        return jsonify({'error': 'Valid session token required. Please log in.'}), 401
+
+    data     = request.json or {}
+    messages = data.get('messages', [])
+    if not messages or messages[-1].get('role') != 'user':
+        return jsonify({'error': 'messages must end with a user turn'}), 400
+
+    def generate():
+        try:
+            import anthropic as _anthropic
+            client  = _anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY', ''))
+            history = list(messages)
+            max_iterations = 8
+
+            for i in range(max_iterations):
+                tool_choice = {'type': 'any'} if i == 0 else {'type': 'auto'}
+                yield f"data: {json.dumps({'type': 'status', 'text': 'Thinking…' if i == 0 else 'Analysing…'})}\n\n"
+
+                response = client.messages.create(
+                    model='claude-sonnet-4-20250514',
+                    max_tokens=4096,
+                    system=_HE2AT_SYSTEM,
+                    messages=history,
+                    tools=_CHAT_TOOLS,
+                    tool_choice=tool_choice,
+                )
+
+                tool_blocks = [b for b in response.content if b.type == 'tool_use']
+                text_blocks = [b for b in response.content if b.type == 'text']
+
+                assistant_content = []
+                for b in response.content:
+                    if b.type == 'text':
+                        assistant_content.append({'type': 'text', 'text': b.text})
+                    elif b.type == 'tool_use':
+                        assistant_content.append({
+                            'type': 'tool_use', 'id': b.id,
+                            'name': b.name, 'input': b.input,
+                        })
+                history.append({'role': 'assistant', 'content': assistant_content})
+
+                if not tool_blocks:
+                    yield f"data: {json.dumps({'type': 'text', 'text': text_blocks[0].text if text_blocks else ''})}\n\n"
+                    break
+
+                tool_results = []
+                conn = duckdb.connect(HE2AT_DB_PATH, read_only=True)
+                try:
+                    for block in tool_blocks:
+                        if block.name == 'render_chart':
+                            yield f"data: {json.dumps({'type': 'chart', 'spec': block.input})}\n\n"
+                            result = {'rendered': True}
+
+                        elif block.name == 'run_regression':
+                            reg_sql    = block.input.get('sql_query', '')
+                            formula    = block.input.get('formula', '')
+                            model_type = block.input.get('model_type', 'OLS')
+                            reg_title  = block.input.get('title', 'Regression')
+                            safe, reason = is_safe_query(reg_sql)
+                            if not safe:
+                                result = {'error': reason}
+                            else:
+                                try:
+                                    import pandas as _pd
+                                    import statsmodels.formula.api as _smf
+                                    yield f"data: {json.dumps({'type': 'status', 'text': 'Running regression…'})}\n\n"
+                                    df = conn.execute(reg_sql).df()
+                                    id_col = next((c for c in df.columns if 'patient' in c.lower()), None)
+                                    if id_col and df[id_col].duplicated().any():
+                                        df = df.drop_duplicates(subset=[id_col])
+                                    df = df.dropna()
+                                    if len(df) < 10:
+                                        result = {'error': f'Too few observations ({len(df)}) for regression.'}
+                                    else:
+                                        if model_type == 'Logit':
+                                            fit = _smf.logit(formula, data=df).fit(disp=False)
+                                            r2_key, r2_val = 'pseudo_r_squared', float(fit.prsquared)
+                                        else:
+                                            fit = _smf.ols(formula, data=df).fit()
+                                            r2_key, r2_val = 'r_squared', float(fit.rsquared)
+                                        ci = fit.conf_int()
+                                        coefficients = []
+                                        for var in fit.params.index:
+                                            p = float(fit.pvalues[var])
+                                            stars = '***' if p < 0.001 else '**' if p < 0.01 else '*' if p < 0.05 else ''
+                                            coefficients.append({
+                                                'variable': str(var),
+                                                'coef':     round(float(fit.params[var]), 4),
+                                                'se':       round(float(fit.bse[var]), 4),
+                                                'p_value':  round(p, 4),
+                                                'ci_lower': round(float(ci.loc[var, 0]), 4),
+                                                'ci_upper': round(float(ci.loc[var, 1]), 4),
+                                                'stars':    stars,
+                                            })
+                                        stats_table = {
+                                            'title': reg_title, 'model_type': model_type,
+                                            'formula': formula, 'n_obs': int(fit.nobs),
+                                            r2_key: round(r2_val, 4),
+                                            'aic': round(float(fit.aic), 1),
+                                            'coefficients': coefficients,
+                                        }
+                                        yield f"data: {json.dumps({'type': 'stats_table', 'result': stats_table})}\n\n"
+                                        result = {
+                                            'n_obs': stats_table['n_obs'], r2_key: stats_table[r2_key],
+                                            'aic': stats_table['aic'],
+                                            'coefficients': [{k: v for k, v in c.items() if k != 'se'} for c in coefficients],
+                                        }
+                                except Exception as e:
+                                    result = {'error': f'Regression failed: {e}'}
+
+                        else:  # execute_query
+                            sql = block.input.get('sql', '')
+                            safe, reason = is_safe_query(sql)
+                            if not safe:
+                                result = {'error': reason}
+                            else:
+                                try:
+                                    cur  = conn.execute(sql)
+                                    cols = [d[0] for d in cur.description]
+                                    rows = cur.fetchmany(50)
+                                    result = {
+                                        'columns':   cols,
+                                        'rows':      [{cols[j]: _coerce(v) for j, v in enumerate(r)} for r in rows],
+                                        'row_count': len(rows),
+                                    }
+                                except Exception as e:
+                                    result = {'error': str(e)}
+
+                        tool_results.append({
+                            'type': 'tool_result', 'tool_use_id': block.id,
+                            'content': json.dumps(result),
+                        })
+                finally:
+                    conn.close()
+
+                history.append({'role': 'user', 'content': tool_results})
+
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'text': str(e)})}\n\n"
+
+    return Response(generate(), mimetype='text/event-stream',
+                    headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
 
 
 if __name__ == '__main__':
