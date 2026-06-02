@@ -733,17 +733,18 @@
             <p class="login-subtitle">Research data catalogue — PALS Lab</p>
 
             <div class="gate-tabs">
-                <button class="gate-tab active" onclick="switchTab('login')">I have an access code</button>
+                <button class="gate-tab active" onclick="switchTab('login')">Log In</button>
                 <button class="gate-tab" onclick="switchTab('signup')">Request Access</button>
             </div>
 
-            <!-- Access code pane -->
+            <!-- Login pane -->
             <div class="gate-pane active" id="paneLogin">
                 <form id="loginForm">
-                    <input type="password" id="accessCode" placeholder="Enter access code" autocomplete="off" required>
-                    <button type="submit">Access Dashboard</button>
+                    <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email" required>
+                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+                    <button type="submit">Log In</button>
                 </form>
-                <p id="loginError" class="login-error">Incorrect access code. Please try again.</p>
+                <p id="loginError" class="login-error">Incorrect email or password. Please try again.</p>
             </div>
 
             <!-- Request access pane -->
@@ -4417,10 +4418,9 @@ by most village residents.</div>
         }
 
         (function() {
-            const loginGate       = document.getElementById('loginGate');
-            const loginForm       = document.getElementById('loginForm');
-            const accessCodeInput = document.getElementById('accessCode');
-            const loginError      = document.getElementById('loginError');
+            const loginGate    = document.getElementById('loginGate');
+            const loginForm    = document.getElementById('loginForm');
+            const loginError   = document.getElementById('loginError');
 
             // Restore session if token already exists
             if (sessionStorage.getItem('catalogueToken')) {
@@ -4429,13 +4429,14 @@ by most village residents.</div>
 
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const code = accessCodeInput.value.trim();
+                const email    = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
 
                 try {
-                    const resp = await fetch(API_BASE + '/api/catalogue-login', {
+                    const resp = await fetch(API_BASE + '/api/catalogue-user-login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ code })
+                        body: JSON.stringify({ catalogue: 'precise', email, password })
                     });
                     const data = await resp.json();
 
@@ -4445,21 +4446,19 @@ by most village residents.</div>
                         loginGate.style.opacity = '0';
                         setTimeout(() => loginGate.classList.add('hidden'), 300);
                     } else {
+                        loginError.textContent = data.error || 'Incorrect email or password.';
                         throw new Error('invalid');
                     }
                 } catch (_) {
                     loginError.classList.add('show');
-                    accessCodeInput.value = '';
-                    accessCodeInput.focus();
                     loginForm.style.animation = 'shake 0.5s ease';
                     setTimeout(() => { loginForm.style.animation = ''; }, 500);
                 }
             });
 
             // Hide error on new input
-            accessCodeInput.addEventListener('input', function() {
-                loginError.classList.remove('show');
-            });
+            document.getElementById('loginEmail').addEventListener('input', () => loginError.classList.remove('show'));
+            document.getElementById('loginPassword').addEventListener('input', () => loginError.classList.remove('show'));
 
             // Add shake animation
             const style = document.createElement('style');
@@ -4741,7 +4740,19 @@ by most village residents.</div>
                             else if (evt.type==='chart') { precRemoveStatus(); if(!aiEl) aiEl=precAddAI(''); precAppendChart(aiEl,evt.spec); charts.push(evt.spec); }
                             else if (evt.type==='stats_table') { precRemoveStatus(); if(!aiEl) aiEl=precAddAI(''); precAppendTable(aiEl,evt.result); tables.push(evt.result); }
                             else if (evt.type==='done') { precRemoveStatus(); }
-                            else if (evt.type==='error') { precRemoveStatus(); precAddAI('Error: '+evt.text); }
+                            else if (evt.type==='error') {
+                                precRemoveStatus();
+                                const isBudget = evt.text && evt.text.toLowerCase().includes('budget');
+                                const msg = isBudget
+                                    ? '⚠️ You have used all your allocated tokens for this catalogue. Please contact the administrator to increase your budget.'
+                                    : 'Something went wrong: ' + evt.text;
+                                const el = document.createElement('div');
+                                el.className = 'prec-msg-ai';
+                                el.style.cssText = isBudget ? 'background:#fffbeb;border-left:3px solid #f59e0b;' : '';
+                                el.innerHTML = `<div class="prec-msg-text">${msg}</div>`;
+                                document.getElementById('precMessages').appendChild(el);
+                                document.getElementById('precMessages').scrollTop = 99999;
+                            }
                         }
                     }
                 }

@@ -76,7 +76,25 @@ def init_db():
                 messages   TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS catalogue_users (
+                id           TEXT PRIMARY KEY,
+                catalogue    TEXT NOT NULL,
+                name         TEXT NOT NULL,
+                email        TEXT NOT NULL,
+                password     TEXT NOT NULL,
+                token_budget INTEGER DEFAULT 1000000,
+                tokens_used  INTEGER DEFAULT 0,
+                is_active    INTEGER DEFAULT 1,
+                created_at   TEXT NOT NULL,
+                last_used    TEXT,
+                notes        TEXT
+            );
         ''')
+        # Add user_id to catalogue_tokens if upgrading from an older schema
+        try:
+            c.execute("ALTER TABLE catalogue_tokens ADD COLUMN user_id TEXT DEFAULT NULL")
+        except Exception:
+            pass
         # Add new columns to existing admins table if upgrading
         for sql in [
             "ALTER TABLE admins ADD COLUMN email TEXT",
@@ -373,6 +391,108 @@ def validate_catalogue_token(token: str) -> bool:
             c.execute("DELETE FROM catalogue_tokens WHERE token=?", (token,))
         return False
     return True
+
+
+# ── Catalogue user accounts ───────────────────────────────────────────────────
+
+def create_catalogue_user(catalogue, name, email, password, token_budget=1_000_000, notes=''):
+    user_id = secrets.token_hex(8)
+    now     = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute(
+            '''INSERT OR IGNORE INTO catalogue_users
+               (id, catalogue, name, email, password, token_budget, created_at, notes)
+               VALUES (?,?,?,?,?,?,?,?)''',
+            (user_id, catalogue, name, email.lower().strip(), password, token_budget, now, notes)
+        )
+    return user_id
+
+
+def authenticate_catalogue_user(catalogue, email, password):
+    """Return user dict if credentials match, else None."""
+    with _conn() as c:
+        row = c.execute(
+            "SELECT * FROM catalogue_users WHERE catalogue=? AND email=? AND password=?",
+            (catalogue, email.lower().strip(), password)
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def get_catalogue_user(user_id):
+    with _conn() as c:
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def get_catalogue_user_from_token(token):
+    """Return the catalogue user linked to a valid (non-expired) session token."""
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        row = c.execute(
+            """SELECT cu.* FROM catalogue_users cu
+               JOIN catalogue_tokens ct ON ct.user_id = cu.id
+               WHERE ct.token=? AND ct.expires_at > ?""",
+            (token, now)
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def get_catalogue_users(catalogue=None):
+    with _conn() as c:
+        if catalogue:
+            rows = c.execute(
+                "SELECT * FROM catalogue_users WHERE catalogue=? ORDER BY created_at DESC",
+                (catalogue,)
+            ).fetchall()
+        else:
+            rows = c.execute(
+                "SELECT * FROM catalogue_users ORDER BY catalogue, created_at DESC"
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def update_catalogue_user_budget(user_id, new_budget):
+    with _conn() as c:
+        c.execute("UPDATE catalogue_users SET token_budget=? WHERE id=?", (new_budget, user_id))
+
+
+def revoke_catalogue_user(user_id):
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute("UPDATE catalogue_users SET is_active=0 WHERE id=?", (user_id,))
+        c.execute("DELETE FROM catalogue_tokens WHERE user_id=?", (user_id,))
+
+
+def reinstate_catalogue_user(user_id):
+    with _conn() as c:
+        c.execute("UPDATE catalogue_users SET is_active=1 WHERE id=?", (user_id,))
+
+
+def add_tokens_used(user_id, tokens):
+    """Atomically add to a user's tokens_used counter. Returns new total."""
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET tokens_used=tokens_used+?, last_used=? WHERE id=?",
+            (tokens, datetime.datetime.utcnow().isoformat(), user_id)
+        )
+        row = c.execute("SELECT tokens_used FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return row['tokens_used'] if row else 0
+
+
+def issue_user_catalogue_token(user_id):
+    """Issue a session token linked to a specific user."""
+    token   = 'cat_' + secrets.token_urlsafe(32)
+    expires = (datetime.datetime.utcnow() +
+               datetime.timedelta(seconds=_TOKEN_TTL)).isoformat()
+    now     = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute("DELETE FROM catalogue_tokens WHERE expires_at < ?", (now,))
+        c.execute(
+            "INSERT INTO catalogue_tokens (token, expires_at, user_id) VALUES (?,?,?)",
+            (token, expires, user_id)
+        )
+        c.execute("UPDATE catalogue_users SET last_used=? WHERE id=?", (now, user_id))
+    return token
 
 
 # ── Catalogue access requests ─────────────────────────────────────────────────

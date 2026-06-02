@@ -870,6 +870,15 @@ def admin_dashboard():
  </div>
 </div>
 
+<!-- Catalogue Users -->
+<div class="page wide" style="margin:0 auto;padding:0 24px 16px">
+ <div class="card">
+  <div class="logo" style="margin-bottom:4px">Catalogue Users</div>
+  <div class="sub" style="margin-bottom:16px">Per-user accounts — token budgets &amp; access control</div>
+  <div id="catUsersTable"><em style="color:#9ca3af">Loading…</em></div>
+ </div>
+</div>
+
 <!-- Catalogue Access Requests -->
 <div class="page wide" style="margin:0 auto;padding:0 24px 32px">
  <div class="card">
@@ -1025,18 +1034,96 @@ async function submitRevoke() {
   if (d.ok) location.reload(); else alert('Error: ' + d.error);
 }
 
+/* ── Catalogue user management ── */
+function fmtTokens(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(0) + 'k';
+  return String(n);
+}
+
+async function loadCatUsers() {
+  const r = await fetch(PREFIX + '/admin/cat-users');
+  const users = await r.json();
+  const el = document.getElementById('catUsersTable');
+  if (!users.length) { el.innerHTML='<p style="color:#9ca3af;font-size:13px">No catalogue users yet.</p>'; return; }
+  const CATS = {'precise':'PRECISE','he2at':'HE²AT'};
+  el.innerHTML = '<table><tr><th>User</th><th>Catalogue</th><th>Used</th><th>Budget</th><th>%</th><th>Last active</th><th>Status</th><th>Actions</th></tr>'
+    + users.map(u => {
+      const pct = u.token_budget > 0 ? Math.round(u.token_budget > 0 ? u.tokens_used/u.token_budget*100 : 0) : 0;
+      const bar = `<div style="height:6px;background:#e5e7eb;border-radius:3px;width:80px;display:inline-block;vertical-align:middle"><div style="height:6px;background:${pct>90?'#ef4444':pct>70?'#f59e0b':'#10b981'};border-radius:3px;width:${Math.min(pct,100)}%"></div></div>`;
+      const status = u.is_active ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-rejected">Revoked</span>';
+      const actions = u.is_active
+        ? `<button class="btn btn-sm btn-approve" onclick="openBudgetEdit('${u.id}','${u.name}',${u.token_budget})">Edit budget</button>
+           <button class="btn btn-sm btn-reject" style="margin-left:4px" onclick="catUserRevoke('${u.id}','${u.name}')">Revoke</button>`
+        : `<button class="btn btn-sm" style="background:#6b7280;color:white" onclick="catUserReinstate('${u.id}','${u.name}')">Reinstate</button>`;
+      return `<tr>
+        <td>${u.name}<br><small style="color:#6b7280">${u.email}</small></td>
+        <td>${CATS[u.catalogue]||u.catalogue}</td>
+        <td>${fmtTokens(u.tokens_used)}</td>
+        <td><span id="bgt-${u.id}">${fmtTokens(u.token_budget)}</span></td>
+        <td>${bar} ${pct}%</td>
+        <td><small>${u.last_used ? u.last_used.slice(0,10) : '—'}</small></td>
+        <td>${status}</td>
+        <td>${actions}</td>
+      </tr>`;
+    }).join('')
+    + '</table>';
+}
+
+let _budgetUserId = null;
+function openBudgetEdit(id, name, current) {
+  _budgetUserId = id;
+  document.getElementById('budgetFor').textContent = name;
+  document.getElementById('budgetInput').value = current;
+  document.getElementById('budgetModal').classList.add('open');
+}
+async function submitBudget() {
+  const val = parseInt(document.getElementById('budgetInput').value);
+  if (isNaN(val) || val < 0) { alert('Enter a valid number'); return; }
+  const btn = document.querySelector('#budgetModal .btn-approve');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const r = await fetch(PREFIX + '/admin/cat-user-budget', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: _budgetUserId, token_budget: val})
+  });
+  const d = await r.json();
+  if (d.ok) { closeModals(); loadCatUsers(); }
+  else { alert('Error: ' + d.error); btn.disabled=false; btn.textContent='Save'; }
+}
+async function catUserRevoke(id, name) {
+  if (!confirm('Revoke access for ' + name + '? They will be notified by email.')) return;
+  const r = await fetch(PREFIX + '/admin/cat-user-revoke', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: id})
+  });
+  const d = await r.json();
+  if (d.ok) loadCatUsers(); else alert('Error: ' + d.error);
+}
+async function catUserReinstate(id, name) {
+  if (!confirm('Reinstate access for ' + name + '?')) return;
+  const r = await fetch(PREFIX + '/admin/cat-user-reinstate', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: id})
+  });
+  const d = await r.json();
+  if (d.ok) loadCatUsers(); else alert('Error: ' + d.error);
+}
+
+loadCatUsers();
+
 async function submitCatApprove() {
   const notes = document.getElementById('catApproveNotes').value.trim();
+  const token_budget = parseInt(document.getElementById('catApproveBudget').value) || 1000000;
   const btn = document.querySelector('#catApproveModal .btn-approve');
   btn.disabled = true; btn.textContent = 'Sending…';
   try {
     const r = await fetch(PREFIX + '/admin/cat-approve', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({request_id: _currentId, notes})
+      body: JSON.stringify({request_id: _currentId, notes, token_budget})
     });
     const d = await r.json();
-    if (d.ok) location.reload(); else { alert('Error: ' + d.error); btn.disabled=false; btn.textContent='Approve & Send Code'; }
-  } catch(e) { alert('Network error'); btn.disabled=false; btn.textContent='Approve & Send Code'; }
+    if (d.ok) location.reload(); else { alert('Error: ' + d.error); btn.disabled=false; btn.textContent='Approve & Send Credentials'; }
+  } catch(e) { alert('Network error'); btn.disabled=false; btn.textContent='Approve & Send Credentials'; }
 }
 
 async function submitCatReject() {
@@ -1069,12 +1156,29 @@ function openCatReject(id, name) {
   <div class="modal">
     <h3>Approve Catalogue Request</h3>
     <p id="catApproveFor" style="font-size:13px;color:#6b7280;margin-bottom:16px"></p>
-    <p style="font-size:13px;color:#374151;margin-bottom:12px">The access code will be emailed automatically.</p>
-    <label style="margin-top:0">Notes (optional, included in approval email)</label>
+    <p style="font-size:13px;color:#374151;margin-bottom:12px">An account will be created and credentials emailed automatically.</p>
+    <label style="margin-top:0">Token budget (default 1,000,000)</label>
+    <input id="catApproveBudget" type="number" value="1000000" min="0" step="100000" placeholder="1000000"/>
+    <label style="margin-top:12px">Notes (optional, included in approval email)</label>
     <textarea id="catApproveNotes" style="min-height:50px" placeholder="e.g. Approved for 12 months"></textarea>
     <div class="modal-footer">
       <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
-      <button class="btn btn-approve" onclick="submitCatApprove()">Approve &amp; Send Code</button>
+      <button class="btn btn-approve" onclick="submitCatApprove()">Approve &amp; Send Credentials</button>
+    </div>
+  </div>
+</div>
+
+<!-- Budget edit modal -->
+<div class="modal-backdrop" id="budgetModal">
+  <div class="modal">
+    <h3>Edit Token Budget</h3>
+    <p id="budgetFor" style="font-size:13px;color:#6b7280;margin-bottom:16px"></p>
+    <label style="margin-top:0">New token budget</label>
+    <input id="budgetInput" type="number" min="0" step="100000" placeholder="1000000"/>
+    <p style="font-size:12px;color:#9ca3af;margin-top:6px">1,000,000 tokens ≈ 150–200 research questions</p>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
+      <button class="btn btn-approve" onclick="submitBudget()">Save</button>
     </div>
   </div>
 </div>
@@ -1189,18 +1293,19 @@ def notify_catalogue_admin(req_id, catalogue, name, email, institution, reason):
         _send(addr, f'[{label}] New access request from {name}', body)
 
 
-def notify_catalogue_approved(catalogue, name, email, notes):
+def notify_catalogue_approved(catalogue, name, email, password, notes):
     label = CATALOGUE_LABELS.get(catalogue, catalogue)
-    code  = CATALOGUE_CODE if catalogue == 'precise' else HE2AT_CODE
     url   = ('https://placealert.org/catalogue/' if catalogue == 'precise'
              else 'https://placealert.org/heat-catalogue/')
     body  = (
         f'Hi {name},\n\n'
         f'Your request to access the {label} has been approved.\n\n'
         + (f'Notes from reviewer: {notes}\n\n' if notes else '')
-        + f'Access code: {code}\n\n'
-        f'Visit the catalogue and enter this code to log in:\n{url}\n\n'
-        f'Keep this code private — do not share it publicly.\n\n'
+        + f'Your login credentials:\n'
+        f'  Email:    {email}\n'
+        f'  Password: {password}\n\n'
+        f'Visit the catalogue to log in:\n{url}\n\n'
+        f'Keep these credentials private.\n\n'
         f'PALS Lab Team'
     )
     _send(email, f'[{label}] Your access request has been approved', body)
@@ -1247,13 +1352,19 @@ def cat_submit():
 @app.route('/admin/cat-approve', methods=['POST'])
 @admin_required
 def admin_cat_approve():
-    d      = request.get_json(force=True) or {}
-    req_id = d.get('request_id', '')
-    notes  = d.get('notes', '')
-    req    = access_db.approve_catalogue_request(req_id, notes)
+    d             = request.get_json(force=True) or {}
+    req_id        = d.get('request_id', '')
+    notes         = d.get('notes', '')
+    token_budget  = int(d.get('token_budget', 1_000_000))
+    req           = access_db.approve_catalogue_request(req_id, notes)
     if not req:
         return jsonify({'ok': False, 'error': 'Request not found'})
-    notify_catalogue_approved(req['catalogue'], req['name'], req['email'], notes)
+    import secrets as _sec
+    password = _sec.token_urlsafe(10)
+    access_db.create_catalogue_user(
+        req['catalogue'], req['name'], req['email'], password, token_budget, notes
+    )
+    notify_catalogue_approved(req['catalogue'], req['name'], req['email'], password, notes)
     return jsonify({'ok': True})
 
 
@@ -1267,6 +1378,55 @@ def admin_cat_reject():
     if not req:
         return jsonify({'ok': False, 'error': 'Request not found'})
     notify_catalogue_rejected(req['catalogue'], req['name'], req['email'], notes)
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/cat-users')
+@admin_required
+def admin_cat_users():
+    """JSON list of all catalogue users — consumed by the admin dashboard."""
+    users = access_db.get_catalogue_users()
+    return jsonify(users)
+
+
+@app.route('/admin/cat-user-budget', methods=['POST'])
+@admin_required
+def admin_cat_user_budget():
+    d          = request.get_json(force=True) or {}
+    user_id    = d.get('user_id', '')
+    new_budget = int(d.get('token_budget', 0))
+    if not user_id or new_budget < 0:
+        return jsonify({'ok': False, 'error': 'Invalid parameters'})
+    access_db.update_catalogue_user_budget(user_id, new_budget)
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/cat-user-revoke', methods=['POST'])
+@admin_required
+def admin_cat_user_revoke():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    access_db.revoke_catalogue_user(user_id)
+    req = access_db.get_catalogue_user(user_id)
+    if req:
+        label = CATALOGUE_LABELS.get(req['catalogue'], req['catalogue'])
+        _send(req['email'],
+              f'[{label}] Your access has been revoked',
+              f'Hi {req["name"]},\n\nYour access to the {label} has been revoked.\n'
+              f'Contact the administrator if you believe this is an error.\n\nPALS Lab Team')
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/cat-user-reinstate', methods=['POST'])
+@admin_required
+def admin_cat_user_reinstate():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    access_db.reinstate_catalogue_user(user_id)
     return jsonify({'ok': True})
 
 

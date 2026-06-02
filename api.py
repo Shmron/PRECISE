@@ -108,6 +108,35 @@ def require_key():
     return info, None
 
 
+@app.route('/api/catalogue-user-login', methods=['POST'])
+def catalogue_user_login():
+    """Per-user login for both catalogues — email + password → session token."""
+    data      = request.json or {}
+    catalogue = data.get('catalogue', 'precise')
+    email     = data.get('email', '').strip()
+    password  = data.get('password', '')
+
+    if not email or not password:
+        return jsonify({'ok': False, 'error': 'Email and password required'}), 400
+
+    user = access_db.authenticate_catalogue_user(catalogue, email, password)
+    if not user:
+        return jsonify({'ok': False, 'error': 'Invalid email or password'}), 401
+    if not user['is_active']:
+        return jsonify({'ok': False, 'error': 'Your access has been revoked. Contact the administrator.'}), 403
+    if user['tokens_used'] >= user['token_budget']:
+        return jsonify({'ok': False, 'error': 'Your token budget is exhausted. Contact the administrator.'}), 403
+
+    token = access_db.issue_user_catalogue_token(user['id'])
+    return jsonify({
+        'ok':           True,
+        'token':        token,
+        'name':         user['name'],
+        'tokens_used':  user['tokens_used'],
+        'token_budget': user['token_budget'],
+    })
+
+
 def is_safe_query(sql):
     """Allow SELECT / WITH / SHOW / DESCRIBE / PRAGMA statements."""
     stripped = sql.strip().upper()
@@ -981,16 +1010,26 @@ def chat():
         return jsonify({'error': 'messages must end with a user turn'}), 400
 
     countries = key_info['countries']
+    sess_token = request.headers.get('X-Session-Token', '')
 
     def generate():
         try:
             import anthropic as _anthropic
             client = _anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY', ''))
 
+            # Resolve the catalogue user for this session (may be None for API-key callers)
+            cat_user    = access_db.get_catalogue_user_from_token(sess_token) if sess_token else None
+            tokens_this_req = 0
+
             history = list(messages)
             max_iterations = 8
 
             for i in range(max_iterations):
+                # Enforce token budget before each LLM call
+                if cat_user and (cat_user['tokens_used'] + tokens_this_req) >= cat_user['token_budget']:
+                    yield f"data: {json.dumps({'type': 'error', 'text': 'Your token budget is exhausted. Please contact the administrator.'})}\n\n"
+                    break
+
                 # Force tool use only on iteration 0 so Claude must call
                 # execute_query + render_chart together in one turn.
                 # From iteration 1 onwards Claude can write narrative freely.
@@ -1006,6 +1045,11 @@ def chat():
                     tools=_CHAT_TOOLS,
                     tool_choice=tool_choice,
                 )
+
+                # Accumulate token usage
+                if hasattr(response, 'usage'):
+                    tokens_this_req += (response.usage.input_tokens +
+                                        response.usage.output_tokens)
 
                 tool_blocks = [b for b in response.content if b.type == 'tool_use']
                 text_blocks = [b for b in response.content if b.type == 'text']
@@ -1138,6 +1182,10 @@ def chat():
                     conn.close()
 
                 history.append({'role': 'user', 'content': tool_results})
+
+            # Persist token usage for catalogue users
+            if cat_user and tokens_this_req > 0:
+                access_db.add_tokens_used(cat_user['id'], tokens_this_req)
 
             yield f"data: {json.dumps({'type': 'done'})}\n\n"
 
@@ -1347,11 +1395,18 @@ def he2at_chat():
     def generate():
         try:
             import anthropic as _anthropic
-            client  = _anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY', ''))
-            history = list(messages)
+            client      = _anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY', ''))
+            cat_user    = access_db.get_catalogue_user_from_token(token)
+            tokens_this_req = 0
+            history     = list(messages)
             max_iterations = 8
 
             for i in range(max_iterations):
+                # Enforce token budget
+                if cat_user and (cat_user['tokens_used'] + tokens_this_req) >= cat_user['token_budget']:
+                    yield f"data: {json.dumps({'type': 'error', 'text': 'Your token budget is exhausted. Please contact the administrator.'})}\n\n"
+                    break
+
                 tool_choice = {'type': 'any'} if i == 0 else {'type': 'auto'}
                 yield f"data: {json.dumps({'type': 'status', 'text': 'Thinking…' if i == 0 else 'Analysing…'})}\n\n"
 
@@ -1363,6 +1418,10 @@ def he2at_chat():
                     tools=_CHAT_TOOLS,
                     tool_choice=tool_choice,
                 )
+
+                if hasattr(response, 'usage'):
+                    tokens_this_req += (response.usage.input_tokens +
+                                        response.usage.output_tokens)
 
                 tool_blocks = [b for b in response.content if b.type == 'tool_use']
                 text_blocks = [b for b in response.content if b.type == 'text']
@@ -1473,6 +1532,9 @@ def he2at_chat():
                     conn.close()
 
                 history.append({'role': 'user', 'content': tool_results})
+
+            if cat_user and tokens_this_req > 0:
+                access_db.add_tokens_used(cat_user['id'], tokens_this_req)
 
             yield f"data: {json.dumps({'type': 'done'})}\n\n"
 
