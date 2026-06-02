@@ -108,6 +108,15 @@ def require_key():
     return info, None
 
 
+@app.route('/api/validate-session', methods=['GET'])
+def validate_session():
+    """Lightweight token check — returns 200 if valid, 401 if not. No data transferred."""
+    token = request.headers.get('X-Session-Token', '')
+    if token and access_db.validate_catalogue_token(token):
+        return '', 200
+    return '', 401
+
+
 @app.route('/api/catalogue-user-login', methods=['POST'])
 def catalogue_user_login():
     """Per-user login for both catalogues — email + password → session token."""

@@ -4422,9 +4422,17 @@ by most village residents.</div>
             const loginForm    = document.getElementById('loginForm');
             const loginError   = document.getElementById('loginError');
 
-            // Restore session if token already exists
-            if (sessionStorage.getItem('catalogueToken')) {
-                loginGate.classList.add('hidden');
+            function showGate() {
+                sessionStorage.removeItem('catalogueToken');
+                loginGate.classList.remove('hidden');
+            }
+
+            // Validate existing token server-side before hiding the gate
+            const _tok = sessionStorage.getItem('catalogueToken');
+            if (_tok) {
+                fetch(API_BASE + '/api/validate-session', { headers: { 'X-Session-Token': _tok } })
+                    .then(r => { if (r.ok) loginGate.classList.add('hidden'); else showGate(); })
+                    .catch(() => loginGate.classList.add('hidden'));
             }
 
             loginForm.addEventListener('submit', async function(e) {
@@ -4725,6 +4733,7 @@ by most village residents.</div>
                     headers:{'Content-Type':'application/json','X-Session-Token':token},
                     body:JSON.stringify({messages:precHistory.map(m=>({role:m.role,content:m.content}))})
                 });
+                if (resp.status === 401) { precRemoveStatus(); showGate(); return; }
                 if (!resp.ok) { precRemoveStatus(); precAddAI('Server error '+resp.status+'. Please try again.'); }
                 else {
                     const reader=resp.body.getReader(),decoder=new TextDecoder(); let buf='';
