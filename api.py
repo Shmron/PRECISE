@@ -131,6 +131,28 @@ def _coerce(v):
     return v
 
 
+# ── PII stripping — never let individual participant/patient IDs reach the LLM ─
+
+_PRECISE_ID_COLS = frozenset({'f2a_participant_id', 'f2a_precise_id', 'pid'})
+_HE2AT_ID_COLS   = frozenset({'Patient_Identifier'})
+
+
+def _strip_id_cols(result, id_cols):
+    """Remove participant/patient identifier columns from execute_query results
+    before they are sent back to the LLM, preventing verbatim ID disclosure."""
+    if 'columns' not in result or 'rows' not in result:
+        return result
+    keep = [c for c in result['columns'] if c not in id_cols]
+    if len(keep) == len(result['columns']):
+        return result
+    return {
+        'columns':   keep,
+        'rows':      [{k: v for k, v in r.items() if k not in id_cols}
+                      for r in result['rows']],
+        'row_count': result.get('row_count', len(result['rows'])),
+    }
+
+
 def apply_country_filter(sql, countries):
     """
     Wrap every reference to daily_data, sensor_daily, and sensor_raw so queries
@@ -377,6 +399,7 @@ _CHAT_SYSTEM_PROMPT = """You are Shmron, an expert research assistant for the PR
 1. You MUST call execute_query for every question about data, exposures, counts, distributions, trends, or statistics. Never describe what you will do — just call the tool and present the results.
 2. NUMBERS MUST ADD UP: Use GROUP BY Country in a single query when comparing countries. Never run separate queries for total vs breakdown — they diverge due to NULL Country rows. If you must use separate queries, reconcile totals explicitly.
 3. Always include WHERE Country IS NOT NULL if you want only the three named countries.
+4. **PRIVACY — NEVER quote raw participant identifier hashes.** Do not include f2a_participant_id, f2a_precise_id, or pid hash strings in your response text. You SHOULD report participant-level statistics: counts, distributions, min/max values, percentiles, percentages. When a query finds the most-exposed participant, describe their village, country, and exposure level — omit the ID hash. Example: "The highest-exposed participant was in Nanoro, Burkina Faso with a mean UTCI of 33.4°C."
 
 Settlement breakdown (GHSL_class): Kenya 66% Urban/8% Rural/26% Peri_Urban | Mozambique 72%/21%/7% | Gambia 40%/60%/0.2%
 
@@ -528,7 +551,7 @@ The sensor monitoring window (2022–2023) was conducted AFTER most participants
 
 **CROSS-DATABASE JOIN — satellite (pregnancy period) vs personal sensor (monitoring window):**
 ```sql
--- Participant-level join: average satellite PM2.5 during pregnancy vs average personal PM2.5 during sensor window
+-- Country-level summary: average satellite PM2.5 during pregnancy vs average personal PM2.5 during sensor window
 WITH sat AS (
     SELECT f2a_participant_id, Country,
            AVG(CAMS2_pm2p5_ugm3) AS satellite_pm25_pregnancy
@@ -542,15 +565,23 @@ sens AS (
            COUNT(*)       AS sensor_days
     FROM sensor_daily
     GROUP BY pid, country
+),
+joined AS (
+    SELECT sat.Country,
+           sat.satellite_pm25_pregnancy,
+           sens.personal_pm25_sensor,
+           sens.personal_pm25_sensor - sat.satellite_pm25_pregnancy AS exposure_difference
+    FROM sat
+    JOIN sens ON sat.f2a_participant_id = sens.pid
 )
-SELECT sat.f2a_participant_id, sat.Country,
-       sat.satellite_pm25_pregnancy,
-       sens.personal_pm25_sensor,
-       sens.personal_pm25_sensor - sat.satellite_pm25_pregnancy AS exposure_difference
-FROM sat
-JOIN sens ON sat.f2a_participant_id = sens.pid
-ORDER BY sat.Country, sat.f2a_participant_id
-LIMIT 50
+SELECT Country,
+       ROUND(AVG(satellite_pm25_pregnancy),2) AS mean_satellite_pm25,
+       ROUND(AVG(personal_pm25_sensor),2)     AS mean_personal_pm25,
+       ROUND(AVG(exposure_difference),2)      AS mean_difference,
+       COUNT(*)                               AS n_participants
+FROM joined
+GROUP BY Country
+ORDER BY Country
 ```
 Join key: sensor_daily.pid = daily_data.f2a_participant_id (participant level only — do NOT join on date)
 
@@ -1088,14 +1119,14 @@ def chat():
                                     # {"Country":"Gambia","median":44.5} directly
                                     # instead of parsing column-index arrays —
                                     # prevents country↔value mix-ups in box_data.
-                                    result = {
+                                    result = _strip_id_cols({
                                         'columns':   cols,
                                         'rows':      [
                                             {cols[j]: _coerce(v) for j, v in enumerate(r)}
                                             for r in rows
                                         ],
                                         'row_count': len(rows),
-                                    }
+                                    }, _PRECISE_ID_COLS)
                                 except Exception as e:
                                     result = {'error': str(e)}
                         tool_results.append({
@@ -1142,6 +1173,7 @@ Country breakdown: Kenya 25,139 | Malawi 14,037 | Zambia 12,024 | South Africa 1
 3. CHART DATA MUST MATCH TEXT: the chart must show exactly the same filtered subset as your narrative.
 4. Use aggregations — never return more than 50 raw rows. The AI receives only up to 50 result rows.
 5. If N patients > 74,483 your query is wrong — GROUP BY Patient_Identifier to deduplicate.
+6. **PRIVACY — NEVER quote raw patient identifier hashes.** Do not include Patient_Identifier hash strings in your response text. You SHOULD report patient-level statistics: counts, distributions, min/max values, percentiles, percentages. When a query finds the most-exposed patient, describe their Study, Location, Country, and exposure level — omit the ID hash. Example: "The highest-exposed patient was in the MUL140 study, Nanoro, Burkina Faso with a mean UTCI of 33.4°C."
 
 **DATABASES — three tables, one view:**
 
@@ -1425,11 +1457,11 @@ def he2at_chat():
                                     cur  = conn.execute(sql)
                                     cols = [d[0] for d in cur.description]
                                     rows = cur.fetchmany(50)
-                                    result = {
+                                    result = _strip_id_cols({
                                         'columns':   cols,
                                         'rows':      [{cols[j]: _coerce(v) for j, v in enumerate(r)} for r in rows],
                                         'row_count': len(rows),
-                                    }
+                                    }, _HE2AT_ID_COLS)
                                 except Exception as e:
                                     result = {'error': str(e)}
 
@@ -1449,6 +1481,38 @@ def he2at_chat():
 
     return Response(generate(), mimetype='text/event-stream',
                     headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SHARED CONVERSATION LINKS
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.route('/api/share', methods=['POST'])
+def create_share():
+    """Store a conversation for public read-only sharing. Requires catalogue session token."""
+    token = request.headers.get('X-Session-Token', '')
+    if not token or not access_db.validate_catalogue_token(token):
+        return jsonify({'error': 'Authentication required'}), 401
+
+    data      = request.json or {}
+    catalogue = data.get('catalogue', '')
+    messages  = data.get('messages', [])
+    title     = data.get('title', '')
+
+    if not messages:
+        return jsonify({'error': 'No messages to share'}), 400
+
+    share_id = access_db.create_shared_conversation(catalogue, title, messages)
+    return jsonify({'ok': True, 'share_id': share_id})
+
+
+@app.route('/api/share/<share_id>', methods=['GET'])
+def get_share(share_id):
+    """Retrieve a shared conversation — public, no auth required."""
+    conv = access_db.get_shared_conversation(share_id)
+    if not conv:
+        return jsonify({'error': 'Share not found'}), 404
+    return jsonify(conv)
 
 
 if __name__ == '__main__':

@@ -91,16 +91,19 @@
         .nav-logo-mark {
             width: 36px;
             height: 36px;
-            background: var(--teal-deep);
-            color: white;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 6px;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .nav-logo-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
         }
 
         .nav-logo-title {
@@ -635,14 +638,17 @@
 
         .footer-logo-mark {
             width: 38px; height: 38px;
-            background: var(--copper);
-            color: white;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .footer-logo-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             border-radius: 6px;
         }
 
@@ -786,6 +792,157 @@
         .help-send:hover:not(:disabled) { background: var(--copper); }
         .help-send:disabled { opacity: 0.45; cursor: not-allowed; }
         .help-send svg { width: 16px; height: 16px; fill: white; }
+
+        /* ── Mobile hamburger ────────────────────────────────────────────── */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.4rem;
+            margin-left: 0.5rem;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--charcoal);
+            border-radius: 2px;
+            transition: all 0.25s ease;
+        }
+        .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+        .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            background: rgba(253,252,250,0.98);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(184,115,51,0.12);
+            padding: 0.75rem 1.25rem 1.25rem;
+            position: sticky;
+            top: 68px;
+            z-index: 99;
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a {
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--slate);
+            padding: 0.65rem 0.5rem;
+            border-bottom: 1px solid rgba(45,52,54,0.06);
+            transition: color 0.2s;
+        }
+        .mobile-menu a:last-child { border-bottom: none; }
+        .mobile-menu a:hover { color: var(--teal-deep); }
+        @media (max-width: 768px) {
+            .nav-hamburger { display: flex; }
+            .nav-chat-btn { display: none; }
+        }
+
+        /* ── Nav scroll-spy active link ──────────────────────────────────── */
+        .nav-links a.nav-active {
+            color: var(--teal-deep);
+            background: rgba(26,83,92,0.07);
+        }
+
+        /* ── Back-to-top ─────────────────────────────────────────────────── */
+        .back-to-top {
+            position: fixed;
+            bottom: 6.5rem;
+            right: 2rem;
+            z-index: 8999;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--ivory);
+            border: 1px solid rgba(184,115,51,0.25);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.25s, transform 0.25s, background 0.2s;
+            pointer-events: none;
+            box-shadow: 0 2px 12px rgba(45,52,54,0.1);
+        }
+        .back-to-top.visible { opacity: 1; transform: none; pointer-events: auto; }
+        .back-to-top:hover { background: var(--sand); }
+        .back-to-top svg { width: 16px; height: 16px; fill: var(--copper); }
+
+        /* ── Contact section ─────────────────────────────────────────────── */
+        .contact-section {
+            padding: 3.5rem 2.5rem;
+            background: var(--sand);
+            border-top: 1px solid rgba(184,115,51,0.12);
+        }
+        .contact-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .contact-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.4rem;
+        }
+        .contact-sub {
+            font-size: 0.9rem;
+            color: var(--slate);
+            max-width: 500px;
+            line-height: 1.75;
+        }
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.75rem 1.5rem;
+            background: var(--teal-deep);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .contact-btn:hover { background: var(--copper); transform: translateY(-1px); }
+        .contact-btn svg { width: 15px; height: 15px; fill: white; }
+        @media (max-width: 768px) {
+            .contact-section { padding: 2.5rem 1.5rem; }
+            .contact-inner { flex-direction: column; align-items: flex-start; }
+        }
+
+        /* ── Team lead subtle style ──────────────────────────────────────── */
+        .team-lead {
+            background: rgba(26,83,92,0.13) !important;
+            border: 1px solid rgba(26,83,92,0.18);
+            font-weight: 700 !important;
+        }
+
+        /* ── Stat geographic text ────────────────────────────────────────── */
+        .stat-geo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--copper);
+            font-style: italic;
+            line-height: 1.3;
+        }
     </style>
 </head>
 <body>
@@ -796,20 +953,28 @@
     <nav class="site-nav" id="siteNav">
         <div class="nav-inner">
             <a href="#" class="nav-logo">
-                <div class="nav-logo-mark">P</div>
+                <div class="nav-logo-mark"><img src="/place_alert_labs_logo.jpg" alt="Place Alert Labs"></div>
                 <div>
                     <div class="nav-logo-title">Place Alert Labs</div>
                     <div class="nav-logo-sub">placealert.org</div>
                 </div>
             </a>
             <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#projects">Projects</a>
-                <a href="#data-access">Data Access</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#data-access" class="nav-link">Data Access</a>
             </div>
             <button class="nav-chat-btn" id="navChatBtn">Ask a question</button>
+            <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#data-access">Data Access</a>
+    </div>
 
     <!-- ── Hero ────────────────────────────────────────────────────────────── -->
     <section class="hero">
@@ -827,17 +992,17 @@
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <div class="stat-num">60K+</div>
+                    <div class="stat-num">80K+</div>
                     <div class="stat-label">Participants Characterised</div>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <div class="stat-num">30+</div>
+                    <div class="stat-num">50+</div>
                     <div class="stat-label">Environmental Exposures</div>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <div class="stat-num" style="font-size:1.1rem;line-height:1.35">Sub-Saharan<br>Africa</div>
+                    <div class="stat-geo">Sub-Saharan Africa</div>
                     <div class="stat-label">Research Region</div>
                 </div>
                 <div class="stat-divider"></div>
@@ -872,7 +1037,7 @@
                 <div class="about-body about-extra" id="aboutExtra">
                     <p style="margin-top:1rem;">Our work includes tools for the precise geocoding of individual patient records and for characterising environmental exposures such as air pollution, heat, precipitation, and flooding. We have also developed an Africa-wide open dataset of pollution proxies for settings where ground monitoring data are limited, and in Zimbabwe our geocoding programme has produced copyrighted technologies and materials, including the Zimbabwe Address Database (ZAD).</p>
                     <p>Through work across several countries in sub-Saharan Africa, including sentinel research in The Gambia, Kenya, and Mozambique under the PRECISE project, we have collected personal exposure data to validate environmental exposure proxies and strengthen exposure science in African settings.</p>
-                    <p>Through the HE2AT Centre, we have also characterised more than 30 environmental exposures for nearly 60,000 individual women, helping to build a data ecosystem that can catalyse the generation of urgently needed epidemiological evidence on climate and environmental influences on health.</p>
+                    <p>Through the HE2AT Centre, we have also characterised more than 50 environmental exposures for over 80,000 individual women, helping to build a data ecosystem that can catalyse the generation of urgently needed epidemiological evidence on climate and environmental influences on health.</p>
                     <p>Supported by funding from the US National Institutes of Health (NIH), Google, Grand Challenges Canada, UKRI, and others, PALs is building an ambitious foundation for scaling environmental health models, tools, and mentorship to support a more geographically precise public health.</p>
                 </div>
             </div>
@@ -882,7 +1047,7 @@
                 <div class="sidebar-card">
                     <div class="sidebar-card-label">Our Team</div>
                     <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
-                        <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Dr Prestige Tatenda Makanga</span>
+                        <span class="team-lead" style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Dr Prestige Tatenda Makanga</span>
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Liberty Makacha</span>
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Terrence Mushore</span>
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Reason Mlambo</span>
@@ -891,6 +1056,8 @@
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Anotida Chapunza</span>
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Tendai Shangwe</span>
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Zororo Chinwadzimba</span>
+                        <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Laura Munthali</span>
+                        <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Perkins Watambwa</span>
                         <span style="background:rgba(26,83,92,0.07);color:var(--teal-deep);border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:600;">Rutendo Sibanda</span>
                     </div>
                 </div>
@@ -959,8 +1126,8 @@
                         indices, soil, vegetation, urbanisation, and more.
                     </p>
                     <div class="card-meta">
-                        <span class="card-badge">8 Countries</span>
-                        <span class="card-badge">51K+ Participants</span>
+                        <span class="card-badge">9 Countries</span>
+                        <span class="card-badge">74K+ Participants</span>
                         <span class="card-badge">Heat &amp; Health</span>
                         <span class="card-badge">Climate</span>
                     </div>
@@ -1157,12 +1324,26 @@
         </div>
     </section>
 
+    <!-- ── Contact ───────────────────────────────────────────────────────────── -->
+    <section class="contact-section" id="contact">
+        <div class="contact-inner reveal">
+            <div class="contact-text">
+                <div class="contact-title">Get in touch</div>
+                <p class="contact-sub">Interested in collaborating, accessing data, or learning more about our research? Reach out to the Place Alert Labs team — we'll get back to you directly.</p>
+            </div>
+            <button class="contact-btn" onclick="sendLabInquiry()">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                Inquire About Place Alert Labs
+            </button>
+        </div>
+    </section>
+
     <!-- ── Footer ──────────────────────────────────────────────────────────── -->
     <footer>
         <div class="footer-inner">
             <div class="footer-brand">
                 <div class="footer-logo">
-                    <div class="footer-logo-mark">P</div>
+                    <div class="footer-logo-mark"><img src="/place_alert_labs_logo.jpg" alt="Place Alert Labs"></div>
                     <div class="footer-logo-text">
                         <div class="footer-name">Place Alert Labs</div>
                         <div class="footer-url">placealert.org</div>
@@ -1200,6 +1381,11 @@
         </div>
     </footer>
 
+    <!-- ── Back to top ────────────────────────────────────────────────────────── -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    </button>
+
     <!-- ── Chat widget ──────────────────────────────────────────────────────── -->
     <div class="help-widget" id="helpWidget">
         <div class="help-panel" id="helpPanel">
@@ -1225,11 +1411,53 @@
     </div>
 
     <script>
-    // ── Nav scroll behaviour ─────────────────────────────────────────────────
+    // ── Nav scroll behaviour + back-to-top visibility ────────────────────────
     const nav = document.getElementById('siteNav');
+    const btt = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
         nav.classList.toggle('scrolled', window.scrollY > 10);
+        btt.classList.toggle('visible', window.scrollY > 400);
     }, { passive: true });
+
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // ── Mobile hamburger ─────────────────────────────────────────────────────
+    const hamburger = document.getElementById('navHamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+        });
+    });
+
+    // ── Scroll spy ───────────────────────────────────────────────────────────
+    const sections = [
+        { id: 'about',       link: document.querySelector('.nav-link[href="#about"]') },
+        { id: 'projects',    link: document.querySelector('.nav-link[href="#projects"]') },
+        { id: 'data-access', link: document.querySelector('.nav-link[href="#data-access"]') },
+    ];
+    const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            const match = sections.find(s => s.id === e.target.id);
+            if (match && match.link) match.link.classList.toggle('nav-active', e.isIntersecting);
+        });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => { const el = document.getElementById(s.id); if (el) spyObserver.observe(el); });
+
+    // ── Contact inquiry (obfuscated) ─────────────────────────────────────────
+    function sendLabInquiry() {
+        var p1 = ['tatenda', 'makanga'].join('.');
+        var p2 = ['rutendo', 'sibanda'].join('.');
+        var d  = ['ceshhar', 'org'].join('.');
+        var subject = encodeURIComponent('Inquiry: Place Alert Labs');
+        var body = encodeURIComponent('Dear Place Alert Labs Team,\n\nI am writing to inquire about Place Alert Labs.\n\n[Please describe your inquiry here]\n\nBest regards,\n[Your name]');
+        window.location.href = 'mail' + 'to:' + p1 + '@' + d + '?cc=' + p2 + '@' + d + '&subject=' + subject + '&body=' + body;
+    }
 
     // ── Nav chat button opens widget ─────────────────────────────────────────
     document.getElementById('navChatBtn').addEventListener('click', () => {

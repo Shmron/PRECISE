@@ -25,7 +25,7 @@ def init_db():
                 institution   TEXT,
                 hub_user      TEXT,
                 purpose       TEXT,
-                countries_req TEXT NOT NULL,   -- JSON list
+                countries_req TEXT NOT NULL,
                 status        TEXT DEFAULT 'pending',
                 created_at    TEXT NOT NULL,
                 reviewed_at   TEXT,
@@ -36,7 +36,7 @@ def init_db():
                 request_id       TEXT NOT NULL,
                 name             TEXT NOT NULL,
                 email            TEXT NOT NULL,
-                countries        TEXT NOT NULL,  -- JSON list of approved countries
+                countries        TEXT NOT NULL,
                 created_at       TEXT NOT NULL,
                 is_active        INTEGER DEFAULT 1,
                 last_used        TEXT,
@@ -46,7 +46,47 @@ def init_db():
                 token      TEXT PRIMARY KEY,
                 expires_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS admins (
+                username       TEXT PRIMARY KEY,
+                password       TEXT NOT NULL,
+                email          TEXT,
+                must_change_pw INTEGER DEFAULT 0
+            );
+            CREATE TABLE IF NOT EXISTS admin_reset_tokens (
+                token      TEXT PRIMARY KEY,
+                username   TEXT NOT NULL,
+                expires_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS catalogue_requests (
+                id          TEXT PRIMARY KEY,
+                catalogue   TEXT NOT NULL,
+                name        TEXT NOT NULL,
+                email       TEXT NOT NULL,
+                institution TEXT,
+                reason      TEXT,
+                status      TEXT DEFAULT 'pending',
+                created_at  TEXT NOT NULL,
+                reviewed_at TEXT,
+                notes       TEXT
+            );
+            CREATE TABLE IF NOT EXISTS shared_conversations (
+                share_id   TEXT PRIMARY KEY,
+                catalogue  TEXT NOT NULL,
+                title      TEXT,
+                messages   TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            );
         ''')
+        # Add new columns to existing admins table if upgrading
+        for sql in [
+            "ALTER TABLE admins ADD COLUMN email TEXT",
+            "ALTER TABLE admins ADD COLUMN must_change_pw INTEGER DEFAULT 0",
+        ]:
+            try:
+                c.execute(sql)
+            except Exception:
+                pass
+    _seed_admins()
 
 
 # ── Requests ──────────────────────────────────────────────────────────────────
@@ -188,24 +228,119 @@ def revoke_key(api_key):
         c.execute("UPDATE api_keys SET is_active=0 WHERE key=?", (api_key,))
 
 
-# ── Admin password ────────────────────────────────────────────────────────────
-# Stored as a plain secret in a dotfile. Run set_admin_password() once to change it.
+# ── Admin accounts ────────────────────────────────────────────────────────────
+# Multi-user admin table in SQLite. Seed runs once; use set_admin_password()
+# to update a user's password, or add_admin() to create a new one.
 
 _PASS_FILE = '/home/rutendo/PRECISE/.duck_admin_pass'
 
-ADMIN_USERNAME = 'rutendo'
+_INITIAL_ADMINS = {
+    'rutendo': {'password': None,                'email': 'rutendo.sibanda@ceshhar.org',    'must_change_pw': 0},
+    'zororo':  {'password': 'm3nLtUIm9byOqJmx', 'email': 'zororo.chinwadzimba@ceshhar.org','must_change_pw': 1},
+    'bongani': {'password': 'fS0WYr1ODV8n2Bwp', 'email': 'nyonih@staff.msu.ac.zw',        'must_change_pw': 1},
+}
 
 
-def get_admin_password():
-    if os.path.exists(_PASS_FILE):
-        return open(_PASS_FILE).read().strip()
-    return 'precise-admin'   # default — change immediately
+def _seed_admins():
+    """Insert default admin rows only if they don't already exist; patch emails on existing rows."""
+    legacy_pass = open(_PASS_FILE).read().strip() if os.path.exists(_PASS_FILE) else 'precise-admin'
+    with _conn() as c:
+        for username, info in _INITIAL_ADMINS.items():
+            existing = c.execute(
+                "SELECT 1 FROM admins WHERE username=?", (username,)
+            ).fetchone()
+            if not existing:
+                pw = info['password'] if info['password'] is not None else legacy_pass
+                c.execute(
+                    "INSERT INTO admins (username, password, email, must_change_pw) VALUES (?,?,?,?)",
+                    (username, pw, info['email'], info['must_change_pw'])
+                )
+            else:
+                # Patch email in if the column was just added
+                c.execute(
+                    "UPDATE admins SET email=? WHERE username=? AND (email IS NULL OR email='')",
+                    (info['email'], username)
+                )
 
 
-def set_admin_password(new_pass):
-    with open(_PASS_FILE, 'w') as f:
-        f.write(new_pass)
-    os.chmod(_PASS_FILE, 0o600)
+def check_admin(username, password):
+    """Return (True, must_change_pw) if credentials match, else (False, False)."""
+    with _conn() as c:
+        row = c.execute(
+            "SELECT password, must_change_pw FROM admins WHERE username=?", (username,)
+        ).fetchone()
+    if row and row['password'] == password:
+        return True, bool(row['must_change_pw'])
+    return False, False
+
+
+def get_admin_email(username):
+    with _conn() as c:
+        row = c.execute("SELECT email FROM admins WHERE username=?", (username,)).fetchone()
+    return row['email'] if row else None
+
+
+def set_admin_password(username, new_pass):
+    with _conn() as c:
+        c.execute(
+            "UPDATE admins SET password=?, must_change_pw=0 WHERE username=?",
+            (new_pass, username)
+        )
+
+
+def add_admin(username, password, email=None):
+    with _conn() as c:
+        c.execute(
+            "INSERT OR REPLACE INTO admins (username, password, email, must_change_pw) VALUES (?,?,?,1)",
+            (username, password, email)
+        )
+
+
+# ── Admin password-reset tokens ───────────────────────────────────────────────
+
+_TOKEN_TTL_ADMIN = 3600  # 1 hour
+
+
+def create_admin_reset_token(username):
+    """Store a timed reset token for username, return the token string."""
+    token = secrets.token_urlsafe(32)
+    expires = (datetime.datetime.utcnow() +
+               datetime.timedelta(seconds=_TOKEN_TTL_ADMIN)).isoformat()
+    with _conn() as c:
+        # Remove any stale tokens for this user
+        c.execute("DELETE FROM admin_reset_tokens WHERE username=?", (username,))
+        c.execute(
+            "INSERT INTO admin_reset_tokens (token, username, expires_at) VALUES (?,?,?)",
+            (token, username, expires)
+        )
+    return token
+
+
+def verify_admin_reset_token(token):
+    """Return username if token is valid and not expired, else None."""
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        row = c.execute(
+            "SELECT username, expires_at FROM admin_reset_tokens WHERE token=?", (token,)
+        ).fetchone()
+    if not row:
+        return None
+    if now > row['expires_at']:
+        with _conn() as c:
+            c.execute("DELETE FROM admin_reset_tokens WHERE token=?", (token,))
+        return None
+    return row['username']
+
+
+def consume_admin_reset_token(token, new_password):
+    """Set new password if token valid. Returns username on success, None on failure."""
+    username = verify_admin_reset_token(token)
+    if not username:
+        return None
+    set_admin_password(username, new_password)
+    with _conn() as c:
+        c.execute("DELETE FROM admin_reset_tokens WHERE token=?", (token,))
+    return username
 
 
 # ── Catalogue session tokens (SQLite-backed, survive restarts) ────────────────
@@ -238,6 +373,96 @@ def validate_catalogue_token(token: str) -> bool:
             c.execute("DELETE FROM catalogue_tokens WHERE token=?", (token,))
         return False
     return True
+
+
+# ── Catalogue access requests ─────────────────────────────────────────────────
+
+def create_catalogue_request(catalogue, name, email, institution, reason):
+    req_id = secrets.token_hex(8)
+    now    = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute(
+            '''INSERT INTO catalogue_requests
+               (id, catalogue, name, email, institution, reason, created_at)
+               VALUES (?,?,?,?,?,?,?)''',
+            (req_id, catalogue, name, email, institution, reason, now)
+        )
+    return req_id
+
+
+def get_catalogue_requests(catalogue=None, status=None):
+    with _conn() as c:
+        if catalogue and status:
+            rows = c.execute(
+                "SELECT * FROM catalogue_requests WHERE catalogue=? AND status=? ORDER BY created_at DESC",
+                (catalogue, status)
+            ).fetchall()
+        elif catalogue:
+            rows = c.execute(
+                "SELECT * FROM catalogue_requests WHERE catalogue=? ORDER BY created_at DESC",
+                (catalogue,)
+            ).fetchall()
+        elif status:
+            rows = c.execute(
+                "SELECT * FROM catalogue_requests WHERE status=? ORDER BY created_at DESC",
+                (status,)
+            ).fetchall()
+        else:
+            rows = c.execute(
+                "SELECT * FROM catalogue_requests ORDER BY created_at DESC"
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def approve_catalogue_request(req_id, notes=''):
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        r = c.execute("SELECT * FROM catalogue_requests WHERE id=?", (req_id,)).fetchone()
+        if not r:
+            return None
+        c.execute(
+            "UPDATE catalogue_requests SET status='approved', reviewed_at=?, notes=? WHERE id=?",
+            (now, notes, req_id)
+        )
+    return dict(r)
+
+
+def reject_catalogue_request(req_id, notes=''):
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        r = c.execute("SELECT * FROM catalogue_requests WHERE id=?", (req_id,)).fetchone()
+        if not r:
+            return None
+        c.execute(
+            "UPDATE catalogue_requests SET status='rejected', reviewed_at=?, notes=? WHERE id=?",
+            (now, notes, req_id)
+        )
+    return dict(r)
+
+
+# ── Shared conversations ──────────────────────────────────────────────────────
+
+def create_shared_conversation(catalogue, title, messages):
+    share_id = 'sh_' + secrets.token_urlsafe(10)
+    now      = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute(
+            "INSERT INTO shared_conversations (share_id, catalogue, title, messages, created_at) VALUES (?,?,?,?,?)",
+            (share_id, catalogue, title, json.dumps(messages), now)
+        )
+    return share_id
+
+
+def get_shared_conversation(share_id):
+    with _conn() as c:
+        row = c.execute(
+            "SELECT * FROM shared_conversations WHERE share_id=?", (share_id,)
+        ).fetchone()
+    if not row:
+        return None
+    d = dict(row)
+    d['messages'] = json.loads(d['messages'])
+    return d
 
 
 init_db()

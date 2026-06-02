@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="/shared-charts.js"></script>
     <style>
         :root {
             --copper: #B87333;
@@ -318,6 +319,7 @@
             right: 24px;
             z-index: 9999;
             font-family: 'Source Sans 3', sans-serif;
+            display: none; /* replaced by #precChatFab */
         }
         .chat-toggle {
             width: 60px;
@@ -646,6 +648,78 @@
         .login-box textarea { resize: vertical; min-height: 80px; }
         .gate-success { display: none; color: var(--sage); font-size: 0.92rem; margin-top: 0.75rem; }
         .gate-success.show { display: block; }
+
+        /* ── Shmron chat modal — readability-first neutral palette ──────────
+           Designed for long reading sessions with charts and data.
+           No colour in the message area. Brand navy only in structural chrome.
+        ─────────────────────────────────────────────────────────────────── */
+        #precChatModal { position:fixed;inset:0;z-index:10000;background:rgba(15,15,20,.55);display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px); }
+        #precChatModal.open { display:flex; }
+        #precChatWin { width:min(1200px,96vw);height:88vh;background:#ffffff;border-radius:16px;display:flex;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.18);animation:pcSlide .22s ease; }
+        @keyframes pcSlide { from{transform:translateY(18px);opacity:0} to{transform:none;opacity:1} }
+
+        /* Sidebar — dark neutral, brand navy tint */
+        #precSidebar { width:230px;flex-shrink:0;background:#1a1e2e;display:flex;flex-direction:column;overflow:hidden; }
+        #precSideTop { padding:1.1rem 1rem .75rem;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0; }
+        #precSideTop h4 { color:rgba(255,255,255,.4);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.6rem; }
+        #precNewChat { width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.9);border-radius:8px;padding:.6rem .9rem;font-size:.85rem;font-weight:600;cursor:pointer;text-align:left;font-family:inherit;display:flex;align-items:center;gap:.5rem;transition:background .2s; }
+        #precNewChat:hover { background:rgba(255,255,255,.15); }
+        #precSessList { flex:1;overflow-y:auto;padding:.5rem; }
+        #precSessList::-webkit-scrollbar { width:4px; }
+        #precSessList::-webkit-scrollbar-thumb { background:rgba(255,255,255,.12);border-radius:4px; }
+        .prec-sess { padding:.6rem .75rem;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.6);font-size:.8rem;line-height:1.45;transition:background .15s;margin-bottom:.2rem;word-break:break-word; }
+        .prec-sess:hover { background:rgba(255,255,255,.07);color:rgba(255,255,255,.9); }
+        .prec-sess.active { background:rgba(255,255,255,.1);border-left:2px solid rgba(255,255,255,.4);color:white;padding-left:.6rem; }
+        .prec-sess-date { font-size:.65rem;color:rgba(255,255,255,.28);margin-top:.15rem; }
+        .prec-sess-empty { color:rgba(255,255,255,.28);font-size:.8rem;padding:1rem .75rem;line-height:1.65; }
+        #precClearAll { margin:.6rem;padding:.5rem;background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.35);border-radius:7px;font-size:.75rem;cursor:pointer;transition:all .2s;font-family:inherit; }
+        #precClearAll:hover { background:rgba(255,80,80,.2);color:rgba(255,255,255,.8);border-color:rgba(255,80,80,.3); }
+
+        /* Main — pure white, no tints */
+        #precChatMain { flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:#ffffff; }
+        #precChatHeader { padding:.85rem 1.5rem;flex-shrink:0;background:#1E3566;color:white;display:flex;align-items:center;gap:1rem; }
+        .prec-avatar { width:32px;height:32px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1rem;border:1.5px solid rgba(255,255,255,.25); }
+        #precCloseModal { margin-left:auto;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.8);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;transition:background .2s;display:flex;align-items:center;justify-content:center; }
+        #precCloseModal:hover { background:rgba(255,255,255,.22);color:white; }
+
+        /* Message thread — warm off-white, not glaring */
+        #precMessages { flex:1;overflow-y:auto;padding:2rem 1.75rem;display:flex;flex-direction:column;gap:1.25rem;scroll-behavior:smooth;background:#FAFAF8; }
+        #precMessages::-webkit-scrollbar { width:5px; }
+        #precMessages::-webkit-scrollbar-thumb { background:#DDDBD8;border-radius:4px; }
+
+        /* User messages — soft warm grey, dark text — no colour strain */
+        .prec-msg-user { align-self:flex-end;max-width:68%;background:#EBEBEB;color:#111111;padding:.85rem 1.1rem;border-radius:18px 18px 4px 18px;font-size:.95rem;line-height:1.65;word-break:break-word; }
+
+        /* AI messages — pure white card, excellent readability */
+        .prec-msg-ai { align-self:flex-start;max-width:100%;background:#ffffff;color:#1a1a1a;border:1px solid #E8E8E8;padding:1.1rem 1.4rem;border-radius:4px 18px 18px 18px;font-size:.93rem;line-height:1.85;word-break:break-word;box-shadow:0 1px 4px rgba(0,0,0,.06); }
+        .prec-msg-ai code { background:#F3F3F1;padding:.15rem .45rem;border-radius:4px;font-size:.83rem;color:#1E3566;font-family:'JetBrains Mono',monospace; }
+        .prec-msg-ai strong { color:#111111; }
+        .prec-msg-ai em { color:#555; }
+
+        /* Thinking indicator */
+        .prec-msg-status { align-self:flex-start;color:#999;font-size:.82rem;font-style:italic;padding:.2rem 0;animation:pcPulse 1.5s ease-in-out infinite; }
+        @keyframes pcPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        /* Charts and tables — clean white cards */
+        .prec-chart { width:100%;background:white;border-radius:12px;border:1px solid #EBEBEB;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.05);margin-top:.75rem; }
+        .prec-stats { width:100%;background:white;border-radius:12px;border:1px solid #EBEBEB;padding:1rem;margin-top:.75rem;font-size:.83rem;box-shadow:0 1px 6px rgba(0,0,0,.04); }
+
+        /* Starter question pills */
+        .prec-pills { display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem 0 0; }
+        .prec-pill { background:#F2F2F0;border:1px solid #DEDEDE;color:#333333;border-radius:20px;padding:.35rem .9rem;font-size:.8rem;cursor:pointer;font-family:inherit;transition:all .15s; }
+        .prec-pill:hover { background:#1E3566;color:white;border-color:#1E3566; }
+
+        /* Input — clean white, subtle border */
+        #precInputArea { padding:1rem 1.5rem;border-top:1px solid #EBEBEB;flex-shrink:0;background:#ffffff;display:flex;align-items:flex-end;gap:.75rem; }
+        #precInput { flex:1;resize:none;min-height:48px;max-height:130px;padding:.8rem 1rem;border:1.5px solid #DCDCDC;border-radius:12px;font-size:.95rem;font-family:inherit;line-height:1.55;overflow-y:auto;transition:border-color .2s,box-shadow .2s;background:#ffffff;color:#1a1a1a; }
+        #precInput:focus { outline:none;border-color:#1E3566;box-shadow:0 0 0 3px rgba(30,53,102,.08); }
+        #precSendBtn { height:48px;padding:0 1.4rem;flex-shrink:0;background:#1E3566;color:white;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:.95rem;font-family:inherit;transition:background .2s,transform .1s; }
+        #precSendBtn:hover:not(:disabled) { background:#2a4a85;transform:translateY(-1px); }
+        #precSendBtn:disabled { background:#CCCCCC;cursor:not-allowed;transform:none; }
+
+        /* FAB keeps the PRECISE brand identity */
+        #precChatFab { position:fixed;bottom:2rem;right:2rem;z-index:9000;background:#1E3566;color:white;border:none;border-radius:50px;padding:.85rem 1.5rem;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(30,53,102,.4);display:flex;align-items:center;gap:.6rem;font-family:inherit;transition:transform .2s,box-shadow .2s; }
+        #precChatFab:hover { transform:translateY(-3px);box-shadow:0 10px 32px rgba(184,115,51,.45); }
     </style>
 </head>
 <body>
@@ -689,6 +763,7 @@
 
     <div class="container">
         <header>
+            <img src="/precise-logo.png" alt="PRECISE Network" style="height:54px;margin-bottom:1.5rem;display:block;">
             <div class="header-label">PRECISE Network Research</div>
             <h1>Environmental & Social Determinants of <span>Maternal Health</span></h1>
             <p class="header-subtitle">Comprehensive geospatial analysis of environmental exposures and their impact on maternal and placental outcomes across three Sub-Saharan African nations.</p>
@@ -715,10 +790,7 @@
                     <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h8v2H8v-2zm0-4h8v2H8v-2z"/></svg>
                     Data Dictionary <span class="btn-note"></span>
                 </a>
-                <button onclick="openDataExplorer()" class="header-btn header-btn-primary">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                    Data Explorer
-                </button>
+
                 <button onclick="openLightbox('https://raw.githubusercontent.com/Shmron/PRECISE/main/env_paper_inforgraphic2.jpg')" class="header-btn header-btn-secondary">
                     <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                     Variables at a Glance
@@ -2762,16 +2834,8 @@ by most village residents.</div>
         };
 
         function openDataExplorer() {
-            document.getElementById('explorerOverlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            if (!participantData) {
-                loadParticipantData();
-            } else {
-                // Data already loaded (e.g., by chatbot), show content directly
-                document.getElementById('explorerLoading').style.display = 'none';
-                document.getElementById('explorerContent').style.display = 'block';
-                renderFilters();
-            }
+            /* Redirect to the full-screen Shmron modal — the old embedded explorer is retired */
+            if (typeof openPrecChat === 'function') openPrecChat();
         }
 
         function closeDataExplorer() {
@@ -3726,10 +3790,7 @@ by most village residents.</div>
 
             attachEvents() {
                 document.querySelector('.chat-toggle').addEventListener('click', () => {
-                    const widget = document.getElementById('chat-widget');
-                    widget.classList.toggle('open');
-
-                    // Chat uses live API queries — no pre-loading needed
+                    openPrecChat();
                 });
 
                 const input = document.getElementById('chat-input');
@@ -3841,6 +3902,10 @@ by most village residents.</div>
             },
 
             _renderChartSpec(elId, spec) {
+                /* Delegates to shared-charts.js — edit that file to fix chart bugs for all catalogues */
+                if (typeof window.PALsRenderChart === 'function') {
+                    window.PALsRenderChart(elId, spec); return;
+                }
                 const el = document.getElementById(elId);
                 if (!el || typeof Plotly === 'undefined') {
                     console.warn('Plotly not ready or element missing:', elId); return;
@@ -4430,10 +4495,10 @@ by most village residents.</div>
                 reason:      document.getElementById('reqReason').value.trim(),
             };
             try {
-                const res = await fetch('/catalogue-request/', {
+                const res = await fetch('/duckrequest/cat-submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ ...payload, catalogue: 'precise' })
                 });
                 const data = await res.json();
                 if (data.ok) {
@@ -4450,5 +4515,310 @@ by most village residents.</div>
             }
         });
     </script>
+
+    <!-- PRECISE chat FAB -->
+    <button id="precChatFab" onclick="openPrecChat()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      Ask Shmron
+    </button>
+
+    <!-- PRECISE full-screen chat modal -->
+    <div id="precChatModal">
+      <div id="precChatWin">
+        <div id="precSidebar">
+          <div id="precSideTop">
+            <h4>Conversations</h4>
+            <button id="precNewChat" onclick="precStartNew()">+ New conversation</button>
+          </div>
+          <div id="precSessList"></div>
+          <button id="precClearAll" onclick="precClearAll()">&#x1F5D1; Clear all history</button>
+        </div>
+        <div id="precChatMain">
+          <div id="precChatHeader">
+            <div class="prec-avatar">&#x1F916;</div>
+            <div>
+              <div style="font-weight:700;font-size:.95rem;">Shmron</div>
+              <div style="font-size:.72rem;opacity:.7;">PRECISE Research Assistant &middot; 3.1M rows &middot; live data</div>
+            </div>
+            <button id="precShareBtn" title="Share conversation" style="background:none;border:1px solid rgba(255,255,255,.4);color:white;border-radius:6px;padding:4px 10px;font-size:.75rem;cursor:pointer;margin-right:6px" onclick="precShareConversation()">&#x1F517; Share</button>
+            <button id="precCloseModal" onclick="closePrecChat()">&#x2715;</button>
+          </div>
+          <div id="precMessages"></div>
+          <div id="precInputArea">
+            <textarea id="precInput" placeholder="Ask about the PRECISE dataset — exposures, outcomes, trends, regressions…" rows="1"></textarea>
+            <button id="precSendBtn">Send &#x2191;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    /* ── PRECISE Full-screen Chat Modal ─────────────────────────────────── */
+    (function() {
+        const PREC_SESS_KEY = 'precise_sessions_v1';
+        const PREC_API      = '/precise-api';
+        let   precHistory   = [];
+        let   precSessId    = null;
+        let   precSending   = false;
+        let   precChartSeq  = 0;
+
+        /* Session helpers */
+        function precGetSessions() {
+            try { return JSON.parse(localStorage.getItem(PREC_SESS_KEY)||'[]'); } catch(e) { return []; }
+        }
+        function precSave() {
+            if (!precSessId || !precHistory.length) return;
+            const sessions = precGetSessions();
+            const first = precHistory.find(m=>m.role==='user')?.content||'';
+            const title = first.slice(0,60)+(first.length>60?'…':'');
+            const sess  = {id:precSessId,title,date:new Date().toISOString(),history:precHistory};
+            const idx   = sessions.findIndex(s=>s.id===precSessId);
+            if (idx>=0) sessions[idx]=sess; else sessions.unshift(sess);
+            localStorage.setItem(PREC_SESS_KEY, JSON.stringify(sessions.slice(0,30)));
+            precRenderSidebar();
+        }
+        function precRenderSidebar() {
+            const list     = document.getElementById('precSessList');
+            const sessions = precGetSessions();
+            if (!sessions.length) { list.innerHTML='<div class="prec-sess-empty">Your conversations will appear here.</div>'; return; }
+            list.innerHTML = sessions.map(s=>`
+                <div class="prec-sess ${s.id===precSessId?'active':''}" onclick="precLoadSess('${s.id}')">
+                    <div>${s.title.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
+                    <div class="prec-sess-date">${new Date(s.date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</div>
+                </div>`).join('');
+        }
+        window.precLoadSess = function(id) {
+            precSave();
+            const s = precGetSessions().find(x=>x.id===id);
+            if (!s) return;
+            precSessId  = s.id;
+            precHistory = s.history;
+            const msgs  = document.getElementById('precMessages');
+            msgs.innerHTML = '';
+            for (const m of precHistory) {
+                if (m.role==='user') precAddUser(m.content);
+                else {
+                    const el = precAddAI(m.content);
+                    (m.charts||[]).forEach(spec=>precAppendChart(el,spec));
+                    (m.tables||[]).forEach(t=>precAppendTable(el,t));
+                }
+            }
+            msgs.scrollTop = msgs.scrollHeight;
+            precRenderSidebar();
+        };
+        window.precStartNew = function() {
+            precSave();
+            precSessId  = Date.now().toString();
+            precHistory = [];
+            document.getElementById('precMessages').innerHTML='';
+            precShowWelcome();
+            precRenderSidebar();
+        };
+        window.precClearAll = function() {
+            if (!confirm('Delete all saved Shmron conversations?')) return;
+            localStorage.removeItem(PREC_SESS_KEY);
+            precStartNew();
+        };
+
+        /* Modal open / close */
+        window.openPrecChat = function() {
+            document.getElementById('precChatModal').classList.add('open');
+            if (!precSessId) {
+                const sessions = precGetSessions();
+                if (sessions.length) { precSessId=sessions[0].id; precHistory=sessions[0].history; precRenderFromHistory(); }
+                else precStartNew();
+            }
+            precRenderSidebar();
+            setTimeout(()=>document.getElementById('precInput').focus(),200);
+        };
+        window.closePrecChat = function() {
+            precSave();
+            document.getElementById('precChatModal').classList.remove('open');
+        };
+        document.getElementById('precChatModal').addEventListener('click',e=>{ if(e.target===document.getElementById('precChatModal')) closePrecChat(); });
+
+        function precRenderFromHistory() {
+            const msgs = document.getElementById('precMessages');
+            msgs.innerHTML='';
+            for (const m of precHistory) {
+                if (m.role==='user') precAddUser(m.content);
+                else { const el=precAddAI(m.content); (m.charts||[]).forEach(s=>precAppendChart(el,s)); (m.tables||[]).forEach(t=>precAppendTable(el,t)); }
+            }
+            msgs.scrollTop=msgs.scrollHeight;
+        }
+
+        function precShowWelcome() {
+            precAddAI('Hello! I\'m Shmron, the PRECISE research assistant. Ask me about environmental exposures, birth outcomes, country comparisons, temporal trends, or run regressions — all against the live 3.1M-row dataset.',
+                ['What is the mean PM2.5 across the three countries?',
+                 'Compare UTCI heat stress by country and settlement type',
+                 'Is there an association between PM2.5 and low birth weight?',
+                 'Show temperature trends by trimester across countries',
+                 'Map mean relative humidity at village level']);
+        }
+
+        /* Message DOM helpers */
+        function precMd(t) {
+            return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+                .replace(/`(.+?)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
+        }
+        function precAddUser(text) {
+            const d=document.createElement('div'); d.className='prec-msg-user'; d.innerHTML=precMd(text);
+            const msgs=document.getElementById('precMessages'); msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return d;
+        }
+        function precAddAI(text, pills) {
+            const d=document.createElement('div'); d.className='prec-msg-ai';
+            const t=document.createElement('div'); t.className='prec-msg-text'; t.innerHTML=precMd(text); d.appendChild(t);
+            if (pills&&pills.length) {
+                const row=document.createElement('div'); row.className='prec-pills';
+                pills.forEach(p=>{ const b=document.createElement('button'); b.className='prec-pill'; b.textContent=p;
+                    b.onclick=()=>{ document.getElementById('precInput').value=p; document.getElementById('precInput').focus(); }; row.appendChild(b); });
+                d.appendChild(row);
+            }
+            const msgs=document.getElementById('precMessages'); msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return d;
+        }
+        function precAddStatus(text) {
+            precRemoveStatus();
+            const d=document.createElement('div'); d.className='prec-msg-status'; d.id='precStatus'; d.textContent=text;
+            const msgs=document.getElementById('precMessages'); msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+        }
+        function precRemoveStatus() { document.getElementById('precStatus')?.remove(); }
+
+        /* Chart / table rendering */
+        function precAppendChart(parentEl, spec) {
+            const id='pc-'+(++precChartSeq);
+            const h=spec.chart_type==='map'?440:spec.chart_type==='heatmap'?400:spec.chart_type==='forest'?Math.max(300,((spec.forest_data||[]).length*36)+80):320;
+            const wrap=document.createElement('div'); wrap.className='prec-chart';
+            wrap.innerHTML=`<div id="${id}" style="width:100%;height:${h}px;"></div>`;
+            parentEl.appendChild(wrap);
+            document.getElementById('precMessages').scrollTop=99999;
+            if (typeof ChatBot!=='undefined'&&ChatBot._renderChartSpec) ChatBot._renderChartSpec(id,spec);
+            return wrap;
+        }
+        function precAppendTable(parentEl, res) {
+            const div=document.createElement('div'); div.className='prec-stats';
+            if (typeof ChatBot!=='undefined'&&ChatBot._renderStatsTableHTML) div.innerHTML=ChatBot._renderStatsTableHTML(res);
+            parentEl.appendChild(div);
+            document.getElementById('precMessages').scrollTop=99999;
+        }
+
+        /* Send */
+        async function precSend() {
+            const input=document.getElementById('precInput');
+            const text=input.value.trim();
+            if (!text||precSending) return;
+            const token=sessionStorage.getItem('catalogueToken');
+            if (!token) { alert('Session expired — please refresh and log in again.'); return; }
+
+            precSending=true;
+            document.getElementById('precSendBtn').disabled=true;
+            input.value=''; input.style.height='auto';
+            precAddUser(text);
+            precHistory.push({role:'user',content:text});
+            precAddStatus('Thinking…');
+
+            const charts=[],tables=[];
+            let aiText='',aiEl=null;
+
+            try {
+                const resp=await fetch(PREC_API+'/api/chat',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','X-Session-Token':token},
+                    body:JSON.stringify({messages:precHistory.map(m=>({role:m.role,content:m.content}))})
+                });
+                if (!resp.ok) { precRemoveStatus(); precAddAI('Server error '+resp.status+'. Please try again.'); }
+                else {
+                    const reader=resp.body.getReader(),decoder=new TextDecoder(); let buf='';
+                    while(true) {
+                        const {done,value}=await reader.read(); if(done) break;
+                        buf+=decoder.decode(value,{stream:true});
+                        const lines=buf.split('\n'); buf=lines.pop();
+                        for (const line of lines) {
+                            if (!line.startsWith('data: ')) continue;
+                            let evt; try{evt=JSON.parse(line.slice(6));}catch(e){continue;}
+                            if (evt.type==='status') { const s=document.getElementById('precStatus'); if(s) s.textContent=evt.text; }
+                            else if (evt.type==='text') { precRemoveStatus(); aiText=evt.text; if(!aiEl) aiEl=precAddAI(''); const tDiv=aiEl.querySelector('.prec-msg-text'); if(tDiv) tDiv.innerHTML=precMd(aiText); document.getElementById('precMessages').scrollTop=99999; }
+                            else if (evt.type==='chart') { precRemoveStatus(); if(!aiEl) aiEl=precAddAI(''); precAppendChart(aiEl,evt.spec); charts.push(evt.spec); }
+                            else if (evt.type==='stats_table') { precRemoveStatus(); if(!aiEl) aiEl=precAddAI(''); precAppendTable(aiEl,evt.result); tables.push(evt.result); }
+                            else if (evt.type==='done') { precRemoveStatus(); }
+                            else if (evt.type==='error') { precRemoveStatus(); precAddAI('Error: '+evt.text); }
+                        }
+                    }
+                }
+            } catch(e) { precRemoveStatus(); precAddAI('Network error. Please try again.'); }
+
+            precHistory.push({role:'assistant',content:aiText,charts,tables});
+            precSave();
+            precSending=false;
+            document.getElementById('precSendBtn').disabled=false;
+            input.focus();
+        }
+
+        /* Wire up events */
+        document.getElementById('precSendBtn').addEventListener('click', precSend);
+        document.getElementById('precInput').addEventListener('keydown', e=>{
+            if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); precSend(); }
+        });
+        document.getElementById('precInput').addEventListener('input', function(){
+            this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,130)+'px';
+        });
+
+        /* Init: load last session silently so it's ready when modal opens */
+        (function() {
+            const sessions=precGetSessions();
+            if (sessions.length) {
+                precSessId=sessions[0].id; precHistory=sessions[0].history;
+                precRenderFromHistory();
+            } else { precSessId=Date.now().toString(); precShowWelcome(); }
+            precRenderSidebar();
+        })();
+
+        /* Make "Ask Shmron" button in the page open the modal */
+        document.querySelectorAll('[id*="askBtn"],[class*="ask-shmron"]').forEach(el=>{
+            el.addEventListener('click', e=>{ openPrecChat(); e.stopPropagation(); });
+        });
+
+        /* ── Share conversation ─────────────────────────────────────────── */
+        window.precShareConversation = async function() {
+            const history = precHistory.filter(m => m.role === 'user' || m.role === 'assistant');
+            if (!history.length) { alert('No conversation to share yet.'); return; }
+            const token = sessionStorage.getItem('catalogueToken');
+            if (!token) { alert('Session expired — please log in again.'); return; }
+            const btn = document.getElementById('precShareBtn');
+            const orig = btn.textContent;
+            btn.textContent = 'Sharing…'; btn.disabled = true;
+            try {
+                const title = history.find(m=>m.role==='user')?.content?.slice(0,60) || 'PRECISE conversation';
+                const r = await fetch(PREC_API + '/api/share', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Session-Token': token },
+                    body: JSON.stringify({ catalogue: 'precise', title, messages: history })
+                });
+                const data = await r.json();
+                if (data.ok) {
+                    const url = window.location.origin + '/share/?id=' + data.share_id;
+                    document.getElementById('precShareLink').value = url;
+                    document.getElementById('precShareModal').style.display = 'flex';
+                } else { alert('Could not create share link: ' + (data.error||'unknown error')); }
+            } catch(e) { alert('Network error creating share link.'); }
+            btn.textContent = orig; btn.disabled = false;
+        };
+    })();
+    </script>
+
+    <!-- PRECISE share modal -->
+    <div id="precShareModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20000;align-items:center;justify-content:center">
+      <div style="background:white;border-radius:12px;padding:28px 32px;max-width:480px;width:90%;box-shadow:0 25px 60px rgba(0,0,0,.3)">
+        <h3 style="margin-bottom:8px;color:#1a535c">Share Conversation</h3>
+        <p style="font-size:13px;color:#6b7280;margin-bottom:16px">Anyone with this link can read the conversation (read-only, no login required).</p>
+        <div style="display:flex;gap:8px">
+          <input id="precShareLink" type="text" readonly style="flex:1;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#111827" onclick="this.select()">
+          <button onclick="navigator.clipboard.writeText(document.getElementById('precShareLink').value).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)})" style="padding:8px 16px;background:#1a535c;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">Copy</button>
+        </div>
+        <div style="text-align:right;margin-top:16px">
+          <button onclick="document.getElementById('precShareModal').style.display='none'" style="padding:8px 20px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer">Close</button>
+        </div>
+      </div>
+    </div>
 </body>
 </html>

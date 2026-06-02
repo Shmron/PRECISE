@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Exposure Catalogue | HE2AT Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="/shared-charts.js"></script>
+    <style>
+        :root {
+            /* HE2AT Centre palette — from logo: orange badge + green Africa continent */
+            --heat-red: #F7941D;       /* logo orange — primary accent */
+            --heat-orange: #F7941D;    /* same orange */
+            --heat-amber: #C4D40A;     /* logo yellow-green */
+            --heat-deep: #3B7A3C;      /* logo dark green — dark accent */
+            --teal-cool: #5A9E3B;      /* logo medium green */
+            --teal-deep: #264653;      /* keep for neutrals */
+            --sky-blue: #457B9D;
+            --slate: #3D5A73;
+            --charcoal: #1D3557;
+            --cream: #FFF8F0;
+            --ivory: #FDFCFA;
+            --sand: #F4E9D8;
+            --mist: #E8EEF2;
+            --gold: #D4AF37;
+            --forest: #2D5016;
+            --lavender: #7B6BA8;
+            --earth-brown: #8B4513;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: var(--cream); color: var(--charcoal); line-height: 1.7; font-weight: 400; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); opacity: 0.015; pointer-events: none; z-index: 0; }
+        .container { max-width: 1500px; margin: 0 auto; background: var(--ivory); position: relative; z-index: 1; box-shadow: 0 0 80px rgba(45, 52, 54, 0.08); }
+        .container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, var(--heat-deep) 0%, var(--heat-red) 25%, var(--heat-orange) 50%, var(--heat-amber) 75%, var(--teal-cool) 100%); }
+
+        /* ── Login Gate ─────────────────────────────────────────────────────── */
+        .login-gate {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--heat-deep) 0%, #3a0a0a 60%, var(--teal-deep) 100%);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        .login-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+        .login-subtitle {
+            font-size: 0.95rem;
+            color: var(--slate);
+            margin-bottom: 2rem;
+        }
+        .login-logo { /* overridden below — now an img */ display:none; }
+        .login-logo-img { width:90px; height:auto; margin: 0 auto 1.25rem; display:block; }
+        /* keep class for JS compatibility */
+        .login-logo-old {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--heat-deep) 0%, var(--heat-red) 100%);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-logo svg { width: 32px; height: 32px; fill: white; }
+        .gate-tabs {
+            display: flex; border-bottom: 2px solid var(--mist); margin-bottom: 1.75rem;
+        }
+        .gate-tab {
+            flex: 1; padding: 0.65rem; font-size: 0.9rem; font-weight: 600;
+            color: var(--slate); background: none; border: none; cursor: pointer;
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .gate-tab.active { color: var(--heat-red); border-bottom-color: var(--heat-red); }
+        .gate-pane { display: none; }
+        .gate-pane.active { display: block; }
+        .login-box input[type="password"],
+        .login-box input[type="text"],
+        .login-box input[type="email"],
+        .login-box textarea {
+            width: 100%; padding: 0.9rem 1rem;
+            border: 2px solid var(--mist); border-radius: 8px;
+            font-size: 0.95rem; margin-bottom: 0.85rem;
+            font-family: inherit; transition: border-color 0.2s;
+        }
+        .login-box input:focus, .login-box textarea:focus {
+            outline: none; border-color: var(--heat-red);
+        }
+        .login-box textarea { resize: vertical; min-height: 80px; }
+        .login-box button[type="submit"] {
+            width: 100%; padding: 1rem;
+            background: var(--heat-red); color: white;
+            border: none; border-radius: 8px;
+            font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: background 0.2s, transform 0.2s;
+        }
+        .login-box button[type="submit"]:hover {
+            background: var(--heat-deep); transform: translateY(-2px);
+        }
+        .login-error {
+            color: var(--heat-red); font-size: 0.9rem; margin-top: 0.75rem; display: none;
+        }
+        .login-error.show { display: block; }
+        .gate-success { display: none; color: var(--teal-cool); font-size: 0.92rem; margin-top: 0.75rem; }
+        .gate-success.show { display: block; }
+        .main-content.blurred { filter: blur(10px); pointer-events: none; }
+
+        header { padding: 5rem 4rem 4rem; background: linear-gradient(180deg, var(--ivory) 0%, var(--sand) 100%); position: relative; overflow: hidden; }
+        header::after { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; border: 2px solid var(--heat-orange); border-radius: 50%; opacity: 0.08; }
+        header::before { content: ''; position: absolute; bottom: -150px; left: -100px; width: 300px; height: 300px; background: radial-gradient(circle, var(--heat-red) 0%, transparent 70%); opacity: 0.05; }
+
+        .header-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--heat-red); font-weight: 600; margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 1rem; }
+        .header-label::before { content: ''; display: inline-block; width: 40px; height: 2px; background: var(--heat-red); }
+        header h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 700; color: var(--charcoal); line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; letter-spacing: -0.02em; }
+        header h1 span { color: var(--heat-red); }
+        header h1 sup { font-size: 0.5em; vertical-align: super; }
+        .header-subtitle { font-size: 1.2rem; font-weight: 300; color: var(--slate); max-width: 750px; line-height: 1.8; }
+        .header-meta { display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid rgba(230, 57, 70, 0.2); }
+        .meta-item { display: flex; flex-direction: column; gap: 0.4rem; }
+        .meta-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--slate); }
+        .meta-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; color: var(--charcoal); }
+
+        main { padding: 4rem; }
+
+        /* Center Overview Box */
+        .center-overview { background: linear-gradient(135deg, var(--charcoal) 0%, var(--teal-deep) 100%); color: white; padding: 3rem; margin-bottom: 3rem; position: relative; overflow: hidden; }
+        .center-overview::before { content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, var(--heat-orange) 0%, transparent 70%); opacity: 0.1; }
+        .center-overview h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--heat-amber); }
+        .center-overview p { font-size: 1rem; line-height: 1.8; opacity: 0.9; max-width: 1000px; margin-bottom: 1rem; }
+        .center-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .highlight-card { background: rgba(255,255,255,0.08); padding: 1.25rem; border-left: 3px solid var(--heat-orange); }
+        .highlight-card h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--heat-amber); margin-bottom: 0.5rem; }
+        .highlight-card p { font-size: 0.9rem; opacity: 0.85; line-height: 1.6; }
+
+        /* Data Pipeline Section */
+        .data-pipeline { background: var(--sand); border: 1px solid rgba(230, 57, 70, 0.2); padding: 2.5rem; margin-bottom: 3rem; }
+        .data-pipeline h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .data-pipeline h3::before { content: ''; display: inline-block; width: 4px; height: 24px; background: var(--heat-red); }
+        .pipeline-intro { font-size: 0.95rem; color: var(--slate); margin-bottom: 2rem; line-height: 1.7; }
+        .pipeline-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .pipeline-step { background: white; padding: 1.5rem; border-left: 4px solid; position: relative; }
+        .pipeline-step.step-1 { border-color: var(--heat-red); }
+        .pipeline-step.step-2 { border-color: var(--heat-orange); }
+        .pipeline-step.step-3 { border-color: var(--teal-cool); }
+        .pipeline-step-number { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; opacity: 0.15; position: absolute; top: 0.5rem; right: 1rem; }
+        .pipeline-step h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+        .pipeline-step.step-1 h4 { color: var(--heat-red); }
+        .pipeline-step.step-2 h4 { color: var(--heat-orange); }
+        .pipeline-step.step-3 h4 { color: var(--teal-cool); }
+        .pipeline-step p { font-size: 0.9rem; color: var(--slate); line-height: 1.6; }
+
+        /* Category Sections */
+        .category-section { margin-bottom: 4rem; opacity: 0; transform: translateY(30px); animation: fadeSlideIn 0.7s ease forwards; }
+        @keyframes fadeSlideIn { to { opacity: 1; transform: translateY(0); } }
+        .category-section:nth-child(1) { animation-delay: 0.1s; }
+        .category-section:nth-child(2) { animation-delay: 0.15s; }
+        .category-section:nth-child(3) { animation-delay: 0.2s; }
+        .category-section:nth-child(4) { animation-delay: 0.25s; }
+        .category-section:nth-child(5) { animation-delay: 0.3s; }
+        .category-section:nth-child(6) { animation-delay: 0.35s; }
+        .category-section:nth-child(7) { animation-delay: 0.4s; }
+
+        .category-header { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; cursor: pointer; padding: 1.75rem 2rem; background: var(--sand); border-left: 5px solid; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .category-header:hover { background: var(--ivory); box-shadow: 0 8px 30px rgba(45, 52, 54, 0.06); transform: translateX(8px); }
+        .category-number { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; line-height: 1; opacity: 0.15; min-width: 90px; }
+        .category-title-wrapper { flex: 1; }
+        .category-icon { font-size: 1.3rem; margin-bottom: 0.25rem; opacity: 0.8; }
+        .category-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: var(--charcoal); margin: 0; letter-spacing: -0.01em; }
+        .category-count { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); margin-top: 0.35rem; letter-spacing: 0.08em; text-transform: uppercase; }
+        .toggle-indicator { font-size: 1.2rem; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); color: var(--slate); opacity: 0.5; }
+        .category-header.active .toggle-indicator { transform: rotate(180deg); }
+
+        /* Category colors */
+        .cat-temp { border-color: var(--heat-red); }
+        .cat-temp .category-number { color: var(--heat-red); }
+        .cat-air { border-color: var(--teal-deep); }
+        .cat-air .category-number { color: var(--teal-deep); }
+        .cat-soil { border-color: var(--earth-brown); }
+        .cat-soil .category-number { color: var(--earth-brown); }
+        .cat-urban { border-color: var(--lavender); }
+        .cat-urban .category-number { color: var(--lavender); }
+        .cat-climate { border-color: var(--sky-blue); }
+        .cat-climate .category-number { color: var(--sky-blue); }
+        .cat-pending { border-color: var(--gold); }
+        .cat-pending .category-number { color: var(--gold); }
+
+        .variables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 1.5rem; max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease; opacity: 0; }
+        .variables-grid.active { max-height: 25000px; opacity: 1; margin-bottom: 2rem; }
+
+        .variable-card { background: white; border: 1px solid rgba(45, 52, 54, 0.08); padding: 2rem; cursor: pointer; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .variable-card::before { content: ''; position: absolute; top: 0; left: 0; width: 0; height: 100%; background: currentColor; opacity: 0.08; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .variable-card:hover { border-color: rgba(45, 52, 54, 0.15); box-shadow: 0 12px 40px rgba(45, 52, 54, 0.08); transform: translateY(-3px); }
+        .variable-card:hover::before { width: 4px; }
+
+        .cat-temp .variable-card { color: var(--heat-red); }
+        .cat-air .variable-card { color: var(--teal-deep); }
+        .cat-soil .variable-card { color: var(--earth-brown); }
+        .cat-urban .variable-card { color: var(--lavender); }
+        .cat-climate .variable-card { color: var(--sky-blue); }
+        .cat-pending .variable-card { color: var(--gold); }
+
+        .variable-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.4rem; line-height: 1.3; }
+        .variable-unit { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--slate); letter-spacing: 0.03em; margin-bottom: 1.25rem; }
+
+        .stats-display { background: var(--mist); padding: 1.25rem; margin-bottom: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 2; color: var(--charcoal); }
+        .stats-display div { display: flex; justify-content: space-between; align-items: center; padding: 0.15rem 0; border-bottom: 1px solid rgba(45, 52, 54, 0.05); }
+        .stats-display div:last-child { border-bottom: none; }
+        .stats-label { color: var(--slate); font-weight: 400; }
+        .stats-value { font-weight: 600; color: var(--charcoal); }
+
+        .expand-btn { display: inline-flex; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: currentColor; text-transform: uppercase; letter-spacing: 0.12em; border: none; background: none; cursor: pointer; padding: 0.6rem 0; transition: all 0.3s ease; font-weight: 500; }
+        .expand-btn:hover { opacity: 0.7; transform: translateX(4px); }
+        .expand-btn::after { content: '\2193'; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .variable-card.expanded .expand-btn::after { transform: rotate(180deg); }
+
+        .variable-details { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin-top: 1.5rem; }
+        .variable-card.expanded .variable-details { max-height: 3000px; }
+
+        .detail-section { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid rgba(45, 52, 54, 0.08); }
+        .detail-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        .detail-section h4 { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em; color: currentColor; margin-bottom: 0.75rem; font-weight: 600; }
+        .detail-section p { font-size: 0.95rem; line-height: 1.8; color: var(--slate); }
+
+        .climate-grid { display: grid; grid-template-columns: repeat(2, auto); column-gap: 2rem; row-gap: 0.4rem; }
+
+        .dataset-info { background: var(--sand); padding: 0.85rem 1.15rem; border-left: 3px solid currentColor; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--charcoal); margin-top: 0.5rem; }
+        .formula-display { background: var(--charcoal); color: var(--sand); padding: 1.25rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.9; margin-top: 0.75rem; white-space: pre-wrap; overflow-x: auto; }
+
+        /* Status badges */
+        .status-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.25rem 0.6rem; border-radius: 3px; display: inline-block; margin-bottom: 0.75rem; }
+        .status-complete { background: var(--teal-cool); color: white; }
+        .status-pending { background: var(--gold); color: var(--charcoal); }
+        .status-priority { background: var(--heat-red); color: white; }
+
+        /* References */
+        .references-section { margin-top: 5rem; padding: 4rem; background: var(--sand); border-top: 1px solid rgba(230, 57, 70, 0.2); }
+        .references-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 2.5rem; }
+        .reference-item { font-size: 0.88rem; line-height: 1.8; color: var(--slate); margin-bottom: 1rem; padding-left: 2.5rem; position: relative; }
+        .reference-number { position: absolute; left: 0; font-weight: 600; color: var(--heat-red); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+
+        /* Funding Section */
+        .funding-section { background: linear-gradient(135deg, var(--teal-deep) 0%, var(--charcoal) 100%); color: white; padding: 3rem 4rem; }
+        .funding-section h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--heat-amber); margin-bottom: 1.5rem; }
+        .funding-section p { font-size: 0.95rem; line-height: 1.8; opacity: 0.9; max-width: 1000px; }
+        .funding-logos { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; align-items: center; }
+        .funding-logo { background: rgba(255,255,255,0.1); padding: 1rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; letter-spacing: 0.05em; }
+
+        /* Footer */
+        footer { padding: 4rem; background: var(--charcoal); color: var(--sand); }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; }
+        .footer-section h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: 1rem; color: var(--heat-amber); }
+        .footer-section p { font-size: 0.9rem; line-height: 1.7; opacity: 0.8; }
+        .footer-section a { color: var(--heat-amber); text-decoration: none; }
+        .footer-section a:hover { text-decoration: underline; }
+
+        /* ── AI Chat ────────────────────────────────────────────────────────── */
+        #chatFab {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 9000;
+            background: linear-gradient(135deg, var(--heat-deep) 0%, var(--heat-red) 100%);
+            color: white; border: none; border-radius: 50px;
+            padding: 0.85rem 1.5rem; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; box-shadow: 0 6px 24px rgba(157,2,8,0.45);
+            display: flex; align-items: center; gap: 0.6rem;
+            font-family: 'Source Sans 3', sans-serif; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        #chatFab:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(157,2,8,0.55); }
+        #chatFab svg { width: 18px; height: 18px; fill: white; flex-shrink: 0; }
+
+        /* Full-screen chat modal */
+        #chatModal {
+            position: fixed; inset: 0; z-index: 10000;
+            background: rgba(29,53,87,0.72); display: none;
+            align-items: center; justify-content: center;
+            padding: 1rem; backdrop-filter: blur(3px);
+        }
+        #chatModal.open { display: flex; }
+        #chatWindow {
+            width: min(1200px, 96vw); height: 88vh;
+            background: var(--ivory); border-radius: 16px;
+            display: flex; overflow: hidden;
+            box-shadow: 0 30px 90px rgba(29,53,87,0.35);
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+        /* Sidebar */
+        #chatSidebar {
+            width: 230px; flex-shrink: 0; overflow: hidden;
+            background: linear-gradient(180deg, #1a1f2e 0%, #0d1117 100%);
+            display: flex; flex-direction: column;
+        }
+        #sidebarTop {
+            padding: 1.1rem 1rem 0.75rem; flex-shrink: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        #sidebarTop h4 {
+            color: rgba(255,255,255,0.5); font-size: 0.65rem;
+            letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem;
+        }
+        #newChatBtn {
+            width: 100%; background: rgba(230,57,70,0.25); border: 1px solid rgba(230,57,70,0.4);
+            color: white; border-radius: 8px; padding: 0.6rem 0.9rem;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: left;
+            font-family: inherit; display: flex; align-items: center; gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        #newChatBtn:hover { background: rgba(230,57,70,0.45); }
+        #sessionList {
+            flex: 1; overflow-y: auto; padding: 0.5rem;
+        }
+        #sessionList::-webkit-scrollbar { width: 4px; }
+        #sessionList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+        .sess-item {
+            padding: 0.6rem 0.75rem; border-radius: 8px; cursor: pointer;
+            color: rgba(255,255,255,0.65); font-size: 0.8rem; line-height: 1.4;
+            transition: background 0.15s; margin-bottom: 0.2rem; word-break: break-word;
+        }
+        .sess-item:hover { background: rgba(255,255,255,0.08); color: white; }
+        .sess-item.active { background: rgba(230,57,70,0.3); color: white; }
+        .sess-date { font-size: 0.66rem; color: rgba(255,255,255,0.35); margin-top: 0.15rem; }
+        .sess-empty { color: rgba(255,255,255,0.3); font-size: 0.8rem; padding: 1rem 0.75rem; line-height: 1.6; }
+        #clearAllBtn {
+            margin: 0.6rem; padding: 0.5rem; flex-shrink: 0;
+            background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.4); border-radius: 7px;
+            font-size: 0.75rem; cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        #clearAllBtn:hover { background: rgba(230,57,70,0.3); color: white; border-color: transparent; }
+
+        /* Main chat pane */
+        #chatMain { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+        #chatModalHeader {
+            padding: 0.9rem 1.5rem; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--heat-deep) 0%, var(--charcoal) 100%);
+            color: white; display: flex; align-items: center; gap: 1rem;
+        }
+        .cm-avatar {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--heat-red), var(--heat-orange));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; font-weight: 800;
+        }
+        .cm-title { font-weight: 700; font-size: 0.95rem; }
+        .cm-sub { font-size: 0.72rem; opacity: 0.7; }
+        #closeModal {
+            margin-left: auto; background: rgba(255,255,255,0.12); border: none;
+            color: white; width: 32px; height: 32px; border-radius: 50%;
+            cursor: pointer; font-size: 1.1rem; transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #closeModal:hover { background: rgba(255,255,255,0.25); }
+
+        #chatMessages {
+            flex: 1; overflow-y: auto; padding: 1.5rem;
+            display: flex; flex-direction: column; gap: 1rem;
+            scroll-behavior: smooth;
+        }
+        #chatMessages::-webkit-scrollbar { width: 5px; }
+        #chatMessages::-webkit-scrollbar-thumb { background: var(--mist); border-radius: 4px; }
+
+        .msg-user {
+            align-self: flex-end; max-width: 70%;
+            background: linear-gradient(135deg, var(--heat-deep), var(--charcoal));
+            color: white; padding: 0.85rem 1.1rem; border-radius: 16px 16px 4px 16px;
+            font-size: 0.95rem; line-height: 1.6; word-break: break-word;
+        }
+        .msg-assistant {
+            align-self: flex-start; max-width: 100%;
+            background: white; color: var(--charcoal);
+            border: 1px solid var(--mist);
+            padding: 1rem 1.25rem; border-radius: 4px 16px 16px 16px;
+            font-size: 0.9rem; line-height: 1.75; word-break: break-word;
+        }
+        .msg-assistant code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace; }
+        .msg-assistant strong { color: var(--charcoal); }
+        .msg-status {
+            align-self: flex-start; color: var(--heat-red);
+            font-size: 0.82rem; font-style: italic; padding: 0.25rem 0;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .msg-chart {
+            width: 100%; background: white; border-radius: 12px;
+            border: 1px solid var(--mist); overflow: hidden;
+            box-shadow: 0 2px 12px rgba(29,53,87,0.06); margin-top: 0.5rem;
+        }
+        .msg-stats {
+            width: 100%; background: white; border-radius: 12px;
+            border: 1px solid var(--mist); padding: 1rem; margin-top: 0.5rem;
+            font-size: 0.82rem;
+        }
+        .st-title { font-weight: 700; color: var(--charcoal); margin-bottom: 0.25rem; }
+        .st-meta { color: var(--slate); font-family: 'JetBrains Mono', monospace; font-size: 0.73rem; margin-bottom: 0.6rem; }
+        .st-table { width: 100%; border-collapse: collapse; }
+        .st-table th { background: var(--sand); padding: 0.4rem 0.6rem; text-align: left; font-weight: 600; font-size: 0.8rem; }
+        .st-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--mist); font-family: 'JetBrains Mono', monospace; font-size: 0.79rem; }
+        .st-stars { color: var(--heat-red); font-weight: 700; }
+        .msg-pills {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.5rem 0 0;
+        }
+        .msg-pill {
+            background: var(--sand); border: 1px solid rgba(157,2,8,0.2);
+            color: var(--heat-deep); border-radius: 20px;
+            padding: 0.35rem 0.85rem; font-size: 0.8rem; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+        }
+        .msg-pill:hover { background: var(--heat-deep); color: white; }
+
+        /* Input — always pinned at bottom */
+        #chatInputArea {
+            padding: 1rem 1.5rem; border-top: 1px solid var(--mist);
+            flex-shrink: 0; background: var(--ivory);
+            display: flex; align-items: flex-end; gap: 0.75rem;
+        }
+        #chatInput {
+            flex: 1; resize: none; min-height: 46px; max-height: 130px;
+            padding: 0.75rem 1rem; border: 1.5px solid var(--mist);
+            border-radius: 12px; font-size: 0.95rem; font-family: inherit;
+            line-height: 1.5; overflow-y: auto; transition: border-color 0.2s;
+            background: white;
+        }
+        #chatInput:focus { outline: none; border-color: var(--heat-red); box-shadow: 0 0 0 3px rgba(230,57,70,0.1); }
+        #chatSend {
+            height: 46px; padding: 0 1.4rem; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--heat-deep), var(--heat-red));
+            color: white; border: none; border-radius: 10px;
+            font-weight: 700; cursor: pointer; font-size: 0.95rem;
+            font-family: inherit; transition: opacity 0.2s;
+        }
+        #chatSend:disabled { opacity: 0.45; cursor: not-allowed; }
+        #chatSend:hover:not(:disabled) { opacity: 0.88; }
+
+        @media (max-width: 900px) {
+            header { padding: 3rem 2rem; }
+            header h1 { font-size: 2.4rem; }
+            main { padding: 2rem; }
+            .category-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .category-number { font-size: 2.5rem; min-width: auto; }
+            .variables-grid { grid-template-columns: 1fr; }
+            .references-section, footer, .funding-section { padding: 3rem 2rem; }
+            .pipeline-steps { grid-template-columns: 1fr; }
+            .center-highlights { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ── Login Gate ──────────────────────────────────────────────────────── -->
+    <div id="loginGate" class="login-gate">
+        <div class="login-box">
+            <img src="/he2at-logo.png" alt="HE2AT Centre" class="login-logo-img">
+            <h2>HE<sup style="font-size:0.55em">2</sup>AT Centre</h2>
+            <p class="login-subtitle">Environmental Exposure Catalogue — PALS Lab</p>
+
+            <div class="gate-tabs">
+                <button class="gate-tab active" onclick="switchTab('login')">I have an access code</button>
+                <button class="gate-tab" onclick="switchTab('signup')">Request Access</button>
+            </div>
+
+            <!-- Access code pane -->
+            <div class="gate-pane active" id="paneLogin">
+                <form id="loginForm">
+                    <input type="password" id="accessCode" placeholder="Enter access code" autocomplete="off" required>
+                    <button type="submit">Access Catalogue</button>
+                </form>
+                <p id="loginError" class="login-error">Incorrect access code. Please try again.</p>
+            </div>
+
+            <!-- Request access pane -->
+            <div class="gate-pane" id="paneSignup">
+                <form id="signupForm">
+                    <input type="text" id="reqName" placeholder="Full name" required>
+                    <input type="email" id="reqEmail" placeholder="Email address" required>
+                    <input type="text" id="reqInstitution" placeholder="Institution / affiliation">
+                    <textarea id="reqReason" placeholder="Brief reason for access (1–2 sentences)" required></textarea>
+                    <button type="submit" id="reqSubmitBtn">Send Request</button>
+                </form>
+                <p id="signupError" class="login-error">Could not send request. Please try again.</p>
+                <p class="gate-success" id="signupSuccess">&#10003; Request sent! You'll hear from the PALS Lab team once your access is approved.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container main-content">
+        <header>
+            <img src="/he2at-logo.png" alt="HE2AT Centre" style="height:52px;margin-bottom:1.5rem;display:block;">
+            <div class="header-label">HE<sup>2</sup>AT Center Data Ecosystem</div>
+            <h1>Environmental <span>Exposure</span> Catalogue</h1>
+            <p class="header-subtitle">Comprehensive documentation of climate and environmental exposure variables for understanding heat-health impacts across Sub-Saharan Africa. This catalogue serves as both a technical reference for statisticians and a data inventory for the HE<sup>2</sup>AT Center research projects.</p>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Total Participants</div>
+                    <div class="meta-value">74,483</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Study Sites</div>
+                    <div class="meta-value">9 Countries</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Exposure Categories</div>
+                    <div class="meta-value">9 domains, 45+ variables</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Temporal Coverage</div>
+                    <div class="meta-value">2003-2024</div>
+                </div>
+            </div>
+
+            <div class="header-meta" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(230, 57, 70, 0.15);">
+                <div class="meta-item">
+                    <div class="meta-label">Burkina Faso</div>
+                    <div class="meta-value">2,362</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Ethiopia</div>
+                    <div class="meta-value">2,547</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Ghana</div>
+                    <div class="meta-value">1,997</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Kenya</div>
+                    <div class="meta-value">25,139</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Malawi</div>
+                    <div class="meta-value">14,037</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">South Africa</div>
+                    <div class="meta-value">11,534</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Tanzania</div>
+                    <div class="meta-value">1,856</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">The Gambia</div>
+                    <div class="meta-value">2,987</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Zambia</div>
+                    <div class="meta-value">12,024</div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Center Overview -->
+            <div class="center-overview">
+                <h2>The Heat and Health African Transdisciplinary Center</h2>
+                <p>The world's climate is changing rapidly, with global temperatures having risen more than 1°C since the industrial revolution. Heat waves and rising temperatures have major, though underappreciated, health implications, particularly for vulnerable populations in low-income settings.</p>
+                <p>The HE<sup>2</sup>AT Center is developing innovative data science solutions to mitigate the health impacts of climate change in Africa. We are systematically building a data ecosystem containing biomedical data integrated with weather, air quality, and other environmental data to understand the relationships between heat exposure and health outcomes.</p>
+                <div class="center-highlights">
+                    <div class="highlight-card">
+                        <h4>Individual Participant Data</h4>
+                        <p>Reusing data from cohorts and trials among pregnant women and neonates conducted across Sub-Saharan Africa since 2000, integrated into a harmonized platform.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>Climate Integration</h4>
+                        <p>Environmental exposures linked to participant records through geolocation and temporal matching, enabling analysis of heat-health relationships.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h4>Health Outcomes</h4>
+                        <p>Focus on maternal and child health including preterm birth, birth weight, pre-eclampsia, and heat-related morbidity in vulnerable populations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Pipeline -->
+            <div class="data-pipeline">
+                <h3>Exposure Assignment Methodology</h3>
+                <p class="pipeline-intro">Environmental exposures are assigned to study participants through systematic linkage of climate data to individual records. Each participant receives daily exposure values for their entire observation period, enabling analysis of exposure-outcome relationships at multiple temporal scales.</p>
+                <div class="pipeline-steps">
+                    <div class="pipeline-step step-1">
+                        <div class="pipeline-step-number">01</div>
+                        <h4>Patient Exposure Days</h4>
+                        <p>Generate individual-level exposure records containing Patient ID, location coordinates, and all exposure dates from pre-conception through post-delivery periods (90 days pre-conception + gestational period + 28 days post-delivery).</p>
+                    </div>
+                    <div class="pipeline-step step-2">
+                        <div class="pipeline-step-number">02</div>
+                        <h4>Climate Data Extraction</h4>
+                        <p>Extract environmental variables from multiple data sources (reanalysis products, satellite imagery, geospatial databases) for each unique location-date combination in the study.</p>
+                    </div>
+                    <div class="pipeline-step step-3">
+                        <div class="pipeline-step-number">03</div>
+                        <h4>Data Integration</h4>
+                        <p>Merge climate-enriched location data with patient records, producing complete exposure profiles for epidemiological analysis across trimester-specific and cumulative windows.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. TEMPERATURE -->
+            <div class="category-section cat-temp">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">01</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127777;</div>
+                        <h2 class="category-title">Temperature Exposure</h2>
+                        <div class="category-count">3 indicators | Primary Research Focus</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Mean Temperature</div>
+                        <div class="variable-unit">Near-Surface Air Temperature at 2m (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">28.6 [28.3, 31.1]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">18.9 [18.8, 20.8]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">27.7 [26.5, 28.1]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">20.4 [20.2, 26.1]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">23.1 [21.4, 25.5]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">15.9 [15.6, 20.7]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">25.8 [25.7, 26.0]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">29.5 [27.8, 29.9]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">21.9 [21.5, 23.1]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4 Global Reanalysis<br>Variable: tas (Near-surface air temperature)<br>Temporal resolution: 3-hourly<br>Original units: Kelvin (K), converted to Celsius</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>Daily mean temperature is calculated by averaging all 3-hourly observations at the nearest grid point to each participant's location. Values are converted from Kelvin to Celsius and extracted for each day in the participant's exposure window.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Ambient temperature is a critical determinant of heat-related morbidity. Elevated mean temperatures during pregnancy have been associated with increased risk of preterm birth, low birth weight, and stillbirth.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Maximum Temperature</div>
+                        <div class="variable-unit">Daily Maximum Air Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">34.7 [34.5, 37.3]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">24.3 [24.0, 26.4]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">31.1 [30.9, 32.3]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.1 [24.6, 29.5]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">27.9 [26.8, 30.4]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">20.1 [17.3, 27.8]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">27.7 [27.6, 27.8]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">36.0 [34.4, 36.5]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">27.5 [27.0, 28.5]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4 Global Reanalysis<br>Derived from 3-hourly tas values</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Peak daily temperatures capture acute heat stress events. Maximum temperatures exceeding physiological thresholds trigger thermoregulatory responses that can affect placental blood flow and fetal development.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Minimum Temperature</div>
+                        <div class="variable-unit">Daily Minimum Air Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">23.3 [23.1, 25.9]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">14.5 [14.2, 15.8]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">25.2 [23.3, 25.6]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">16.6 [16.4, 23.3]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">19.0 [16.8, 21.3]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">13.9 [12.2, 18.0]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">24.2 [24.1, 24.4]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">24.2 [22.9, 24.7]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">17.1 [16.8, 20.4]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Persistently elevated minimum temperatures ("warm nights") indicate conditions where cooling relief is limited, potentially compounding cumulative heat stress over multiple days.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. AIR QUALITY -->
+            <div class="category-section cat-air">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">02</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127811;</div>
+                        <h2 class="category-title">Air Quality &amp; Atmospheric Conditions</h2>
+                        <div class="category-count">8 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">PM2.5 (Fine Particulate Matter)</div>
+                        <div class="variable-unit">Particulate Matter &lt;2.5&mu;m (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">44.6 [36.3, 59.3]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">57.7 [47.6, 59.4]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">30.3 [27.3, 86.4]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">69.7 [39.6, 77.0]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">22.4 [18.9, 45.2]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">18.8 [9.88, 51.3]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">16.1 [15.9, 16.8]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">49.9 [43.8, 60.9]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">25.7 [24.3, 29.9]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4 Global Reanalysis<br>Variable: pm2p5<br>Original units: kg/m³, converted to &mu;g/m³ (×10⁹)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Fine particulate matter can penetrate deep into the lungs and cross the placental barrier, affecting fetal development. Exposure during pregnancy is associated with preterm birth, reduced birth weight, and gestational hypertension.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Nitrogen Dioxide (NO2)</div>
+                        <div class="variable-unit">Atmospheric Surface Concentration (ppb)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">3.18 [3.10, 3.64]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">7.65 [5.89, 8.05]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">1.67 [1.54, 5.73]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">11.8 [6.73, 12.5]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">2.84 [2.58, 5.06]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">5.71 [4.67, 20.5]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">0.924 [0.901, 0.977]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">2.08 [1.99, 3.21]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">3.80 [3.66, 4.35]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4 Global Reanalysis<br>Variable: no2as<br>Original units: kg/kg, converted to ppb</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>NO2 is a marker of traffic-related air pollution. Short-term exposure has been associated with increased risk of spontaneous abortion and adverse birth outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Total Aerosol Optical Depth</div>
+                        <div class="variable-unit">AOD at 550nm (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">0.317 [0.292, 0.427]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">0.249 [0.239, 0.309]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">0.461 [0.441, 0.705]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.248 [0.187, 0.357]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.153 [0.137, 0.186]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">0.0831 [0.0774, 0.201]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">0.176 [0.173, 0.187]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.376 [0.335, 0.436]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">0.165 [0.159, 0.211]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4<br>Variable: aod550</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>AOD is an integrated measure of atmospheric aerosol loading. Elevated AOD indicates poor air quality and serves as a proxy for particulate matter exposure.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Black Carbon Aerosol Optical Depth</div>
+                        <div class="variable-unit">BC AOD at 550nm (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">0.0102 [0.00881, 0.0135]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">0.0102 [0.00992, 0.0115]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">0.0243 [0.0227, 0.0433]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0097 [0.00727, 0.0162]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.0150 [0.0135, 0.0212]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">0.00507 [0.00431, 0.0108]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">0.0103 [0.00956, 0.0114]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.0100 [0.00907, 0.0143]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">0.0180 [0.0170, 0.0261]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4<br>Variable: od550bc</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Black carbon results from incomplete combustion. Sources in African settings include vehicle emissions, cooking fires, and agricultural burning. Associated with cardiovascular and respiratory effects.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Dust Aerosol Optical Depth (Near-source)</div>
+                        <div class="variable-unit">Dust AOD at 550nm — non-absorbing (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">0.173 [0.158, 0.259]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">0.0263 [0.0246, 0.0395]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">0.0882 [0.0795, 0.168]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.00695 [0.00542, 0.0166]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.00117 [0.00101, 0.00195]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">0.00402 [0.00335, 0.0164]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">0.00417 [0.00398, 0.00634]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.216 [0.180, 0.244]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">0.00139 [0.00126, 0.00188]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4<br>Variable: duaod550_nc (Dust Aerosol Optical Depth at 550nm, non-absorbing)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Dust aerosols are major contributors to particulate matter in West and East African settings. Elevated dust loading is linked to respiratory and cardiovascular effects, particularly in the Sahel region.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Dust Extinction Aerosol Optical Depth</div>
+                        <div class="variable-unit">Total Dust Extinction AOD (dimensionless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">0.285 [0.257, 0.460]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">0.0492 [0.0457, 0.0664]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">0.234 [0.199, 0.443]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.0192 [0.0162, 0.0336]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.00560 [0.00526, 0.00841]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">0.00729 [0.00693, 0.00881]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">0.0162 [0.0154, 0.0215]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.314 [0.248, 0.341]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">0.00577 [0.00546, 0.00855]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4<br>Variable: duexttau (Dust Aerosol Optical Depth — total extinction)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Total dust extinction AOD integrates the full dust aerosol column. Important for quantifying dust burden in Sahelian countries (Burkina Faso, The Gambia) where values are substantially higher than southern African sites.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Dust Surface Mass Density (PM2.5)</div>
+                        <div class="variable-unit">Dust Mass Concentration at Surface (&mu;g/m&sup3;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">46.2 [38.7, 68.8]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">7.37 [6.67, 10.5]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">25.2 [21.6, 60.4]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">2.95 [2.34, 5.94]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.496 [0.385, 0.942]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">0.661 [0.594, 1.37]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">1.37 [1.14, 1.87]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">45.9 [37.1, 60.0]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">0.657 [0.622, 0.945]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4<br>Variable: dusmass25 (Dust PM2.5 surface mass density)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Surface dust mass in the fine particle fraction directly contributes to respiratory PM2.5 exposure. West African sites experience values comparable to total PM2.5, indicating dust as the dominant aerosol source.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Dust Column Mass Density</div>
+                        <div class="variable-unit">Vertically Integrated Dust Mass (&mu;g/m&sup2;)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">432,000 [397,000, 721,000]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">73,700 [68,300, 99,900]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">337,000 [284,000, 608,000]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">27,000 [22,800, 48,300]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">7,020 [6,570, 10,500]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">10,100 [9,610, 12,900]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">21,600 [20,500, 29,000]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">484,000 [384,000, 526,000]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">7,200 [6,810, 10,900]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4<br>Variable: ducmass (Dust Aerosol Column Mass Density)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Column-integrated dust mass provides an indication of total atmospheric dust loading. Useful for understanding regional dust transport patterns affecting Sahelian and West African populations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. THERMAL COMFORT INDICES -->
+            <div class="category-section cat-temp">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">03</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127777;</div>
+                        <h2 class="category-title">Thermal Comfort Indices</h2>
+                        <div class="category-count">10 indicators | Heat Stress Metrics</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Universal Thermal Climate Index</div>
+                        <div class="variable-unit">UTCI (°C)</div>
+                        <div class="stats-display">
+                            <div style="font-weight:600;font-size:0.78rem;color:var(--slate);margin-bottom:0.3rem;letter-spacing:0.03em;">UTCI Min — Median [IQR]</div>
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">18.2 [17.8, 23.0]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">10.4 [9.74, 12.8]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">23.9 [22.8, 24.6]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">14.6 [13.6, 21.1]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">15.6 [11.4, 19.1]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">5.39 [4.77, 11.1]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">21.8 [21.6, 22.2]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">19.7 [19.2, 20.3]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">11.2 [10.6, 17.4]</span></div>
+                            <div style="font-weight:600;font-size:0.78rem;color:var(--slate);margin:0.5rem 0 0.3rem;letter-spacing:0.03em;">UTCI Mean — Median [IQR]</div>
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">27.9 [27.6, 30.5]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">18.7 [18.4, 20.7]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">29.1 [28.5, 29.7]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">22.0 [21.2, 26.2]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">23.0 [19.8, 26.5]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">14.2 [13.6, 18.9]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">26.8 [26.6, 27.2]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">28.7 [27.5, 29.2]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">19.7 [19.4, 24.0]</span></div>
+                            <div style="font-weight:600;font-size:0.78rem;color:var(--slate);margin:0.5rem 0 0.3rem;letter-spacing:0.03em;">UTCI Max — Median [IQR]</div>
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">39.7 [39.4, 42.5]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">29.0 [28.3, 30.3]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">37.8 [37.5, 39.0]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">31.1 [29.9, 33.9]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">31.4 [29.9, 35.1]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">24.4 [23.7, 30.7]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">33.9 [33.7, 34.3]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">40.2 [38.5, 41.0]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">30.4 [30.1, 31.3]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>UTCI accounts for air temperature, humidity, wind speed, and radiation. Values above 32°C indicate strong heat stress. Broadly used in climate-health research for its physiological grounding.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Wet Bulb Globe Temperature</div>
+                        <div class="variable-unit">WBGT (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">38.3 [38.0, 41.4]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">24.9 [24.0, 27.1]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">33.9 [33.5, 35.5]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">28.2 [27.1, 32.0]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">28.8 [28.0, 32.7]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">23.4 [22.7, 31.2]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">31.1 [30.9, 31.5]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">38.2 [36.9, 39.1]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">28.4 [28.1, 29.2]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>WBGT is the international standard for occupational heat stress assessment. Used to set work-rest cycles for pregnant women and outdoor workers.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Heat Index</div>
+                        <div class="variable-unit">Apparent Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">35.3 [35.0, 36.9]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">23.3 [22.7, 25.1]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">34.5 [33.1, 35.2]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">26.5 [25.6, 31.9]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">26.9 [26.3, 31.6]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">22.2 [21.6, 27.1]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">31.8 [31.4, 32.1]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">35.9 [35.2, 36.4]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">26.6 [26.4, 27.3]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Heat index represents perceived temperature combining air temperature and relative humidity. Values above 32°C indicate caution; above 41°C is dangerous.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Mean Radiant Temperature</div>
+                        <div class="variable-unit">MRT (°C)</div>
+                        <div class="stats-display">
+                            <div style="font-weight:600;font-size:0.78rem;color:var(--slate);margin-bottom:0.3rem;letter-spacing:0.03em;">MRT Min — Median [IQR]</div>
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">15.2 [14.8, 19.3]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">6.11 [5.70, 9.14]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">19.7 [19.4, 20.3]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">11.4 [10.5, 17.9]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">11.5 [8.4, 17.7]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">3.37 [2.82, 8.75]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">18.4 [18.2, 18.6]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">16.7 [15.7, 17.4]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">8.9 [8.6, 15.0]</span></div>
+                            <div style="font-weight:600;font-size:0.78rem;color:var(--slate);margin:0.5rem 0 0.3rem;letter-spacing:0.03em;">MRT Mean — Median [IQR]</div>
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">33.8 [33.5, 36.7]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">23.2 [22.9, 26.1]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">33.7 [33.3, 35.0]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">27.2 [26.5, 32.8]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">28.4 [26.6, 32.1]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">22.4 [21.7, 26.9]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">33.3 [33.0, 33.7]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">34.6 [33.0, 35.3]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">26.9 [26.6, 30.3]</span></div>
+                            <div style="font-weight:600;font-size:0.78rem;color:var(--slate);margin:0.5rem 0 0.3rem;letter-spacing:0.03em;">MRT Max — Median [IQR]</div>
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">59.6 [59.4, 62.7]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">47.9 [47.6, 50.9]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">56.2 [55.9, 58.5]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">49.7 [48.8, 55.1]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">51.4 [50.7, 54.6]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">46.6 [45.9, 54.7]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">54.6 [54.2, 55.1]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">59.9 [57.6, 60.9]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">51.6 [51.3, 52.2]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>MRT represents the uniform temperature of surroundings causing the same radiant heat loss as the actual environment. Critical for understanding outdoor thermal comfort and solar radiation effects.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Wet Bulb Temperature</div>
+                        <div class="variable-unit">Tw (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">21.3 [20.9, 24.9]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">16.2 [15.2, 17.4]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">24.7 [24.2, 25.0]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">19.6 [18.4, 23.1]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">18.6 [18.1, 22.5]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">15.4 [14.8, 18.8]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">23.7 [23.6, 24.0]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">22.1 [21.9, 22.8]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">17.7 [17.5, 20.9]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Values above 32°C are dangerous for prolonged exposure; above 35°C approaches the theoretical human survivability limit. Pregnant women are especially vulnerable due to increased metabolic demands.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Humidex</div>
+                        <div class="variable-unit">Perceived Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">38.4 [38.0, 41.5]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">24.5 [22.9, 27.0]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">40.2 [38.7, 40.8]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">30.4 [28.8, 37.5]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">29.5 [28.9, 36.8]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">23.4 [22.8, 29.1]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">37.7 [37.5, 38.1]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">39.3 [38.9, 39.7]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">28.7 [28.4, 32.5]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Values 30–39°C cause discomfort; 40–45°C cause great discomfort; above 45°C is dangerous. Humidex is widely used in public health heat communications.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Apparent Temperature</div>
+                        <div class="variable-unit">AT (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">34.8 [34.5, 36.9]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">21.6 [20.6, 24.0]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">34.6 [33.9, 35.2]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">26.7 [25.0, 30.6]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">25.6 [25.0, 31.8]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">18.8 [18.1, 23.9]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">30.6 [30.4, 31.0]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">35.1 [34.6, 35.5]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">24.7 [24.4, 27.9]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Combines effects of air temperature, humidity, and wind speed on thermal comfort. Represents the temperature perceived by an average person under given conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Net Effective Temperature</div>
+                        <div class="variable-unit">NET (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">27.5 [27.3, 29.1]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">17.9 [17.1, 19.6]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">26.7 [26.4, 27.1]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">21.7 [20.4, 24.3]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">20.7 [20.2, 25.0]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">15.1 [14.4, 20.2]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">24.0 [23.8, 24.3]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">27.9 [27.3, 28.3]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">20.0 [19.7, 22.3]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>NET accounts for the combined effects of temperature, humidity, and air movement on thermal sensation. Used in bioclimatic assessments.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Wind Chill Index</div>
+                        <div class="variable-unit">Perceived Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">38.1 [37.7, 41.3]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">23.4 [22.4, 26.0]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">34.0 [33.6, 35.2]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">27.7 [26.4, 32.5]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">28.3 [27.2, 32.8]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">22.1 [21.2, 29.6]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">31.5 [31.2, 31.9]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">38.5 [37.5, 39.4]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">27.7 [27.4, 28.7]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Wind chill combines air temperature and wind speed to estimate the cooling effect of wind on exposed skin. In hot climates, it serves as an indicator of how much ventilation mitigates heat exposure — values close to air temperature indicate still, hazardous conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Simplified WBGT</div>
+                        <div class="variable-unit">Simple Wet Bulb Globe Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">30.1 [29.8, 32.4]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">22.1 [21.1, 23.5]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">31.8 [31.0, 32.2]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">25.7 [24.7, 30.0]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">25.1 [24.7, 29.5]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">21.4 [21.0, 24.8]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">30.3 [30.2, 30.6]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">30.7 [30.5, 30.9]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">24.5 [24.3, 27.0]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>The simplified WBGT (0.567×Tdb + 0.393×e + 3.94) uses dry-bulb temperature and vapour pressure, making it computable from standard meteorological data without solar radiation inputs. It provides a rapid screen for occupational heat stress and is widely used in epidemiological analyses.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. METEOROLOGICAL -->
+            <div class="category-section cat-air">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">04</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127788;</div>
+                        <h2 class="category-title">Meteorological Conditions</h2>
+                        <div class="category-count">3 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Wind Speed</div>
+                        <div class="variable-unit">Surface Wind (m/s)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">2.54 [2.49, 3.19]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">1.54 [1.24, 2.37]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">1.63 [1.57, 2.25]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">2.39 [2.00, 4.49]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">2.66 [2.52, 3.04]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">4.70 [4.54, 5.45]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">4.25 [4.21, 4.37]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">2.88 [2.68, 3.07]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">3.21 [3.13, 3.52]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Wind speed affects thermal comfort by enhancing evaporative cooling. Important modifier in heat stress calculations across all study sites.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Dew Point Temperature</div>
+                        <div class="variable-unit">Td (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">11.3 [10.6, 21.4]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">11.5 [10.6, 14.0]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">21.5 [21.2, 22.2]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">15.7 [13.8, 19.5]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">13.9 [12.3, 18.7]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">11.4 [5.90, 15.1]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">20.7 [20.5, 21.2]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">13.7 [13.0, 15.6]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">11.9 [11.4, 17.6]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>High dew points (&gt;20°C) impair the body's ability to cool through sweating. Dew point is often a better predictor of heat-related illness than relative humidity alone.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Relative Humidity</div>
+                        <div class="variable-unit">Near-Surface Relative Humidity (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">41.7 [40.5, 69.8]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">64.4 [60.9, 80.9]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">69.9 [69.1, 80.3]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">73.4 [66.0, 83.1]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">59.3 [56.3, 74.1]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">75.4 [50.2, 79.7]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">73.9 [72.9, 75.9]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">45.0 [43.0, 52.1]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">56.2 [54.6, 71.5]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">ECMWF CAMS EAC4 Global Reanalysis<br>Variable: r (Near-surface relative humidity)<br>Derived from specific humidity and temperature</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>High relative humidity impairs the body's ability to cool through sweating. Combined with high temperature, humid conditions create dangerous heat stress situations for pregnant women and outdoor workers. Burkina Faso and The Gambia show wide IQRs reflecting strong seasonal dry–wet cycles.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. PRECIPITATION & VEGETATION -->
+            <div class="category-section cat-soil">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">05</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127807;</div>
+                        <h2 class="category-title">Precipitation &amp; Vegetation</h2>
+                        <div class="category-count">2 indicators</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Precipitation</div>
+                        <div class="variable-unit">Daily Rainfall (mm)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">1.81 [1.32, 3.92]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">4.10 [3.78, 5.76]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">3.60 [3.29, 5.63]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">4.97 [3.16, 9.02]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">2.32 [1.90, 3.80]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">1.35 [1.06, 1.99]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">2.89 [2.63, 3.47]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">1.81 [1.45, 2.45]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">2.07 [1.77, 3.81]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Seasonal precipitation affects food availability, vector-borne disease transmission, and healthcare access. Rainfall anomalies have been associated with adverse birth outcomes across Sub-Saharan Africa.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">NDVI (Vegetation Index)</div>
+                        <div class="variable-unit">Normalized Difference Vegetation Index (-1 to 1)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">0.233 [0.226, 0.373]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">0.302 [0.268, 0.390]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">0.272 [0.254, 0.419]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.458 [0.217, 0.555]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.314 [0.277, 0.412]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">0.210 [0.192, 0.300]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">0.184 [0.160, 0.267]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.260 [0.248, 0.310]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">0.203 [0.164, 0.316]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Residential greenness is associated with improved pregnancy outcomes. NDVI serves as a proxy for green space exposure which can mitigate urban heat island effects and reduce air pollution.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. GEOGRAPHIC -->
+            <div class="category-section cat-soil">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">06</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127793;</div>
+                        <h2 class="category-title">Geographic &amp; Soil</h2>
+                        <div class="category-count">6 indicators (static)</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Elevation</div>
+                        <div class="variable-unit">Altitude Above Sea Level (meters)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">294 [294, 341]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">2,270 [2,180, 3,190]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">118 [118, 320]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">1,290 [1,230, 1,720]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">1,090 [482, 1,320]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">45.2 [27.6, 1,460]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">38.6 [28.3, 120]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">22.6 [22.6, 31.7]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">1,210 [1,210, 1,270]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">MERIT DEM v1.0.3<br>Google Earth Engine: MERIT/DEM/v1_0_3<br>Resolution: ~90m</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Elevation influences atmospheric pressure, temperature patterns, and air quality. High-altitude environments are associated with adverse reproductive outcomes including low birth weight due to reduced oxygen availability.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Soil Nitrogen (N)</div>
+                        <div class="variable-unit">Total Nitrogen (mg/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">36 [36, 47]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">108 [102, 143]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">92 [92, 101]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">86 [75, 93]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">67 [61, 73]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">78 [74, 92]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">69 [65, 70]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">65 [55, 65]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">60 [60, 64]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">iSDAsoil Africa v1<br>ISDASOIL/Africa/v1/nitrogen_total<br>Band: mean_0_20 (0–20cm depth)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Soil nitrogen affects food crop protein content and agricultural productivity. Low nitrogen contributes to maternal malnutrition and adverse pregnancy outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Soil Phosphorus (P)</div>
+                        <div class="variable-unit">Extractable Phosphorus (mg/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">21 [21, 22]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">23 [23, 29]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">23 [20, 23]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">27 [24, 30]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">27 [24, 29]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">26 [26, 28]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">24 [24, 25]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">22 [22, 24]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">24 [23, 24]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">iSDAsoil Africa v1<br>ISDASOIL/Africa/v1/phosphorus_extractable</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Phosphorus is essential for root development and crop yield. Deficient soils reduce agricultural productivity and affect household food security during pregnancy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Soil Organic Carbon</div>
+                        <div class="variable-unit">Organic Carbon Content (g/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">43 [42, 43]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">55 [54, 61]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">46 [45, 46]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">53 [49, 59]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">51 [48, 52]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">47 [46, 56]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">46 [46, 50]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">40 [40, 42]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">47 [46, 47]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">iSDAsoil Africa v1<br>ISDASOIL/Africa/v1/carbon_organic<br>Band: mean_0_20 (0–20cm depth)</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Soil organic carbon is a key indicator of soil fertility and water retention capacity. It affects food crop quality and micronutrient availability, which in turn influence maternal nutritional status during pregnancy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Soil Potassium (K)</div>
+                        <div class="variable-unit">Extractable Potassium (mg/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">55.0 [55.0, 57.0]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">46.0</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">53.0 [49.0, 56.0]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">51.0 [50.0, 51.0]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">47.0 [46.0, 50.0]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">47.0 [46.0, 47.0]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Potassium regulates water uptake and disease resistance in crops, affecting agricultural productivity and food security.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Soil Calcium (Ca)</div>
+                        <div class="variable-unit">Extractable Calcium (mg/kg)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">73.0 [72.0, 73.0]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">69.0</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">72.0 [69.0, 75.0]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">66.0 [66.0, 70.0]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">68.0 [64.0, 69.0]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">65.0 [65.0, 66.0]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Calcium is critical during pregnancy for fetal bone development and blood clotting. Maternal calcium deficiency has been associated with pre-eclampsia and low birth weight.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. SOCIOECONOMIC -->
+            <div class="category-section cat-urban">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">07</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#128200;</div>
+                        <h2 class="category-title">Socioeconomic Context</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">Relative Wealth Index</div>
+                        <div class="variable-unit">RWI (standardised, unitless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">-0.571 [-0.571, 0.013]</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">0.273 [-0.090, 1.10]</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">1.25 [1.24, 1.25]</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">0.729 [0.564, 1.45]</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">0.349 [-0.250, 1.52]</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">1.17 [0.937, 1.25]</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">1.32 [1.22, 1.82]</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">0.504 [-0.015, 0.504]</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">1.83 [1.31, 1.91]</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Meta / Facebook Relative Wealth Index<br>Chi et al. (2022) Nature Communications<br>Resolution: ~2.4 km tiles</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Methodology</h4>
+                                <p>The RWI is derived from satellite imagery and mobile connectivity data using machine learning, calibrated against survey-based wealth indices. Positive values indicate relative wealth; negative values indicate relative poverty compared to the regional mean.</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Socioeconomic status modifies heat vulnerability — lower wealth is associated with reduced access to cooling, poor housing, and outdoor labour. RWI enables adjustment for wealth as a confounder in heat-health analyses and helps identify high-risk populations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. URBANIZATION -->
+            <div class="category-section cat-urban">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">08</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127961;</div>
+                        <h2 class="category-title">Urbanization &amp; Built Environment</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">GHSL Urban Degree</div>
+                        <div class="variable-unit">Settlement Model Grid (SMOD code, unitless)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">Very Low Density Rural (88%)</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">Urban Centre (51%)</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">Urban Centre (78%)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">Urban Centre (35%)</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">Urban Centre (32%)</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">Urban Centre (73%)</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">Urban Centre (100%)</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">Dense Urban Cluster (61%)</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">Urban Centre (93%)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">Global Human Settlement Layer (GHSL)<br>JRC/GHSL/P2023A/GHS_SMOD<br>Available years: 2000, 2005, 2010, 2015, 2020, 2025</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>SMOD Code Reference</h4>
+                                <div class="formula-display">30 = Urban Centre
+23 = Dense Urban Cluster
+21 = Semi-Dense Urban Cluster
+12 = Low Density Rural
+11 = Very Low Density Rural</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Code Distribution by Site</h4>
+                                <div class="formula-display">Burkina Faso: SMOD code 11 (88%) — Very Low Density Rural
+Ethiopia: SMOD code 30 (51%) — Urban Centre dominant
+Ghana: SMOD code 30 (78%) — Urban Centre
+Kenya: SMOD code 30 (35%) — Urban Centre
+Malawi: SMOD code 30 (32%) — Urban Centre
+South Africa: SMOD code 30 (73%) — Urban Centre
+Tanzania: SMOD code 30 (100%) — Urban Centre
+The Gambia: SMOD code 23 (61%) — Dense Urban Cluster
+Zambia: SMOD code 30 (93%) — Urban Centre</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Urbanization level influences exposure to air pollution, urban heat islands, and noise — all affecting pregnancy outcomes. GHSL provides consistent classification across African settings.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. CLIMATE CLASSIFICATION -->
+            <div class="category-section cat-climate">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">09</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#127758;</div>
+                        <h2 class="category-title">Climate Classification</h2>
+                        <div class="category-count">1 indicator</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-complete">Assigned</span>
+                        <div class="variable-name">IPCC Climate Zone</div>
+                        <div class="variable-unit">Climate Classification (categorical)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Burkina Faso</span><span class="stats-value">Cold — code 4 (100%)</span></div>
+                            <div><span class="stats-label">Ethiopia</span><span class="stats-value">Tropical — code 1 (84%)</span></div>
+                            <div><span class="stats-label">Ghana</span><span class="stats-value">Temperate — code 3 (100%)</span></div>
+                            <div><span class="stats-label">Kenya</span><span class="stats-value">Tropical — code 1 (89%)</span></div>
+                            <div><span class="stats-label">Malawi</span><span class="stats-value">Temperate — code 3 (39%)</span></div>
+                            <div><span class="stats-label">South Africa</span><span class="stats-value">Tropical — code 6 (91%)</span></div>
+                            <div><span class="stats-label">Tanzania</span><span class="stats-value">Temperate — code 3 (99%)</span></div>
+                            <div><span class="stats-label">The Gambia</span><span class="stats-value">Temperate — code 3 (61%)</span></div>
+                            <div><span class="stats-label">Zambia</span><span class="stats-value">Tropical — code 1 (93%)</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Dataset</h4>
+                                <div class="dataset-info">IPCC Climate Zones Raster<br>Based on temperature and precipitation patterns<br>Code: 1=Tropical, 3=Temperate, 4=Cold, 5=Polar, 6=Boreal/other</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>IQR of Zone Code by Site</h4>
+                                <div class="formula-display">Burkina Faso: code 4 [4, 4]
+Ethiopia: code 1 [1, 5]
+Ghana: code 3 [3, 3]
+Kenya: code 1 [1, 4]
+Malawi: code 3 [1, 4]
+South Africa: code 6 [6, 6]
+Tanzania: code 3 [3, 3]
+The Gambia: code 3 [3, 4]
+Zambia: code 1 [1, 3]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. PENDING -->
+            <div class="category-section cat-pending">
+                <div class="category-header" onclick="toggleCategory(this)">
+                    <div class="category-number">10</div>
+                    <div class="category-title-wrapper">
+                        <div class="category-icon">&#9203;</div>
+                        <h2 class="category-title">Pending Exposure Variables</h2>
+                        <div class="category-count">3 indicators awaiting assignment</div>
+                    </div>
+                    <div class="toggle-indicator">&#9660;</div>
+                </div>
+                <div class="variables-grid">
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-pending">Awaiting Assignment</span>
+                        <div class="variable-name">Extreme Heat Days</div>
+                        <div class="variable-unit">Days exceeding threshold (%)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Status</span><span class="stats-value">To be calculated</span></div>
+                            <div><span class="stats-label">Priority</span><span class="stats-value">High — Acute heat exposure</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Percentage of exposure days exceeding the local 95th percentile. Studies show trimester-specific effects of extreme heat on preterm birth risk.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-pending">Awaiting Assignment</span>
+                        <div class="variable-name">Land Surface Temperature</div>
+                        <div class="variable-unit">Surface Temperature (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Status</span><span class="stats-value">Data source identified</span></div>
+                            <div><span class="stats-label">Priority</span><span class="stats-value">Medium — Urban heat islands</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Planned Dataset</h4>
+                                <div class="dataset-info">MODIS LST (MOD11A1/MYD11A1)<br>Landsat thermal bands</div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>LST captures the actual thermal environment at ground level and is useful for identifying localized heat exposure in urban settings.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variable-card" onclick="toggleCard(this)">
+                        <span class="status-badge status-pending">Awaiting Assignment</span>
+                        <div class="variable-name">Diurnal Temperature Range</div>
+                        <div class="variable-unit">Daily Temperature Variation (°C)</div>
+                        <div class="stats-display">
+                            <div><span class="stats-label">Status</span><span class="stats-value">To be calculated</span></div>
+                            <div><span class="stats-label">Priority</span><span class="stats-value">Medium — Temperature variability</span></div>
+                        </div>
+                        <button class="expand-btn">View Details</button>
+                        <div class="variable-details">
+                            <div class="detail-section">
+                                <h4>Health Relevance</h4>
+                                <p>Large day-night temperature swings may stress thermoregulatory systems. Preconceptional and prenatal exposure to high diurnal variation is associated with adverse pregnancy outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- References -->
+        <div class="references-section">
+            <h2>Supporting Literature</h2>
+            <div class="reference-item"><span class="reference-number">1.</span> Chersich MF, et al. Associations between high temperatures in pregnancy and risk of preterm birth, low birth weight, and stillbirths: systematic review and meta-analysis. BMJ. 2020;371:m3811.</div>
+            <div class="reference-item"><span class="reference-number">2.</span> Bekkar B, et al. Association of Air Pollution and Heat Exposure With Preterm Birth, Low Birth Weight, and Stillbirth in the US. JAMA Netw Open. 2020;3(6):e208243.</div>
+            <div class="reference-item"><span class="reference-number">3.</span> Zhang Y, et al. Temperature exposure during pregnancy and birth outcomes: An updated systematic review. Environ Pollut. 2017;225:700-712.</div>
+            <div class="reference-item"><span class="reference-number">4.</span> Li F, et al. Effects of PM2.5 exposure on perinatal complications: systematic review and meta-analysis. BMC Pregnancy Childbirth. 2025;25(1):686.</div>
+            <div class="reference-item"><span class="reference-number">5.</span> Gasparrini A, et al. Mortality risk attributable to high and low ambient temperature: a multicountry observational study. Lancet. 2015;386(9991):369-375.</div>
+            <div class="reference-item"><span class="reference-number">6.</span> Grace K, et al. Linking climate change and health outcomes: temperature, precipitation and birth weight in Africa. Glob Environ Change. 2015;35:125-137.</div>
+        </div>
+
+        <!-- Funding -->
+        <div class="funding-section">
+            <h3>Funding Acknowledgement</h3>
+            <p>The research is supported by the Fogarty International Center, the National Institute of Environmental Health Sciences (NIEHS), the Data Science for Health Discovery and Innovation in Africa (DS-I Africa) and the Office of Strategic Coordination (OSC) of the National Institutes of Health under Award Number U54TW012083. The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.</p>
+            <div class="funding-logos">
+                <div class="funding-logo">NIH Fogarty International Center</div>
+                <div class="funding-logo">NIEHS</div>
+                <div class="funding-logo">DS-I Africa</div>
+                <div class="funding-logo">Award: U54TW012083</div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>HE<sup>2</sup>AT Center</h3>
+                    <p>Heat and Health African Transdisciplinary Center — developing innovative data science solutions to mitigate the health impacts of climate change in Africa.</p>
+                    <p style="margin-top:1rem;"><a href="https://www.he2at.com/">he2at.com</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact PIs</h3>
+                    <p><strong>Matthew Chersich</strong> — Contact PI<br><strong>Stanley Luchters</strong> — MPI</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Data Sources</h3>
+                    <p>Climate: ECMWF CAMS, ERA5<br>Urbanization: GHSL (JRC)<br>Soil: iSDAsoil Africa<br>Terrain: MERIT DEM<br>Vegetation: MODIS, Landsat</p>
+                </div>
+                <div class="footer-section">
+                    <h3>PALS Portal</h3>
+                    <p><a href="/">← Back to Place Alert Labs</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- FAB -->
+    <button id="chatFab" onclick="openChat()">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        Ask Shmron
+    </button>
+
+    <!-- Full-screen chat modal -->
+    <div id="chatModal">
+      <div id="chatWindow">
+        <!-- Sidebar: history -->
+        <div id="chatSidebar">
+          <div id="sidebarTop">
+            <h4>Conversations</h4>
+            <button id="newChatBtn" onclick="startNewChat()">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 13H13v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              New conversation
+            </button>
+          </div>
+          <div id="sessionList"></div>
+          <button id="clearAllBtn" onclick="clearAllHistory()">🗑 Clear all history</button>
+        </div>
+
+        <!-- Main chat -->
+        <div id="chatMain">
+          <div id="chatModalHeader">
+            <div class="cm-avatar">H²</div>
+            <div>
+              <div class="cm-title">Shmron</div>
+              <div class="cm-sub">74,483 participants · 9 countries · live data</div>
+            </div>
+            <button id="he2atShareBtn" title="Share conversation" style="background:none;border:1px solid rgba(255,255,255,.4);color:white;border-radius:6px;padding:4px 10px;font-size:.75rem;cursor:pointer;margin-right:6px" onclick="he2atShareConversation()">🔗 Share</button>
+            <button id="closeModal" onclick="closeChat()">✕</button>
+          </div>
+          <div id="chatMessages"></div>
+          <div id="chatInputArea">
+            <textarea id="chatInput" placeholder="Ask about heat exposure, temperature, PM2.5, country comparisons…" rows="1"></textarea>
+            <button id="chatSend">Send ↑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const SESSION_KEY_OLD = 'heat2atAuth'; /* legacy — kept so old sessions still unlock the catalogue view */
+        const TOKEN_KEY = 'he2atSessionToken';
+
+        function switchTab(tab) {
+            document.querySelectorAll('.gate-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.gate-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById('pane' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        const loginGate = document.getElementById('loginGate');
+        const mainContent = document.querySelector('.main-content');
+        const loginForm = document.getElementById('loginForm');
+
+        /* Unlock catalogue view if we have a token or the old legacy flag */
+        if (sessionStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(SESSION_KEY_OLD) === 'true') {
+            loginGate.classList.add('hidden');
+        } else {
+            mainContent.classList.add('blurred');
+        }
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const code = document.getElementById('accessCode').value.trim();
+            const errEl = document.getElementById('loginError');
+            errEl.classList.remove('show');
+            const btn = loginForm.querySelector('button[type=submit]');
+            btn.disabled = true; btn.textContent = 'Checking…';
+            try {
+                const r = await fetch('/precise-api/api/he2at-login', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({code})
+                });
+                const data = await r.json();
+                if (data.ok) {
+                    sessionStorage.setItem(TOKEN_KEY, data.token);
+                    loginGate.classList.add('hidden');
+                    mainContent.classList.remove('blurred');
+                } else {
+                    errEl.classList.add('show');
+                }
+            } catch {
+                errEl.classList.add('show');
+            }
+            btn.disabled = false; btn.textContent = 'Access Catalogue';
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('reqSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sending…';
+            const payload = {
+                catalogue:   'he2at',
+                name:        document.getElementById('reqName').value.trim(),
+                email:       document.getElementById('reqEmail').value.trim(),
+                institution: document.getElementById('reqInstitution').value.trim(),
+                reason:      document.getElementById('reqReason').value.trim(),
+            };
+            try {
+                const res = await fetch('/duckrequest/cat-submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    document.getElementById('signupSuccess').classList.add('show');
+                    document.getElementById('signupForm').style.display = 'none';
+                } else { throw new Error(data.error || 'Unknown error'); }
+            } catch(err) {
+                document.getElementById('signupError').classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'Send Request';
+            }
+        });
+
+        function toggleCategory(header) {
+            header.classList.toggle('active');
+            const grid = header.nextElementSibling;
+            grid.classList.toggle('active');
+        }
+
+        function toggleCard(card) {
+            event.stopPropagation();
+            card.classList.toggle('expanded');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const first = document.querySelector('.category-header');
+                if (first) toggleCategory(first);
+            }, 400);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.style.animationPlayState = 'running';
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.category-section').forEach(s => {
+            s.style.animationPlayState = 'paused';
+            observer.observe(s);
+        });
+
+        /* ── HE2AT AI Chat ─────────────────────────────────────────────────── */
+        const API_BASE        = '/precise-api';
+        const SESSIONS_KEY    = 'he2at_sessions_v1';
+        let   chatHistory     = [];   /* [{role,content,charts:[],tables:[]}] */
+        let   currentSessId   = null;
+        let   chartSeq        = 0;
+        let   sending         = false;
+
+        /* ── Session helpers ──────────────────────────────────────────────── */
+        function getSessions() {
+            try { return JSON.parse(localStorage.getItem(SESSIONS_KEY) || '[]'); }
+            catch { return []; }
+        }
+        function saveSess() {
+            if (!currentSessId || !chatHistory.length) return;
+            const sessions = getSessions();
+            const first = chatHistory.find(m => m.role === 'user')?.content || '';
+            const title  = first.slice(0, 60) + (first.length > 60 ? '…' : '');
+            const sess   = { id: currentSessId, title, date: new Date().toISOString(), history: chatHistory };
+            const idx    = sessions.findIndex(s => s.id === currentSessId);
+            if (idx >= 0) sessions[idx] = sess; else sessions.unshift(sess);
+            localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions.slice(0, 30)));
+            renderSidebar();
+        }
+        function renderSidebar() {
+            const list = document.getElementById('sessionList');
+            const sessions = getSessions();
+            if (!sessions.length) {
+                list.innerHTML = '<div class="sess-empty">Your conversations will appear here.</div>';
+                return;
+            }
+            list.innerHTML = sessions.map(s => `
+                <div class="sess-item ${s.id === currentSessId ? 'active' : ''}" onclick="loadSess('${s.id}')">
+                    <div>${escHtml(s.title)}</div>
+                    <div class="sess-date">${new Date(s.date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</div>
+                </div>`).join('');
+        }
+        function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function loadSess(id) {
+            saveSess();
+            const s = getSessions().find(x => x.id === id);
+            if (!s) return;
+            currentSessId = s.id;
+            chatHistory   = s.history;
+            const msgs = document.getElementById('chatMessages');
+            msgs.innerHTML = '';
+            for (const m of chatHistory) {
+                if (m.role === 'user') { addUserBubble(m.content); }
+                else {
+                    const el = addAssistantBubble(m.content);
+                    (m.charts||[]).forEach(spec => appendChartToEl(el, spec));
+                    (m.tables||[]).forEach(t    => appendTableToEl(el, t));
+                }
+            }
+            msgs.scrollTop = msgs.scrollHeight;
+            renderSidebar();
+        }
+        function startNewChat() {
+            saveSess();
+            currentSessId = Date.now().toString();
+            chatHistory   = [];
+            document.getElementById('chatMessages').innerHTML = '';
+            showWelcome();
+            renderSidebar();
+        }
+        function clearAllHistory() {
+            if (!confirm('Delete all saved conversations?')) return;
+            localStorage.removeItem(SESSIONS_KEY);
+            startNewChat();
+        }
+
+        /* ── DOM refs ──────────────────────────────────────────────────────── */
+        const chatModal  = document.getElementById('chatModal');
+        const chatMsgs   = document.getElementById('chatMessages');
+        const chatInput  = document.getElementById('chatInput');
+        const chatSend   = document.getElementById('chatSend');
+
+        /* ── Modal open / close ─────────────────────────────────────────── */
+        function openChat() {
+            chatModal.classList.add('open');
+            if (!currentSessId) startNewChat();
+            else { renderSidebar(); setTimeout(() => chatInput.focus(), 200); }
+        }
+        function closeChat() { saveSess(); chatModal.classList.remove('open'); }
+        chatModal.addEventListener('click', e => { if (e.target === chatModal) closeChat(); });
+
+        function showWelcome() {
+            addAssistantBubble('Hello! I\'m Shmron, the HE²AT data assistant. Ask me about heat stress, PM2.5, temperature, country comparisons, trends, or any variable in the dataset. Try one of these to start:',
+                ['Compare mean WBGT across all 9 countries',
+                 'Show PM2.5 distribution by urbanisation class',
+                 'Map mean temperature across study locations',
+                 'Monthly precipitation trend in Kenya vs Malawi',
+                 'Correlation between UTCI and PM2.5']);
+        }
+
+        /* ── Message helpers ────────────────────────────────────────────── */
+        function md(txt) {
+            return String(txt || '')
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g,'<em>$1</em>')
+                .replace(/`(.+?)`/g,'<code>$1</code>')
+                .replace(/\n/g,'<br>');
+        }
+        function addUserBubble(text) {
+            const d = document.createElement('div');
+            d.className = 'msg-user'; d.innerHTML = md(text);
+            chatMsgs.appendChild(d); chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            return d;
+        }
+        function addAssistantBubble(text, pills) {
+            const d = document.createElement('div');
+            d.className = 'msg-assistant';
+            const t = document.createElement('div');
+            t.className = 'msg-text'; t.innerHTML = md(text);
+            d.appendChild(t);
+            if (pills && pills.length) {
+                const row = document.createElement('div');
+                row.className = 'msg-pills';
+                pills.forEach(p => {
+                    const btn = document.createElement('button');
+                    btn.className = 'msg-pill'; btn.textContent = p;
+                    btn.onclick = () => { chatInput.value = p; chatInput.focus(); };
+                    row.appendChild(btn);
+                });
+                d.appendChild(row);
+            }
+            chatMsgs.appendChild(d); chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            return d;
+        }
+        function addStatus(text) {
+            removeStatus();
+            const d = document.createElement('div');
+            d.className = 'msg-status'; d.id = 'chatStatus'; d.textContent = text;
+            chatMsgs.appendChild(d); chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        }
+        function removeStatus() { document.getElementById('chatStatus')?.remove(); }
+
+        /* ── Chart rendering (into a parent element) ────────────────────── */
+        function appendChartToEl(parentEl, spec) {
+            const id   = 'hc-' + (++chartSeq);
+            const h    = spec.chart_type === 'map'     ? 440
+                       : spec.chart_type === 'heatmap' ? 400
+                       : spec.chart_type === 'forest'  ? Math.max(300, ((spec.forest_data||[]).length*36)+80)
+                       : spec.chart_type === 'box'     ? 340
+                       : 320;
+            const wrap = document.createElement('div');
+            wrap.className = 'msg-chart';
+            wrap.innerHTML = `<div id="${id}" style="width:100%;height:${h}px;"></div>`;
+            parentEl.appendChild(wrap);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+            _plotChart(id, spec);
+            return wrap;
+        }
+        function appendTableToEl(parentEl, res) {
+            const rows = res.coefficients.filter(c => c.variable !== 'Intercept');
+            const div  = document.createElement('div');
+            div.className = 'msg-stats';
+            div.innerHTML = `
+                <div class="st-title">${escHtml(res.title)}</div>
+                <div class="st-meta">${res.model_type} &nbsp;|&nbsp; N=${res.n_obs.toLocaleString()} &nbsp;|&nbsp; ${res.r_squared!==undefined?'R²='+res.r_squared:'Pseudo-R²='+res.pseudo_r_squared} &nbsp;|&nbsp; AIC=${res.aic}</div>
+                <table class="st-table">
+                  <thead><tr><th>Variable</th><th>Coef</th><th>95% CI</th><th>p</th><th></th></tr></thead>
+                  <tbody>${rows.map(c=>`<tr>
+                    <td>${escHtml(c.variable)}</td>
+                    <td>${c.coef.toFixed(4)}</td>
+                    <td>[${c.ci_lower.toFixed(3)}, ${c.ci_upper.toFixed(3)}]</td>
+                    <td>${c.p_value<0.001?'<0.001':c.p_value.toFixed(3)}</td>
+                    <td class="st-stars">${c.stars||''}</td>
+                  </tr>`).join('')}</tbody>
+                </table>`;
+            parentEl.appendChild(div);
+            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        }
+        /* Chart rendering delegated to shared-charts.js — fix bugs there and they apply everywhere */
+        function _plotChart(id, spec) { window.PALsRenderChart(id, spec); }
+
+        /* ── Send a message ─────────────────────────────────────────────── */
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || sending) return;
+            const token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) { alert('Session expired — please refresh and log in again.'); return; }
+
+            sending = true;
+            chatSend.disabled = true;
+            chatInput.value = '';
+
+            addUserBubble(text);
+            chatHistory.push({ role: 'user', content: text });
+            addStatus('Thinking…');
+
+            const collectedCharts = [];
+            const collectedTables = [];
+            let   assistantText   = '';
+            let   assistantEl     = null;
+
+            try {
+                const resp = await fetch(`${API_BASE}/api/he2at/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Session-Token': token },
+                    body: JSON.stringify({ messages: chatHistory.map(m => ({ role: m.role, content: m.content })) })
+                });
+                if (!resp.ok) { removeStatus(); addAssistantBubble('Server error ' + resp.status + '. Please try again.'); return; }
+
+                const reader  = resp.body.getReader();
+                const decoder = new TextDecoder();
+                let   buf     = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buf += decoder.decode(value, { stream: true });
+                    const lines = buf.split('\n'); buf = lines.pop();
+                    for (const line of lines) {
+                        if (!line.startsWith('data: ')) continue;
+                        let evt; try { evt = JSON.parse(line.slice(6)); } catch { continue; }
+
+                        if (evt.type === 'status') {
+                            const s = document.getElementById('chatStatus');
+                            if (s) s.textContent = evt.text;
+                        } else if (evt.type === 'text') {
+                            removeStatus();
+                            assistantText = evt.text;
+                            if (!assistantEl) assistantEl = addAssistantBubble('');
+                            const tDiv = assistantEl.querySelector('.msg-text');
+                            if (tDiv) tDiv.innerHTML = md(assistantText);
+                            chatMsgs.scrollTop = chatMsgs.scrollHeight;
+                        } else if (evt.type === 'chart') {
+                            removeStatus();
+                            if (!assistantEl) assistantEl = addAssistantBubble('');
+                            appendChartToEl(assistantEl, evt.spec);
+                            collectedCharts.push(evt.spec);
+                        } else if (evt.type === 'stats_table') {
+                            removeStatus();
+                            if (!assistantEl) assistantEl = addAssistantBubble('');
+                            appendTableToEl(assistantEl, evt.result);
+                            collectedTables.push(evt.result);
+                        } else if (evt.type === 'done') {
+                            removeStatus();
+                        } else if (evt.type === 'error') {
+                            removeStatus();
+                            addAssistantBubble('Error: ' + evt.text);
+                        }
+                    }
+                }
+            } catch (e) {
+                removeStatus();
+                addAssistantBubble('Network error. Please check your connection and try again.');
+            }
+
+            chatHistory.push({ role: 'assistant', content: assistantText, charts: collectedCharts, tables: collectedTables });
+            saveSess();
+            sending = false;
+            chatSend.disabled = false;
+            chatInput.focus();
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        });
+        /* auto-grow textarea */
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 130) + 'px';
+        });
+
+        /* ── Share conversation ──────────────────────────────────────────── */
+        window.he2atShareConversation = async function() {
+            const history = chatHistory.filter(m => m.role === 'user' || m.role === 'assistant');
+            if (!history.length) { alert('No conversation to share yet.'); return; }
+            const token = sessionStorage.getItem(TOKEN_KEY);
+            if (!token) { alert('Session expired — please log in again.'); return; }
+            const btn = document.getElementById('he2atShareBtn');
+            const orig = btn.textContent;
+            btn.textContent = 'Sharing…'; btn.disabled = true;
+            try {
+                const title = history.find(m=>m.role==='user')?.content?.slice(0,60) || 'HE²AT conversation';
+                const r = await fetch(`${API_BASE}/api/share`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Session-Token': token },
+                    body: JSON.stringify({ catalogue: 'he2at', title, messages: history })
+                });
+                const data = await r.json();
+                if (data.ok) {
+                    const url = window.location.origin + '/share/?id=' + data.share_id;
+                    document.getElementById('he2atShareLink').value = url;
+                    document.getElementById('he2atShareModal').style.display = 'flex';
+                } else { alert('Could not create share link: ' + (data.error || 'unknown error')); }
+            } catch(e) { alert('Network error creating share link.'); }
+            btn.textContent = orig; btn.disabled = false;
+        };
+
+        /* ── Init ───────────────────────────────────────────────────────── */
+        (function init() {
+            const sessions = getSessions();
+            if (sessions.length) {
+                const last = sessions[0];
+                currentSessId = last.id;
+                chatHistory   = last.history;
+                /* Render messages from last session */
+                for (const m of chatHistory) {
+                    if (m.role === 'user') addUserBubble(m.content);
+                    else {
+                        const el = addAssistantBubble(m.content);
+                        (m.charts||[]).forEach(s => appendChartToEl(el, s));
+                        (m.tables||[]).forEach(t => appendTableToEl(el, t));
+                    }
+                }
+            } else {
+                currentSessId = Date.now().toString();
+                showWelcome();
+            }
+            renderSidebar();
+        })();
+    </script>
+
+    <!-- HE2AT share modal -->
+    <div id="he2atShareModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20000;align-items:center;justify-content:center">
+      <div style="background:white;border-radius:12px;padding:28px 32px;max-width:480px;width:90%;box-shadow:0 25px 60px rgba(0,0,0,.3)">
+        <h3 style="margin-bottom:8px;color:#9d0208">Share Conversation</h3>
+        <p style="font-size:13px;color:#6b7280;margin-bottom:16px">Anyone with this link can read the conversation (read-only, no login required).</p>
+        <div style="display:flex;gap:8px">
+          <input id="he2atShareLink" type="text" readonly style="flex:1;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;color:#111827" onclick="this.select()">
+          <button onclick="navigator.clipboard.writeText(document.getElementById('he2atShareLink').value).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)})" style="padding:8px 16px;background:#9d0208;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px">Copy</button>
+        </div>
+        <div style="text-align:right;margin-top:16px">
+          <button onclick="document.getElementById('he2atShareModal').style.display='none'" style="padding:8px 20px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer">Close</button>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
