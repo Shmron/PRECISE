@@ -1,0 +1,13 @@
+*.duckdb
+*.duckdb.wal
+.env
+*.log
+*.parquet
+*.csv
+*.zip
+*.duckdb.bak
+__pycache__/
+access_control.db
+duckdb_requests.jsonl
+nohup.out
+.duck_admin_pass

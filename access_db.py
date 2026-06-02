@@ -253,9 +253,9 @@ def revoke_key(api_key):
 _PASS_FILE = '/home/rutendo/PRECISE/.duck_admin_pass'
 
 _INITIAL_ADMINS = {
-    'rutendo': {'password': None,                'email': 'rutendo.sibanda@ceshhar.org',    'must_change_pw': 0},
-    'zororo':  {'password': 'm3nLtUIm9byOqJmx', 'email': 'zororo.chinwadzimba@ceshhar.org','must_change_pw': 1},
-    'bongani': {'password': 'fS0WYr1ODV8n2Bwp', 'email': 'nyonih@staff.msu.ac.zw',        'must_change_pw': 1},
+    'rutendo': {'password': None, 'email': 'rutendo.sibanda@ceshhar.org',    'must_change_pw': 0},
+    'zororo':  {'password': None, 'email': 'zororo.chinwadzimba@ceshhar.org','must_change_pw': 1},
+    'bongani': {'password': None, 'email': 'nyonih@staff.msu.ac.zw',        'must_change_pw': 1},
 }
 
 

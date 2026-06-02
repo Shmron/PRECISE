@@ -25,7 +25,7 @@ app.secret_key = os.urandom(32)   # ephemeral — session survives only while pr
 PREFIX = '/duckrequest'
 
 SMTP_FROM   = 'rutendosibanda18@gmail.com'
-SMTP_PASS   = 'tulwiwtiswekzlhf'
+SMTP_PASS   = os.environ.get('SMTP_APP_PASSWORD', '')
 ADMIN_EMAILS = [
     'rutendo.sibanda@ceshhar.org',
     'nyonih@staff.msu.ac.zw',           # bongani
