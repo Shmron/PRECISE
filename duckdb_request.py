@@ -753,9 +753,12 @@ def admin_dashboard():
     rejected = access_db.get_requests('rejected')
     revoked  = access_db.get_requests('revoked')
 
-    cat_pending  = access_db.get_catalogue_requests(status='pending')
-    cat_approved = access_db.get_catalogue_requests(status='approved')
-    cat_rejected = access_db.get_catalogue_requests(status='rejected')
+    prec_pending  = access_db.get_catalogue_requests(catalogue='precise', status='pending')
+    prec_approved = access_db.get_catalogue_requests(catalogue='precise', status='approved')
+    prec_rejected = access_db.get_catalogue_requests(catalogue='precise', status='rejected')
+    he2at_pending  = access_db.get_catalogue_requests(catalogue='he2at', status='pending')
+    he2at_approved = access_db.get_catalogue_requests(catalogue='he2at', status='approved')
+    he2at_rejected = access_db.get_catalogue_requests(catalogue='he2at', status='rejected')
 
     def rows(reqs, mode):
         # mode: 'pending' | 'approved' | 'other'
@@ -797,20 +800,18 @@ def admin_dashboard():
 
     def cat_rows(reqs, mode):
         out = ''
-        labels = {'precise': 'PRECISE', 'he2at': 'HE²AT'}
         for r in reqs:
             badge = {
                 'pending':  '<span class="badge badge-pending">Pending</span>',
                 'approved': '<span class="badge badge-approved">Approved</span>',
                 'rejected': '<span class="badge badge-rejected">Rejected</span>',
             }.get(r['status'], r['status'])
-            cat_label = labels.get(r['catalogue'], r['catalogue'])
-            date      = r['created_at'][:10]
-            actions   = ''
+            date    = r['created_at'][:10]
+            actions = ''
             if mode == 'pending':
                 actions = (
                     f'<button class="btn btn-approve btn-sm" '
-                    f'onclick="openCatApprove(\'{r["id"]}\',\'{r["name"]}\',\'{cat_label}\')">Approve</button>'
+                    f'onclick="openCatApprove(\'{r["id"]}\',\'{r["name"]}\',\'{r["catalogue"]}\')">Approve</button>'
                     f'<button class="btn btn-reject btn-sm" style="margin-left:6px" '
                     f'onclick="openCatReject(\'{r["id"]}\',\'{r["name"]}\')">Reject</button>'
                 )
@@ -818,11 +819,10 @@ def admin_dashboard():
               <td>{date}</td>
               <td>{r["name"]}<br><small style="color:#6b7280">{r["email"]}</small></td>
               <td><small>{r.get("institution","")}</small></td>
-              <td>{cat_label}</td>
               <td>{badge}</td>
               <td>{actions}</td>
             </tr>'''
-        return out or '<tr><td colspan="6" style="color:#9ca3af;text-align:center">None</td></tr>'
+        return out or '<tr><td colspan="5" style="color:#9ca3af;text-align:center">None</td></tr>'
 
     return render_template_string(BASE_STYLE + '''
 <div class="page wide" style="margin:0 auto;padding:32px 24px">
@@ -870,44 +870,47 @@ def admin_dashboard():
  </div>
 </div>
 
-<!-- Catalogue Users -->
+<!-- PRECISE Catalogue Users -->
 <div class="page wide" style="margin:0 auto;padding:0 24px 16px">
  <div class="card">
-  <div class="logo" style="margin-bottom:4px">Catalogue Users</div>
-  <div class="sub" style="margin-bottom:16px">Per-user accounts — token budgets &amp; access control</div>
-  <div id="catUsersTable"><em style="color:#9ca3af">Loading…</em></div>
+  <div class="logo" style="margin-bottom:4px">PRECISE Catalogue — Users</div>
+  <div class="sub" style="margin-bottom:16px">placealert.org/catalogue/ &nbsp;·&nbsp; Per-user accounts &amp; token budgets</div>
+  <div id="precUsersTable"><em style="color:#9ca3af">Loading…</em></div>
  </div>
 </div>
 
-<!-- Catalogue Access Requests -->
+<!-- PRECISE Catalogue Access Requests -->
+<div class="page wide" style="margin:0 auto;padding:0 24px 16px">
+ <div class="card">
+  <div class="logo" style="margin-bottom:4px">PRECISE Catalogue — Access Requests</div>
+  <h3 style="margin:12px 0 8px;color:#1a535c">Pending <span class="badge badge-pending">{{ prec_pending|length }}</span></h3>
+  <table><tr><th>Date</th><th>Requester</th><th>Institution</th><th>Status</th><th>Actions</th></tr>{{ prec_pending_rows | safe }}</table>
+  <h3 style="margin:20px 0 8px;color:#1a535c">Approved <span class="badge badge-approved">{{ prec_approved|length }}</span></h3>
+  <table><tr><th>Date</th><th>Requester</th><th>Institution</th><th>Status</th><th></th></tr>{{ prec_approved_rows | safe }}</table>
+  <h3 style="margin:20px 0 8px;color:#1a535c">Rejected <span class="badge badge-rejected">{{ prec_rejected|length }}</span></h3>
+  <table><tr><th>Date</th><th>Requester</th><th>Institution</th><th>Status</th><th></th></tr>{{ prec_rejected_rows | safe }}</table>
+ </div>
+</div>
+
+<!-- HE²AT Catalogue Users -->
+<div class="page wide" style="margin:0 auto;padding:0 24px 16px">
+ <div class="card">
+  <div class="logo" style="margin-bottom:4px">HE²AT Catalogue — Users</div>
+  <div class="sub" style="margin-bottom:16px">placealert.org/heat-catalogue/ &nbsp;·&nbsp; Per-user accounts &amp; token budgets</div>
+  <div id="he2atUsersTable"><em style="color:#9ca3af">Loading…</em></div>
+ </div>
+</div>
+
+<!-- HE²AT Catalogue Access Requests -->
 <div class="page wide" style="margin:0 auto;padding:0 24px 32px">
  <div class="card">
-  <div class="logo" style="margin-bottom:4px">Catalogue Access Requests</div>
-  <div class="sub" style="margin-bottom:20px">PRECISE and HE²AT catalogue access (code-based)</div>
-
-  <h3 style="margin-bottom:12px;color:#1a535c">
-    Pending <span class="badge badge-pending">{{ cat_pending|length }}</span>
-  </h3>
-  <table><tr>
-    <th>Date</th><th>Requester</th><th>Institution</th>
-    <th>Catalogue</th><th>Status</th><th>Actions</th>
-  </tr>{{ cat_pending_rows | safe }}</table>
-
-  <h3 style="margin:28px 0 12px;color:#1a535c">
-    Approved <span class="badge badge-approved">{{ cat_approved|length }}</span>
-  </h3>
-  <table><tr>
-    <th>Date</th><th>Requester</th><th>Institution</th>
-    <th>Catalogue</th><th>Status</th><th></th>
-  </tr>{{ cat_approved_rows | safe }}</table>
-
-  <h3 style="margin:28px 0 12px;color:#1a535c">
-    Rejected <span class="badge badge-rejected">{{ cat_rejected|length }}</span>
-  </h3>
-  <table><tr>
-    <th>Date</th><th>Requester</th><th>Institution</th>
-    <th>Catalogue</th><th>Status</th><th></th>
-  </tr>{{ cat_rejected_rows | safe }}</table>
+  <div class="logo" style="margin-bottom:4px">HE²AT Catalogue — Access Requests</div>
+  <h3 style="margin:12px 0 8px;color:#1a535c">Pending <span class="badge badge-pending">{{ he2at_pending|length }}</span></h3>
+  <table><tr><th>Date</th><th>Requester</th><th>Institution</th><th>Status</th><th>Actions</th></tr>{{ he2at_pending_rows | safe }}</table>
+  <h3 style="margin:20px 0 8px;color:#1a535c">Approved <span class="badge badge-approved">{{ he2at_approved|length }}</span></h3>
+  <table><tr><th>Date</th><th>Requester</th><th>Institution</th><th>Status</th><th></th></tr>{{ he2at_approved_rows | safe }}</table>
+  <h3 style="margin:20px 0 8px;color:#1a535c">Rejected <span class="badge badge-rejected">{{ he2at_rejected|length }}</span></h3>
+  <table><tr><th>Date</th><th>Requester</th><th>Institution</th><th>Status</th><th></th></tr>{{ he2at_rejected_rows | safe }}</table>
  </div>
 </div>
 
@@ -1041,15 +1044,13 @@ function fmtTokens(n) {
   return String(n);
 }
 
-async function loadCatUsers() {
-  const r = await fetch(PREFIX + '/admin/cat-users');
-  const users = await r.json();
-  const el = document.getElementById('catUsersTable');
-  if (!users.length) { el.innerHTML='<p style="color:#9ca3af;font-size:13px">No catalogue users yet.</p>'; return; }
-  const CATS = {'precise':'PRECISE','he2at':'HE²AT'};
-  el.innerHTML = '<table><tr><th>User</th><th>Catalogue</th><th>Used</th><th>Budget</th><th>%</th><th>Last active</th><th>Status</th><th>Actions</th></tr>'
+function renderUsersTable(users, elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  if (!users.length) { el.innerHTML='<p style="color:#9ca3af;font-size:13px">No users yet.</p>'; return; }
+  el.innerHTML = '<table><tr><th>User</th><th>Used</th><th>Budget</th><th>%</th><th>Last active</th><th>Status</th><th>Actions</th></tr>'
     + users.map(u => {
-      const pct = u.token_budget > 0 ? Math.round(u.token_budget > 0 ? u.tokens_used/u.token_budget*100 : 0) : 0;
+      const pct = u.token_budget > 0 ? Math.round(u.tokens_used/u.token_budget*100) : 0;
       const bar = `<div style="height:6px;background:#e5e7eb;border-radius:3px;width:80px;display:inline-block;vertical-align:middle"><div style="height:6px;background:${pct>90?'#ef4444':pct>70?'#f59e0b':'#10b981'};border-radius:3px;width:${Math.min(pct,100)}%"></div></div>`;
       const status = u.is_active ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-rejected">Revoked</span>';
       const actions = u.is_active
@@ -1058,9 +1059,8 @@ async function loadCatUsers() {
         : `<button class="btn btn-sm" style="background:#6b7280;color:white" onclick="catUserReinstate('${u.id}','${u.name}')">Reinstate</button>`;
       return `<tr>
         <td>${u.name}<br><small style="color:#6b7280">${u.email}</small></td>
-        <td>${CATS[u.catalogue]||u.catalogue}</td>
         <td>${fmtTokens(u.tokens_used)}</td>
-        <td><span id="bgt-${u.id}">${fmtTokens(u.token_budget)}</span></td>
+        <td>${fmtTokens(u.token_budget)}</td>
         <td>${bar} ${pct}%</td>
         <td><small>${u.last_used ? u.last_used.slice(0,10) : '—'}</small></td>
         <td>${status}</td>
@@ -1068,6 +1068,13 @@ async function loadCatUsers() {
       </tr>`;
     }).join('')
     + '</table>';
+}
+
+async function loadCatUsers() {
+  const r = await fetch(PREFIX + '/admin/cat-users');
+  const users = await r.json();
+  renderUsersTable(users.filter(u => u.catalogue === 'precise'), 'precUsersTable');
+  renderUsersTable(users.filter(u => u.catalogue === 'he2at'),   'he2atUsersTable');
 }
 
 let _budgetUserId = null;
@@ -1202,10 +1209,14 @@ function openCatReject(id, name) {
     approved_rows=rows(approved, 'approved'),
     rejected_rows=rows(rejected, 'other'),
     revoked_rows=rows(revoked, 'other'),
-    cat_pending=cat_pending, cat_approved=cat_approved, cat_rejected=cat_rejected,
-    cat_pending_rows=cat_rows(cat_pending, 'pending'),
-    cat_approved_rows=cat_rows(cat_approved, 'other'),
-    cat_rejected_rows=cat_rows(cat_rejected, 'other'),
+    prec_pending=prec_pending, prec_approved=prec_approved, prec_rejected=prec_rejected,
+    prec_pending_rows=cat_rows(prec_pending, 'pending'),
+    prec_approved_rows=cat_rows(prec_approved, 'other'),
+    prec_rejected_rows=cat_rows(prec_rejected, 'other'),
+    he2at_pending=he2at_pending, he2at_approved=he2at_approved, he2at_rejected=he2at_rejected,
+    he2at_pending_rows=cat_rows(he2at_pending, 'pending'),
+    he2at_approved_rows=cat_rows(he2at_approved, 'other'),
+    he2at_rejected_rows=cat_rows(he2at_rejected, 'other'),
     prefix=PREFIX,
     )
 
