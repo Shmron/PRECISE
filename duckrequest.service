@@ -8,7 +8,7 @@ Restart=always
 RestartSec=10
 WorkingDirectory=/home/rutendo/PRECISE
 ExecStart=/opt/anaconda3/bin/python3 /home/rutendo/PRECISE/duckdb_request.py
-Environment=FLASK_SECRET_KEY=e83cbe3dc8fc2c7d76eb426c98f460c3245527394d14b6f2d9a17bc0ad9333a2
+Environment=FLASK_SECRET_KEY=REPLACE_WITH_FLASK_SECRET_KEY
 Environment=SMTP_APP_PASSWORD=REPLACE_WITH_GMAIL_APP_PASSWORD
 Environment=PYTHONPATH=/home/rutendo/PRECISE
 
