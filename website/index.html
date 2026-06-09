@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Place Alert Labs - Geospatial Health Research for Africa</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+/* ── Home-specific styles ── */
+.aas-hero-section {
+    position: relative;
+    height: calc(100vh - 100px);
+    min-height: 600px;
+    overflow: hidden;
+    padding: 0;
+    margin-top: 100px;
+    background: #0e1f4d;
+}
+.hero-slider-container { position: relative; width: 100%; height: 100%; }
+.hero-slider           { position: relative; width: 100%; height: 100%; }
+.hero-slide {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+    display: flex; align-items: center; justify-content: flex-start;
+}
+.hero-slide.active { opacity: 1; }
+.hero-background   { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.hero-bg-image     { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.hero-overlay      { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg,rgba(30,58,138,.3) 0%,rgba(37,99,235,.2) 50%,rgba(30,58,138,.35) 100%); z-index: 2; }
+.hero-content      { position: relative; z-index: 4; max-width: 600px; margin-left: 5%; color: white; text-align: left; padding: 2rem; padding-top: 3rem; }
+.hero-title        { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; letter-spacing: -.02em; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
+.hero-subtitle     { font-size: 1.2rem; margin-bottom: 2.5rem; opacity: .95; font-weight: 400; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
+.hero-read-more-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: #fbbf24; color: #1f2937;
+    padding: 1rem 2rem; border-radius: 8px; text-decoration: none;
+    font-weight: 600; font-size: 1.1rem;
+    transition: all .3s ease; box-shadow: 0 4px 15px rgba(251,191,36,.3);
+}
+.hero-read-more-btn:hover { background: #f59e0b; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(251,191,36,.4); color: #1f2937; text-decoration: none; }
+.hero-read-more-btn i { font-size: 1rem; transition: transform .3s ease; }
+.hero-read-more-btn:hover i { transform: translateX(3px); }
+.slider-dots { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,.5); cursor: pointer; transition: all .3s ease; border: 2px solid rgba(255,255,255,.3); }
+.dot.active { background: #fbbf24; border-color: #fbbf24; transform: scale(1.2); }
+
+/* About section */
+.aas-about-section { padding: 8rem 0; background: #ffffff; }
+.about-content { max-width: 1200px; margin: 0 auto; text-align: left; padding: 40px; background: linear-gradient(135deg,rgba(59,130,246,.08) 0%,rgba(147,197,253,.06) 50%,rgba(191,219,254,.08) 100%); border-radius: 12px; border: 1px solid rgba(59,130,246,.15); box-shadow: 0 4px 15px rgba(59,130,246,.08); }
+.about-content h2 { font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 2rem; text-align: right; position: relative; }
+.about-content h2::after { content: ''; position: absolute; bottom: -10px; right: 0; width: 80px; height: 4px; background: #fbbf24; border-radius: 2px; }
+.about-content p  { font-size: 1.1rem; line-height: 1.7; color: #4b5563; margin-bottom: 1.5rem; }
+.about-read-more-btn { display: inline-flex; align-items: center; gap: .5rem; background: #fbbf24; color: #1f2937; padding: .75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all .3s ease; margin-top: 1rem; }
+.about-read-more-btn:hover { background: #f59e0b; color: #1f2937; text-decoration: none; transform: translateY(-1px); }
+
+/* LinkedIn news */
+.aas-linkedin-news-section { padding: 8rem 0; background: #ffffff; position: relative; }
+.aas-linkedin-news-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 1px 1px,rgba(30,64,175,.06) 1px,transparent 0); background-size: 25px 25px; z-index: 1; pointer-events: none; }
+.aas-linkedin-news-section h2 { font-size: 2.5rem; font-weight: 700; color: #1f2937; text-align: right; margin-bottom: 3rem; position: relative; z-index: 2; display: block; width: 100%; }
+.aas-linkedin-news-section h2::after { content: ''; position: absolute; bottom: -10px; right: 0; width: 80px; height: 4px; background: #fbbf24; border-radius: 2px; }
+.linkedin-news-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-bottom: 2rem; position: relative; z-index: 2; }
+.linkedin-news-item {
+    background: #fff; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04); transition: all .3s ease;
+    border: 1px solid #e5e7eb;
+    opacity: 0; transform: translateY(30px);
+    animation: slideInUp .6s ease forwards;
+    position: relative; display: flex; align-items: flex-start; padding: 1.5rem; gap: 1rem;
+}
+.linkedin-news-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,#0077b5,#00a0dc,#0077b5); opacity: 0; transition: opacity .3s ease; }
+.linkedin-news-item:nth-child(1) { animation-delay: .1s; }
+.linkedin-news-item:nth-child(2) { animation-delay: .2s; }
+.linkedin-news-item:nth-child(3) { animation-delay: .3s; }
+.linkedin-news-item:nth-child(4) { animation-delay: .4s; }
+.linkedin-news-item:nth-child(5) { animation-delay: .5s; }
+.linkedin-news-item:nth-child(6) { animation-delay: .6s; }
+.linkedin-news-item:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,.08); }
+.linkedin-news-item:hover::before { opacity: 1; }
+.linkedin-icon { width: 50px; height: 50px; background: #0077b5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; flex-shrink: 0; }
+.linkedin-content { flex: 1; }
+.news-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: .75rem; font-size: .9rem; }
+.news-date { color: #6b7280; font-weight: 600; }
+.linkedin-category { display: inline-block; background: #0077b5; color: white; padding: .25rem .75rem; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+.linkedin-content h3 { font-size: 1.05rem; font-weight: 700; color: #1f2937; margin-bottom: .75rem; line-height: 1.4; }
+.linkedin-content p  { font-size: .9rem; line-height: 1.6; color: #6b7280; margin-bottom: .75rem; }
+.news-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
+.tag { background: rgba(0,119,181,.1); color: #0077b5; padding: .25rem .75rem; border-radius: 15px; font-size: .8rem; border: 1px solid rgba(0,119,181,.2); }
+.linkedin-link { color: #1f2937; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: .5rem; padding: .5rem 1rem; background: #fbbf24; border-radius: 6px; font-size: .85rem; transition: all .3s ease; }
+.linkedin-link:hover { background: #f59e0b; color: #1f2937; text-decoration: none; transform: translateY(-1px); }
+.linkedin-footer { text-align: center; margin-top: 2rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 2; }
+.view-more-news { display: inline-block; background: #28a745; color: white; padding: .75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; border: 2px solid #28a745; font-size: 1.1rem; transition: all .3s ease; }
+.view-more-news:hover { background: transparent; color: #28a745; transform: translateY(-2px); }
+.view-all-linkedin { display: inline-block; background: #0077b5; color: white; padding: .75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600; border: 2px solid #0077b5; font-size: 1.1rem; transition: all .3s ease; }
+.view-all-linkedin:hover { background: transparent; color: #0077b5; transform: translateY(-2px); }
+
+/* Quick links */
+.aas-events-section { padding: 8rem 0; background: #ffffff; position: relative; }
+.aas-events-section h2 { font-size: 2.5rem; font-weight: 700; color: #1f2937; text-align: right; margin-bottom: 3rem; position: relative; display: inline-block; width: 100%; }
+.aas-events-section h2::after { content: ''; position: absolute; bottom: -10px; right: 0; width: 80px; height: 4px; background: #fbbf24; border-radius: 2px; }
+.quick-links-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.2rem; max-width: 1000px; margin: 0 auto; }
+.quick-link-card { text-align: center; padding: 2rem 1.5rem; border-radius: 8px; background: #fff; transition: all .3s ease; border: 1px solid #e5e7eb; min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+.quick-link-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,#1e40af,#3b82f6,#1e40af); opacity: 0; transition: opacity .3s ease; }
+.quick-link-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,.08); }
+.quick-link-card:hover::before { opacity: 1; }
+.quick-link-icon { width: 50px; height: 50px; background: #1e40af; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; font-size: 1.2rem; color: white; box-shadow: 0 2px 8px rgba(30,64,175,.2); }
+.quick-link-card h3 { font-size: 1.1rem; font-weight: 800; color: #1f2937; margin-bottom: 1rem; position: relative; display: inline-block; width: 100%; }
+.quick-link-card h3::after { content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); width: 40px; height: 2px; background: #fbbf24; border-radius: 1px; }
+.quick-link-card p { font-size: .8rem; line-height: 1.4; color: #6b7280; margin-bottom: 1rem; }
+.quick-link-btn { display: inline-flex; align-items: center; gap: .3rem; background: #1e40af; color: white; padding: .5rem 1rem; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: .8rem; transition: all .3s ease; min-width: 80px; justify-content: center; }
+.quick-link-btn:hover { background: #3b82f6; color: white; text-decoration: none; transform: translateY(-1px); }
+
+/* Data portal CTA banner */
+.portal-cta-section { padding: 4rem 0; background: linear-gradient(135deg,#1e3a8a 0%,#1e40af 50%,#3b82f6 100%); text-align: center; color: white; }
+.portal-cta-section h2 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: white; }
+.portal-cta-section p  { font-size: 1.1rem; margin-bottom: 2rem; opacity: .9; max-width: 600px; margin-left: auto; margin-right: auto; }
+.portal-cta-btn { display: inline-flex; align-items: center; gap: .5rem; background: #fbbf24; color: #1f2937; padding: 1rem 2.5rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all .3s ease; box-shadow: 0 4px 15px rgba(251,191,36,.4); }
+.portal-cta-btn:hover { background: #f59e0b; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(251,191,36,.5); color: #1f2937; text-decoration: none; }
+
+@media (max-width:768px) {
+    .aas-hero-section { height: calc(70vh - 100px); min-height: 500px; }
+    .hero-content     { margin-left: 3%; padding: 1.5rem; max-width: 90%; }
+    .hero-title       { font-size: 2.5rem; }
+    .linkedin-news-grid { grid-template-columns: 1fr; }
+    .quick-links-grid   { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width:480px) {
+    .aas-hero-section { height: calc(60vh - 100px); min-height: 400px; }
+    .hero-title       { font-size: 2rem; }
+    .quick-links-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<!-- Floating Particles -->
+<div class="floating-particles">
+    <div class="particle particle-blue"></div>
+    <div class="particle particle-orange"></div>
+    <div class="particle particle-light-blue"></div>
+    <div class="particle particle-yellow"></div>
+    <div class="particle particle-grey"></div>
+</div>
+
+<!-- Search Overlay -->
+<div class="search-overlay" id="search-overlay">
+    <div class="search-container">
+        <div class="search-header">
+            <h2>Search Place Alert Labs</h2>
+            <button class="search-close" id="search-close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="search-input-container">
+            <input type="text" id="search-input" placeholder="Search for research, team members, projects..." autocomplete="off">
+            <button class="search-submit"><i class="bi bi-search"></i></button>
+        </div>
+        <div class="search-suggestions">
+            <div class="suggestion-category">
+                <h3><i class="bi bi-microscope"></i> Research Projects</h3>
+                <div class="suggestion-items">
+                    <a href="/research.html" class="suggestion-item">PRECISE Network</a>
+                    <a href="/research.html" class="suggestion-item">CHEAQI-MNCH</a>
+                    <a href="/research.html" class="suggestion-item">ETIQUET</a>
+                </div>
+            </div>
+            <div class="suggestion-category">
+                <h3><i class="bi bi-people"></i> Team Members</h3>
+                <div class="suggestion-items">
+                    <a href="/team.html" class="suggestion-item">Dr. Prestige Tatenda Makanga</a>
+                    <a href="/team.html" class="suggestion-item">Prof. Terence Darlington Mushore</a>
+                    <a href="/team.html" class="suggestion-item">Dr. Upenyu Naomi Mupfiga</a>
+                </div>
+            </div>
+            <div class="suggestion-category">
+                <h3><i class="bi bi-geo-alt"></i> Research Areas</h3>
+                <div class="suggestion-items">
+                    <a href="/research.html" class="suggestion-item">Maternal Health</a>
+                    <a href="/research.html" class="suggestion-item">Environmental Health</a>
+                    <a href="/research.html" class="suggestion-item">Geospatial Analysis</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Chat -->
+<div class="floating-chat">
+    <button class="chat-button whatsapp-btn" onclick="openWhatsApp()" title="Chat on WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+        <div class="chat-tooltip">Chat on WhatsApp</div>
+    </button>
+</div>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <div class="header-info"><i class="bi bi-building"></i><a href="https://msu.ac.zw">MSU Site</a></div>
+                    <div class="header-info"><i class="bi bi-envelope"></i><a href="mailto:pals@staff.msu.ac.zw">pals@staff.msu.ac.zw</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-main">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <div class="logo-text">
+                        <img src="/images/backgrounds/pals.png" alt="Place Alert Labs" class="logo-text-img">
+                    </div>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-menu" id="nav-menu">
+                        <li class="nav-item"><a href="/about.html" class="nav-link">About Us <i class="bi bi-chevron-down dropdown-arrow"></i></a>
+                            <div class="dropdown">
+                                <a href="/about.html#vision" class="dropdown-item">Vision and Mission</a>
+                                <a href="/about.html#values" class="dropdown-item">Values and Principles</a>
+                                <a href="/about.html#about-us" class="dropdown-item">Who We Are</a>
+                                <a href="/about.html#strategic-pillars" class="dropdown-item">Strategic Pillars</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a href="/research.html" class="nav-link">Research <i class="bi bi-chevron-down dropdown-arrow"></i></a>
+                            <div class="dropdown">
+                                <a href="/research.html" class="dropdown-item">Research Overview</a>
+                                <a href="/research.html#current-projects" class="dropdown-item">Current Projects</a>
+                                <a href="/publications.html" class="dropdown-item">Publications</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a href="/team.html" class="nav-link">Team</a></li>
+                        <li class="nav-item"><a href="/partners.html" class="nav-link">Our Partners <i class="bi bi-chevron-down dropdown-arrow"></i></a>
+                            <div class="dropdown">
+                                <a href="/partners.html#funding-partners" class="dropdown-item">Funding Partners</a>
+                                <a href="/partners.html#research-partners" class="dropdown-item">Research Partners</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a href="/news.html" class="nav-link">News</a></li>
+                        <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+                    </ul>
+                    <button class="search-toggle" id="search-toggle" title="Search"><i class="bi bi-search"></i></button>
+                    <a href="https://portal.placealert.org" class="nav-portal-btn">
+                        <i class="bi bi-database"></i> PALs Portal &rarr;
+                    </a>
+                    <button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="bi bi-list"></i></button>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main>
+
+<!-- Hero Slider -->
+<section class="aas-hero-section">
+    <div class="hero-slider-container">
+        <div class="hero-slider">
+            <div class="hero-slide active">
+                <div class="hero-background">
+                    <img src="/images/backgrounds/chat.png" alt="Place Alert Labs Research" class="hero-bg-image">
+                    <div class="hero-overlay"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Place Alert Labs: Transforming Health Through Geospatial Innovation</h1>
+                    <a href="/about.html" class="hero-read-more-btn">Read More <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="hero-slide">
+                <div class="hero-background">
+                    <img src="/images/backgrounds/chat2.png" alt="Air Quality &amp; Health Monitoring" class="hero-bg-image">
+                    <div class="hero-overlay"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Air Quality &amp; Health Monitoring</h1>
+                    <a href="/research.html" class="hero-read-more-btn">Learn More <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="hero-slide">
+                <div class="hero-background">
+                    <img src="/images/backgrounds/chat4.png" alt="Maternal Health Access Mapping" class="hero-bg-image">
+                    <div class="hero-overlay"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Maternal Health Access Mapping</h1>
+                    <a href="/research.html" class="hero-read-more-btn">View Projects <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="slider-dots">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="aas-about-section">
+    <div class="container">
+        <div class="about-content">
+            <h2>Who We Are</h2>
+            <p>Place Alert Labs (PaLS) is a research laboratory at Midlands State University dedicated to advancing geospatial health research across Africa. We are committed to transforming lives through innovative scientific research that addresses the continent's most pressing health challenges.</p>
+            <p>Our vision is to see transformed lives on the African continent through science. We focus on geospatial health research, maternal and child health, environmental health, and capacity building for African researchers.</p>
+            <a href="/about.html" class="about-read-more-btn">Read more <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- Latest News Section -->
+<section class="aas-linkedin-news-section">
+    <div class="container">
+        <h2>Latest News</h2>
+        <div class="linkedin-news-grid">
+
+            <div class="linkedin-news-item">
+                <div class="linkedin-icon"><i class="bi bi-linkedin"></i></div>
+                <div class="linkedin-content">
+                    <div class="news-meta">
+                        <span class="news-date">October 2025</span>
+                        <span class="linkedin-category">AWARD</span>
+                    </div>
+                    <h3><strong>2025 Research, Innovation, and Industrialisation Expo Awards!</strong></h3>
+                    <p>We are proud to announce recognition at this year's Expo for both our groundbreaking GeoHealth research and our commitment to mentorship. Best Early Career Research Award for GeoHealth research linking geospatial science, environmental monitoring, and maternal health.</p>
+                    <div class="news-tags"><span class="tag">Research Excellence</span><span class="tag">GeoHealth</span><span class="tag">Awards</span></div>
+                    <a href="https://zw.linkedin.com/company/place-alert-labs" target="_blank" class="linkedin-link">Read More on LinkedIn &rarr;</a>
+                </div>
+            </div>
+
+            <div class="linkedin-news-item">
+                <div class="linkedin-icon"><i class="bi bi-linkedin"></i></div>
+                <div class="linkedin-content">
+                    <div class="news-meta">
+                        <span class="news-date">October 2025</span>
+                        <span class="linkedin-category">CONFERENCE</span>
+                    </div>
+                    <h3><strong>Place Alert Labs at the 2025 Research, Innovation, and Industrialisation Expo</strong></h3>
+                    <p>We participated in the Expo 2025 at Midlands State University from October 1st–3rd! Bongani Handsome Nyoni presented the RoadMothers Application, a digital innovation improving maternal healthcare outcomes.</p>
+                    <div class="news-tags"><span class="tag">Innovation</span><span class="tag">Maternal Health</span><span class="tag">MSU</span></div>
+                    <a href="https://zw.linkedin.com/company/place-alert-labs" target="_blank" class="linkedin-link">Read More on LinkedIn &rarr;</a>
+                </div>
+            </div>
+
+            <div class="linkedin-news-item">
+                <div class="linkedin-icon"><i class="bi bi-linkedin"></i></div>
+                <div class="linkedin-content">
+                    <div class="news-meta">
+                        <span class="news-date">September 2025</span>
+                        <span class="linkedin-category">TRAINING</span>
+                    </div>
+                    <h3><strong>Bongani Nyoni Represents PALs at KADI Project Training Workshop in Tanzania</strong></h3>
+                    <p>Kudos to Bongani Handsome Nyoni for representing us at the KADI Project Training Workshop in Dar es Salaam! The workshop showcased innovative approaches to urban climate services through open geospatial data.</p>
+                    <div class="news-tags"><span class="tag">Climate Action</span><span class="tag">Open Science</span><span class="tag">KADI Project</span></div>
+                    <a href="https://zw.linkedin.com/company/place-alert-labs" target="_blank" class="linkedin-link">Read More on LinkedIn &rarr;</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="linkedin-footer">
+            <a href="/news.html" class="view-more-news">View More News &rarr;</a>
+            <a href="https://www.linkedin.com/company/place-alert-labs/posts/?feedView=all" target="_blank" class="view-all-linkedin">Follow us on LinkedIn &rarr;</a>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links Section -->
+<section class="aas-events-section">
+    <div class="container">
+        <h2 style="text-align:center;">Quick Links</h2>
+        <div class="quick-links-grid">
+            <div class="quick-link-card">
+                <div class="quick-link-icon"><i class="bi bi-flask"></i></div>
+                <h3><strong>Research</strong></h3>
+                <p><strong>Current and previous research projects</strong></p>
+                <a href="/research.html" class="quick-link-btn">Explore</a>
+            </div>
+            <div class="quick-link-card">
+                <div class="quick-link-icon"><i class="bi bi-person-badge"></i></div>
+                <h3><strong>Team</strong></h3>
+                <p><strong>Research team and collaborators</strong></p>
+                <a href="/team.html" class="quick-link-btn">Meet</a>
+            </div>
+            <div class="quick-link-card">
+                <div class="quick-link-icon"><i class="bi bi-building"></i></div>
+                <h3><strong>Partners</strong></h3>
+                <p><strong>Funding partners and affiliations</strong></p>
+                <a href="/partners.html" class="quick-link-btn">View</a>
+            </div>
+            <div class="quick-link-card">
+                <div class="quick-link-icon"><i class="bi bi-megaphone"></i></div>
+                <h3><strong>News</strong></h3>
+                <p><strong>Latest updates and announcements</strong></p>
+                <a href="/news.html" class="quick-link-btn">Read</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Data Portal CTA -->
+<section class="portal-cta-section">
+    <div class="container">
+        <h2>Access the PALs Portal</h2>
+        <p>Explore geospatial health datasets, environmental exposure data, and research outputs from our ongoing projects across Africa.</p>
+        <a href="https://portal.placealert.org" class="portal-cta-btn">
+            <i class="bi bi-database"></i> Open PALs Portal &rarr;
+        </a>
+    </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="modern-footer">
+    <div class="sponsors-section"></div>
+    <div class="footer-main">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section footer-about">
+                    <div class="footer-logo-container">
+                        <div class="footer-logo"><img src="/images/backgrounds/PALs_Logo.png" alt="PALs Logo" class="footer-logo-img"></div>
+                        <div class="footer-brand"><h3>Place Alert Labs</h3><p>Geospatial Health Research Excellence</p></div>
+                    </div>
+                    <p class="footer-description">Leading innovative research in geospatial health science at Midlands State University, driving evidence-based solutions for global health challenges across Africa.</p>
+                    <div class="footer-contact">
+                        <div><i class="bi bi-geo-alt" style="color:white;"></i><span>Private Bag 9055, Senga, Gweru, Zimbabwe</span></div>
+                        <div><i class="bi bi-telephone" style="color:white;"></i><span>+263 78 231 9736</span></div>
+                        <div><i class="bi bi-envelope" style="color:white;"></i><span>pals@staff.msu.ac.zw</span></div>
+                    </div>
+                </div>
+                <div class="footer-section footer-links">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-menu">
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/team.html">Our Team</a></li>
+                        <li><a href="/partners.html">Our Partners</a></li>
+                        <li><a href="/news.html">News &amp; Updates</a></li>
+                        <li><a href="/contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section footer-research">
+                    <h4>Research</h4>
+                    <ul class="footer-menu">
+                        <li><a href="/research.html">Research Overview</a></li>
+                        <li><a href="/research.html#current-projects">Current Projects</a></li>
+                        <li><a href="/publications.html">Publications</a></li>
+                        <li><a href="https://portal.placealert.org">PALs Portal</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section footer-social">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/company/place-alert-labs/" target="_blank" class="social-link linkedin"><i class="bi bi-linkedin"></i><span>LinkedIn</span></a>
+                        <a href="https://twitter.com/placealertlabs" target="_blank" class="social-link twitter"><i class="bi bi-twitter-x"></i><span>Twitter</span></a>
+                        <a href="https://bsky.app/profile/place-alert-lab.bsky.social" target="_blank" class="social-link bluesky"><i class="bi bi-globe"></i><span>Bluesky</span></a>
+                        <a href="mailto:pals@staff.msu.ac.zw" class="social-link email"><i class="bi bi-envelope"></i><span>Email</span></a>
+                    </div>
+                    <div class="newsletter-signup">
+                        <h5>Stay Updated</h5>
+                        <p>Subscribe to our research updates</p>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Enter your email" class="newsletter-input">
+                            <button type="button" class="newsletter-btn"><i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="footer-bottom-content">
+                <div class="copyright">
+                    <p>&copy; 2025 Place Alert Labs - Midlands State University. All rights reserved.</p>
+                    <p class="copyright-sub">Advancing Geospatial Health Research Across Africa</p>
+                </div>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Accessibility</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="/assets/main.js"></script>
+</body>
+</html>

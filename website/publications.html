@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research Publications - Place Alert Labs</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+.pubs-container { margin-top: 200px; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 20px 80px; }
+.pubs-header    { text-align: center; margin-bottom: 60px; }
+.pubs-title     { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg,#1e40af,#1e3a8a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; }
+.pubs-underline { width: 120px; height: 4px; background: linear-gradient(90deg,#f59e0b,#fbbf24); border: none; margin: 0 auto 30px; border-radius: 2px; }
+.pubs-subtitle  { font-size: 1.1rem; color: #6b7280; max-width: 600px; margin: 0 auto; }
+
+.publications-tray-container { display: flex; flex-direction: column; gap: 1.5rem; max-width: 1000px; margin: 0 auto; }
+.publication-tray { background: rgba(255,255,255,.95); border-radius: 16px; border: 1px solid rgba(30,58,138,.1); box-shadow: 0 4px 20px rgba(30,58,138,.06); transition: all .3s ease; overflow: hidden; }
+.publication-tray:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(30,58,138,.12); }
+.tray-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 2rem 2rem 1rem; gap: 1rem; }
+.tray-title h3 { color: #1e3a8a; font-size: 1.3rem; font-weight: 700; line-height: 1.3; flex: 1; }
+.tray-meta { display: flex; gap: .5rem; margin-top: .5rem; flex-wrap: wrap; }
+.publication-year { background: linear-gradient(135deg,#1e40af,#3b82f6); color: white; padding: .3rem .8rem; border-radius: 15px; font-weight: 600; font-size: .8rem; }
+.publication-type { background: rgba(30,58,138,.1); color: #1e3a8a; padding: .3rem .8rem; border-radius: 15px; font-size: .8rem; font-weight: 500; border: 1px solid rgba(30,58,138,.2); }
+.tray-divider   { height: 3px; background: linear-gradient(90deg,transparent 0%,#1e40af 20%,#3b82f6 50%,#1e40af 80%,transparent 100%); margin: 0 2rem; }
+.tray-content   { padding: 1.5rem 2rem 2rem; }
+.authors { color: #1e40af; font-weight: 600; margin-bottom: .5rem; font-size: 1rem; }
+.journal { color: #4b5563; font-weight: 500; margin-bottom: 1rem; font-size: .95rem; }
+.tray-abstract  { margin-bottom: 1.5rem; }
+.tray-abstract p { color: #4b5563; line-height: 1.6; font-size: 1rem; }
+.tray-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pub-link { display: inline-flex; align-items: center; gap: .5rem; background: linear-gradient(135deg,#1e40af,#3b82f6); color: white; padding: .5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: .85rem; margin-top: 1rem; transition: all .3s ease; }
+.pub-link:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30,58,138,.3); color: white; text-decoration: none; }
+
+@media (max-width:768px) {
+    .pubs-container { margin-top: 140px; }
+    .pubs-title { font-size: 2rem; }
+    .tray-header { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="floating-particles"><div class="particle particle-blue"></div><div class="particle particle-orange"></div><div class="particle particle-light-blue"></div><div class="particle particle-yellow"></div><div class="particle particle-grey"></div></div>
+<div class="search-overlay" id="search-overlay"><div class="search-container"><div class="search-header"><h2>Search Place Alert Labs</h2><button class="search-close" id="search-close"><i class="bi bi-x-lg"></i></button></div><div class="search-input-container"><input type="text" id="search-input" placeholder="Search..." autocomplete="off"><button class="search-submit"><i class="bi bi-search"></i></button></div></div></div>
+<div class="floating-chat"><button class="chat-button whatsapp-btn" onclick="openWhatsApp()" title="Chat on WhatsApp"><i class="bi bi-whatsapp"></i><div class="chat-tooltip">Chat on WhatsApp</div></button></div>
+
+<header class="header">
+    <div class="header-top"><div class="container"><div class="header-top-content"><div class="header-top-left"><div class="header-info"><i class="bi bi-building"></i><a href="https://msu.ac.zw">MSU Site</a></div><div class="header-info"><i class="bi bi-envelope"></i><a href="mailto:pals@staff.msu.ac.zw">pals@staff.msu.ac.zw</a></div></div></div></div></div>
+    <div class="header-main"><div class="container"><div class="header-content">
+        <a href="/" class="logo"><div class="logo-text"><img src="/images/backgrounds/pals.png" alt="Place Alert Labs" class="logo-text-img"></div></a>
+        <nav class="nav"><ul class="nav-menu" id="nav-menu">
+            <li class="nav-item"><a href="/about.html" class="nav-link">About Us <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/about.html#vision" class="dropdown-item">Vision and Mission</a><a href="/about.html#values" class="dropdown-item">Values and Principles</a><a href="/about.html#about-us" class="dropdown-item">Who We Are</a><a href="/about.html#strategic-pillars" class="dropdown-item">Strategic Pillars</a></div></li>
+            <li class="nav-item active"><a href="/research.html" class="nav-link">Research <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/research.html" class="dropdown-item">Research Overview</a><a href="/research.html#current-projects" class="dropdown-item">Current Projects</a><a href="/publications.html" class="dropdown-item">Publications</a></div></li>
+            <li class="nav-item"><a href="/team.html" class="nav-link">Team</a></li>
+            <li class="nav-item"><a href="/partners.html" class="nav-link">Our Partners <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/partners.html#funding-partners" class="dropdown-item">Funding Partners</a><a href="/partners.html#research-partners" class="dropdown-item">Research Partners</a></div></li>
+            <li class="nav-item"><a href="/news.html" class="nav-link">News</a></li>
+            <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="search-toggle" id="search-toggle" title="Search"><i class="bi bi-search"></i></button>
+        <a href="https://portal.placealert.org" target="_blank" class="nav-portal-btn"><i class="bi bi-database"></i> Data Portal &rarr;</a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="bi bi-list"></i></button>
+        </nav>
+    </div></div></div>
+</header>
+
+<main>
+<div class="pubs-container">
+    <div class="pubs-header">
+        <h1 class="pubs-title">Peer-Reviewed Publications</h1>
+        <hr class="pubs-underline">
+        <p class="pubs-subtitle">Our research findings published in leading international journals</p>
+    </div>
+
+    <div class="publications-tray-container">
+
+        <div class="publication-tray" data-aos="fade-up" data-aos-delay="100">
+            <div class="tray-header">
+                <div class="tray-title">
+                    <h3>Is the closest health facility the one used in pregnancy care-seeking?</h3>
+                    <div class="tray-meta"><span class="publication-year">2020</span><span class="publication-type">Journal Article</span></div>
+                </div>
+            </div>
+            <div class="tray-divider"></div>
+            <div class="tray-content">
+                <p class="authors">Makacha, L., Makanga, P. T., Dube, Y. P., et al.</p>
+                <p class="journal">International Journal of Health Geographics, 19(1), 1–10</p>
+                <div class="tray-abstract"><p>This study examines the relationship between geographic proximity to health facilities and actual healthcare utilization patterns among pregnant women in sub-Saharan Africa, revealing important insights about healthcare access barriers. Key findings: proximity alone does not determine healthcare utilization; cultural preferences, transportation costs, and facility reputation significantly influence decisions; a 15 km threshold was identified beyond which proximity becomes a major barrier.</p></div>
+                <div class="tray-tags"><span class="tag">Maternal Health</span><span class="tag">Healthcare Access</span><span class="tag">Geographic Analysis</span><span class="tag">Sub-Saharan Africa</span></div>
+                <a href="https://ij-healthgeographics.biomedcentral.com/articles/10.1186/s12942-020-00200-8" target="_blank" class="pub-link"><i class="bi bi-box-arrow-up-right"></i> View Full Article</a>
+            </div>
+        </div>
+
+        <div class="publication-tray" data-aos="fade-up" data-aos-delay="200">
+            <div class="tray-header">
+                <div class="tray-title">
+                    <h3>How accurate are modelled birth and pregnancy estimates?</h3>
+                    <div class="tray-meta"><span class="publication-year">2019</span><span class="publication-type">Journal Article</span></div>
+                </div>
+            </div>
+            <div class="tray-divider"></div>
+            <div class="tray-content">
+                <p class="authors">Dube, Y. P., Ruktanonchai, C. W., Sacoor, C., et al.</p>
+                <p class="journal">BMJ Global Health, 4(Suppl_5), e001863</p>
+                <div class="tray-abstract"><p>An evaluation of the accuracy of modelled birth and pregnancy estimates in low- and middle-income countries, providing critical insights for population health planning and resource allocation. The analysis revealed significant variations in estimate accuracy across countries; countries with robust civil registration systems showed 95% accuracy, while those with limited data had accuracy as low as 60%.</p></div>
+                <div class="tray-tags"><span class="tag">Population Health</span><span class="tag">Modelling</span><span class="tag">Global Health</span><span class="tag">Demographics</span></div>
+                <a href="https://gh.bmj.com/content/4/Suppl_5/e001863" target="_blank" class="pub-link"><i class="bi bi-box-arrow-up-right"></i> View Full Article</a>
+            </div>
+        </div>
+
+        <div class="publication-tray" data-aos="fade-up" data-aos-delay="300">
+            <div class="tray-header">
+                <div class="tray-title">
+                    <h3>Place-specific factors associated with adverse maternal and perinatal outcomes</h3>
+                    <div class="tray-meta"><span class="publication-year">2019</span><span class="publication-type">Journal Article</span></div>
+                </div>
+            </div>
+            <div class="tray-divider"></div>
+            <div class="tray-content">
+                <p class="authors">Makanga PT, Sacoor C, Schuurman N, et al.</p>
+                <p class="journal">BMJ Open, 9: e024042</p>
+                <div class="tray-abstract"><p>This research identifies place-specific risk factors for adverse maternal and perinatal outcomes, contributing to our understanding of geographic health disparities and informing targeted interventions. The study identified significant spatial clustering of adverse outcomes, with environmental factors, socioeconomic conditions, and healthcare infrastructure density as key predictors. Rural areas showed 2.3 times higher risk of adverse outcomes compared to urban areas.</p></div>
+                <div class="tray-tags"><span class="tag">Maternal Health</span><span class="tag">Risk Factors</span><span class="tag">Spatial Analysis</span><span class="tag">Environmental Health</span></div>
+                <a href="https://bmjopen.bmj.com/content/9/12/e024042" target="_blank" class="pub-link"><i class="bi bi-box-arrow-up-right"></i> View Full Article</a>
+            </div>
+        </div>
+
+        <div class="publication-tray" data-aos="fade-up" data-aos-delay="400">
+            <div class="tray-header">
+                <div class="tray-title">
+                    <h3>Health and socio-demographic profile of women of reproductive age</h3>
+                    <div class="tray-meta"><span class="publication-year">2018</span><span class="publication-type">Journal Article</span></div>
+                </div>
+            </div>
+            <div class="tray-divider"></div>
+            <div class="tray-content">
+                <p class="authors">Sacoor, C., Payne, B., Augusto, O., et al.</p>
+                <p class="journal">PLOS ONE, 13(12), e0208985</p>
+                <div class="tray-abstract"><p>A comprehensive analysis of the health and socio-demographic characteristics of women of reproductive age in Mozambique, providing essential baseline data for maternal health interventions. The study revealed high rates of anemia (45%), malnutrition (32%), and limited access to healthcare services (60% lived more than 5 km from a health facility). Educational attainment and household wealth were strongly associated with health outcomes.</p></div>
+                <div class="tray-tags"><span class="tag">Reproductive Health</span><span class="tag">Demographics</span><span class="tag">Mozambique</span><span class="tag">Baseline Data</span></div>
+                <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208985" target="_blank" class="pub-link"><i class="bi bi-box-arrow-up-right"></i> View Full Article</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;">
+        <a href="https://scholar.google.com/citations?hl=en&user=eFbLBBkAAAAJ" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#1e40af,#1e3a8a);color:white;padding:1rem 2rem;border-radius:10px;text-decoration:none;font-weight:600;font-size:1rem;transition:all .3s ease;">
+            <i class="bi bi-mortarboard"></i> View All Publications on Google Scholar
+        </a>
+    </div>
+
+</div>
+</main>
+
+<footer class="modern-footer">
+    <div class="sponsors-section"></div>
+    <div class="footer-main"><div class="container"><div class="footer-content">
+        <div class="footer-section footer-about"><div class="footer-logo-container"><div class="footer-logo"><img src="/images/backgrounds/PALs_Logo.png" alt="PALs Logo" class="footer-logo-img"></div><div class="footer-brand"><h3>Place Alert Labs</h3><p>Geospatial Health Research Excellence</p></div></div><p class="footer-description">Leading innovative research in geospatial health science at Midlands State University.</p><div class="footer-contact"><div><i class="bi bi-geo-alt" style="color:white;"></i><span>Private Bag 9055, Senga, Gweru, Zimbabwe</span></div><div><i class="bi bi-telephone" style="color:white;"></i><span>+263 78 231 9736</span></div><div><i class="bi bi-envelope" style="color:white;"></i><span>pals@staff.msu.ac.zw</span></div></div></div>
+        <div class="footer-section"><h4>Quick Links</h4><ul class="footer-menu"><li><a href="/about.html">About Us</a></li><li><a href="/team.html">Our Team</a></li><li><a href="/partners.html">Our Partners</a></li><li><a href="/news.html">News</a></li><li><a href="/contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-section"><h4>Research</h4><ul class="footer-menu"><li><a href="/research.html">Research Overview</a></li><li><a href="/research.html#current-projects">Current Projects</a></li><li><a href="/publications.html">Publications</a></li><li><a href="https://portal.placealert.org" target="_blank">Data Portal</a></li></ul></div>
+        <div class="footer-section footer-social"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.linkedin.com/company/place-alert-labs/" target="_blank" class="social-link linkedin"><i class="bi bi-linkedin"></i><span>LinkedIn</span></a><a href="https://twitter.com/placealertlabs" target="_blank" class="social-link twitter"><i class="bi bi-twitter-x"></i><span>Twitter</span></a><a href="https://bsky.app/profile/place-alert-lab.bsky.social" target="_blank" class="social-link bluesky"><i class="bi bi-globe"></i><span>Bluesky</span></a><a href="mailto:pals@staff.msu.ac.zw" class="social-link email"><i class="bi bi-envelope"></i><span>Email</span></a></div><div class="newsletter-signup"><h5>Stay Updated</h5><p>Subscribe to our research updates</p><div class="newsletter-form"><input type="email" placeholder="Enter your email" class="newsletter-input"><button type="button" class="newsletter-btn"><i class="bi bi-arrow-right"></i></button></div></div></div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-content"><div class="copyright"><p>&copy; 2025 Place Alert Labs - Midlands State University. All rights reserved.</p><p class="copyright-sub">Advancing Geospatial Health Research Across Africa</p></div><div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Accessibility</a></div></div></div></div>
+</footer>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="/assets/main.js"></script>
+</body>
+</html>

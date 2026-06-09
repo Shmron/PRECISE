@@ -1,0 +1,28 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="researchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#10b981;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:0.1" />
+    </linearGradient>
+    <pattern id="dataPattern" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="30" cy="30" r="2" fill="rgba(255,255,255,0.1)"/>
+      <circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.05)"/>
+      <circle cx="50" cy="50" r="1.5" fill="rgba(255,255,255,0.08)"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#researchGradient)"/>
+  <rect width="100%" height="100%" fill="url(#dataPattern)"/>
+  <!-- Abstract data visualization elements -->
+  <rect x="100" y="100" width="200" height="100" rx="10" fill="rgba(255,255,255,0.1)"/>
+  <rect x="400" y="200" width="150" height="80" rx="8" fill="rgba(255,255,255,0.08)"/>
+  <rect x="700" y="150" width="180" height="120" rx="12" fill="rgba(255,255,255,0.06)"/>
+  <rect x="1000" y="300" width="160" height="90" rx="9" fill="rgba(255,255,255,0.09)"/>
+  <rect x="1300" y="100" width="140" height="110" rx="11" fill="rgba(255,255,255,0.07)"/>
+  <rect x="1600" y="250" width="170" height="85" rx="7" fill="rgba(255,255,255,0.05)"/>
+</svg>
+
+
+
+
+

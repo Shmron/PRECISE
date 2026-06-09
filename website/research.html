@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research - Place Alert Labs</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+html { scroll-behavior: smooth; }
+.research-container {
+    margin-top: 200px;
+    max-width: 1200px; margin-left: auto; margin-right: auto;
+    padding: 0 20px 80px;
+    line-height: 1.8;
+}
+.research-section-block { margin-bottom: 100px; }
+.section-header    { text-align: right; margin-bottom: 50px; }
+.section-title-h   { font-size: 2.2rem; font-weight: 700; color: #1f2937; margin-bottom: 12px; position: relative; display: block; width: 100%; }
+.section-title-h::after { content:''; position:absolute; bottom:-15px; right:0; width:100px; height:5px; background:linear-gradient(90deg,#fbbf24,#f59e0b); border-radius:3px; }
+.section-description { font-size: 1.05rem; color: #6b7280; max-width: 600px; margin: 20px 0 0; line-height: 1.6; }
+
+.research-title {
+    font-size: 3rem; font-weight: 800; color: #1f2937;
+    margin-bottom: 20px; letter-spacing: -.5px;
+    background: linear-gradient(135deg,#1e40af 0%,#1e3a8a 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.research-underline { width: 120px; height: 5px; background: linear-gradient(90deg,#fbbf24 0%,#f59e0b 100%); border: none; margin: 0 auto 40px; border-radius: 3px; }
+.research-subtitle  { font-size: 1.2rem; color: #6b7280; max-width: 700px; margin: 0 auto 20px; line-height: 1.6; }
+
+.research-highlight {
+    background: linear-gradient(135deg,rgba(251,191,36,.08) 0%,rgba(251,191,36,.04) 100%);
+    padding: 30px; border-radius: 12px;
+    border-left: 5px solid #fbbf24;
+    margin: 30px 0 40px;
+    font-style: italic; color: #475569; font-size: 1.1rem; line-height: 1.7;
+}
+
+.research-focus-areas { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 50px; max-width: 1200px; margin: 0 auto; padding: 20px 0; }
+.research-focus-item  { position: relative; padding-top: 20px; }
+.research-focus-icon  { width: 60px; height: 60px; background: linear-gradient(135deg,#1e40af 0%,#1e3a8a 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 28px; color: white; }
+.research-focus-title { font-size: 1.3rem; font-weight: 700; color: #1f2937; margin-bottom: 15px; position: relative; display: inline-block; }
+.research-focus-title::after { content:''; position:absolute; bottom:-8px; left:0; width:50px; height:3px; background:linear-gradient(90deg,#fbbf24,#f59e0b); border-radius:2px; }
+.research-focus-text  { font-size: 1rem; color: #4b5563; line-height: 1.7; margin: 25px 0 0; }
+
+/* Current projects trays */
+.projects-tray-container { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 3rem; max-width: 1000px; margin-left: auto; margin-right: auto; }
+.project-tray { background: rgba(255,255,255,.95); border-radius: 12px; border: 1px solid rgba(226,232,240,.6); box-shadow: 0 2px 8px rgba(0,0,0,.04); transition: all .3s ease; position: relative; overflow: hidden; }
+.project-tray:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); border-color: rgba(30,58,138,.3); }
+.tray-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 2rem 2rem 1rem; gap: 1rem; }
+.tray-title h3 { color: #1e3a8a; font-size: 1.4rem; font-weight: 700; line-height: 1.3; margin-bottom: .5rem; flex: 1; }
+.tray-meta    { display: flex; gap: .5rem; margin-top: .5rem; flex-wrap: wrap; }
+.project-status   { background: #1e40af; color: white; padding: .3rem .8rem; border-radius: 15px; font-weight: 600; font-size: .8rem; }
+.project-duration { background: rgba(30,58,138,.1); color: #1e3a8a; padding: .3rem .8rem; border-radius: 15px; font-size: .8rem; font-weight: 500; border: 1px solid rgba(30,58,138,.2); }
+.tray-divider { height: 2px; background: #e2e8f0; margin: 0 2rem; border-radius: 1px; }
+.tray-content { padding: 1.5rem 2rem 2rem; }
+.project-image { width: 100%; height: 200px; overflow: hidden; border-radius: 12px; margin-bottom: 1rem; }
+.project-img   { width: 100%; height: 100%; object-fit: cover; transition: all .3s ease; }
+.project-tray:hover .project-img { transform: scale(1.05); }
+.project-description { color: #4b5563; line-height: 1.6; margin-bottom: 1.5rem; font-size: 1rem; }
+.tray-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+.research-nav-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+.research-nav-btn { background: linear-gradient(135deg,#1e40af 0%,#1e3a8a 100%); color: white; border: none; padding: 16px 24px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .3s ease; display: inline-block; text-decoration: none; box-shadow: 0 4px 12px rgba(30,58,138,.2); text-align: center; }
+.research-nav-btn:hover { background: linear-gradient(135deg,#1e3a8a 0%,#1e2d6f 100%); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(30,58,138,.3); text-decoration: none; color: white; }
+
+@media (max-width:768px) {
+    .research-container { margin-top: 140px; padding: 0 15px 60px; }
+    .research-title { font-size: 2rem; }
+    .section-title-h { font-size: 1.5rem; }
+    .research-focus-areas { grid-template-columns: 1fr; gap: 30px; }
+    .tray-header { flex-direction: column; align-items: flex-start; padding: 1.5rem 1.5rem 1rem; }
+    .research-nav-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="floating-particles"><div class="particle particle-blue"></div><div class="particle particle-orange"></div><div class="particle particle-light-blue"></div><div class="particle particle-yellow"></div><div class="particle particle-grey"></div></div>
+
+<div class="search-overlay" id="search-overlay"><div class="search-container"><div class="search-header"><h2>Search Place Alert Labs</h2><button class="search-close" id="search-close"><i class="bi bi-x-lg"></i></button></div><div class="search-input-container"><input type="text" id="search-input" placeholder="Search..." autocomplete="off"><button class="search-submit"><i class="bi bi-search"></i></button></div></div></div>
+<div class="floating-chat"><button class="chat-button whatsapp-btn" onclick="openWhatsApp()" title="Chat on WhatsApp"><i class="bi bi-whatsapp"></i><div class="chat-tooltip">Chat on WhatsApp</div></button></div>
+
+<header class="header">
+    <div class="header-top"><div class="container"><div class="header-top-content"><div class="header-top-left"><div class="header-info"><i class="bi bi-building"></i><a href="https://msu.ac.zw">MSU Site</a></div><div class="header-info"><i class="bi bi-envelope"></i><a href="mailto:pals@staff.msu.ac.zw">pals@staff.msu.ac.zw</a></div></div></div></div></div>
+    <div class="header-main"><div class="container"><div class="header-content">
+        <a href="/" class="logo"><div class="logo-text"><img src="/images/backgrounds/pals.png" alt="Place Alert Labs" class="logo-text-img"></div></a>
+        <nav class="nav"><ul class="nav-menu" id="nav-menu">
+            <li class="nav-item"><a href="/about.html" class="nav-link">About Us <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/about.html#vision" class="dropdown-item">Vision and Mission</a><a href="/about.html#values" class="dropdown-item">Values and Principles</a><a href="/about.html#about-us" class="dropdown-item">Who We Are</a><a href="/about.html#strategic-pillars" class="dropdown-item">Strategic Pillars</a></div></li>
+            <li class="nav-item active"><a href="/research.html" class="nav-link">Research <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/research.html" class="dropdown-item">Research Overview</a><a href="/research.html#current-projects" class="dropdown-item">Current Projects</a><a href="/publications.html" class="dropdown-item">Publications</a></div></li>
+            <li class="nav-item"><a href="/team.html" class="nav-link">Team</a></li>
+            <li class="nav-item"><a href="/partners.html" class="nav-link">Our Partners <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/partners.html#funding-partners" class="dropdown-item">Funding Partners</a><a href="/partners.html#research-partners" class="dropdown-item">Research Partners</a></div></li>
+            <li class="nav-item"><a href="/news.html" class="nav-link">News</a></li>
+            <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="search-toggle" id="search-toggle" title="Search"><i class="bi bi-search"></i></button>
+        <a href="https://portal.placealert.org" target="_blank" class="nav-portal-btn"><i class="bi bi-database"></i> Data Portal &rarr;</a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="bi bi-list"></i></button>
+        </nav>
+    </div></div></div>
+</header>
+
+<main>
+<div class="research-container">
+
+    <!-- Research Overview -->
+    <div class="research-section-block">
+        <div class="section-header" style="text-align:center; margin-bottom:40px;">
+            <h1 class="research-title">Research Overview</h1>
+            <hr class="research-underline">
+            <p class="research-subtitle">Our multidisciplinary approach spans key areas of environment-health research</p>
+        </div>
+
+        <div class="research-highlight">
+            "We utilize advanced Geographical Information Science (GISc) to transform complex spatial and health data into actionable insights that guide policy, empower communities, and protect public health in Africa's toughest health and climate challenges."
+        </div>
+
+        <div class="research-focus-areas">
+            <div class="research-focus-item">
+                <div class="research-focus-icon"><i class="bi bi-heart-pulse"></i></div>
+                <h3 class="research-focus-title">Maternal &amp; Child Health</h3>
+                <p class="research-focus-text">Our geospatial analysis focuses on maternal health outcomes, healthcare access, and community-based interventions across Africa. We examine spatial patterns in maternal mortality, access to healthcare facilities, and the effectiveness of community health programs.</p>
+            </div>
+            <div class="research-focus-item">
+                <div class="research-focus-icon"><i class="bi bi-cloud-haze2"></i></div>
+                <h3 class="research-focus-title">Environmental Health</h3>
+                <p class="research-focus-text">We conduct comprehensive air quality monitoring, study climate-health interactions, and assess environmental exposure using advanced spatial methods. Our research helps identify environmental risk factors and their impact on population health.</p>
+            </div>
+            <div class="research-focus-item">
+                <div class="research-focus-icon"><i class="bi bi-map"></i></div>
+                <h3 class="research-focus-title">Geospatial Analysis</h3>
+                <p class="research-focus-text">Our GIS applications, remote sensing, and spatial data science capabilities enable us to conduct health and environmental research across diverse African contexts, providing critical insights for policy and intervention design.</p>
+            </div>
+            <div class="research-focus-item">
+                <div class="research-focus-icon"><i class="bi bi-cpu"></i></div>
+                <h3 class="research-focus-title">Machine Learning &amp; AI</h3>
+                <p class="research-focus-text">We employ predictive modeling, deep learning applications, and AI-driven solutions to address complex health and environmental challenges, creating innovative tools for decision-making and intervention planning.</p>
+            </div>
+            <div class="research-focus-item">
+                <div class="research-focus-icon"><i class="bi bi-people"></i></div>
+                <h3 class="research-focus-title">Community Engagement</h3>
+                <p class="research-focus-text">Our participatory research approach involves communities, policymakers, and institutions to ensure our work is relevant, inclusive, and drives real-world impact through community-based interventions and capacity building.</p>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top:50px;">
+            <a href="#current-projects" class="research-nav-btn">Explore Current Projects &darr;</a>
+        </div>
+    </div>
+
+    <!-- Current Projects -->
+    <div class="research-section-block" id="current-projects">
+        <div class="section-header">
+            <h2 class="section-title-h">Current Research Projects</h2>
+        </div>
+
+        <div class="projects-tray-container">
+
+            <!-- PRECISE -->
+            <div class="project-tray">
+                <div class="tray-header">
+                    <div class="tray-title">
+                        <h3>PRECISE — PREgnancy Care Integrating translational Science Everywhere</h3>
+                        <div class="tray-meta">
+                            <span class="project-status">Active</span>
+                            <span class="project-duration">2020 – Present</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tray-divider"></div>
+                <div class="tray-content">
+                    <div class="project-image"><img src="/images/backgrounds/precise1.JPG" alt="PRECISE Network Research" class="project-img"></div>
+                    <p class="project-description">The PRECISE Network is a broadly-based group of research scientists and health advocates mainly based in the UK and Africa, including the World Health Organization. PALs lead the health geography component and aims to understand geographical influences on placental disorders of pregnancy — including hypertension, fetal growth restriction, and stillbirth — across the Gambia, Mozambique, and Kenya. Funded by UK Research and Innovation (UKRI) Global Challenge Research Fund (GCRF).</p>
+                    <div class="tray-tags"><span class="tag">Maternal Health</span><span class="tag">Geospatial Analysis</span><span class="tag">Africa</span><span class="tag">Pregnancy</span><span class="tag">Health Geography</span></div>
+                </div>
+            </div>
+
+            <!-- CHEAQI-MNCH -->
+            <div class="project-tray">
+                <div class="tray-header">
+                    <div class="tray-title">
+                        <h3>CHEAQI-MNCH — Climate, Health, Environment, Air Quality, and Maternal and Neonatal Child Health</h3>
+                        <div class="tray-meta">
+                            <span class="project-status">Active</span>
+                            <span class="project-duration">2021 – Present</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tray-divider"></div>
+                <div class="tray-content">
+                    <p class="project-description">This innovative data science project quantifies the current and future impacts of air pollution on maternal and neonatal health in sub-Saharan Africa. Air pollution is a leading contributor to the global disease burden — a crucial concern as air quality across sub-Saharan Africa significantly deteriorates with accelerated urbanization, industrialization, and population growth. The project focuses on the synergistic association between heat waves and air pollution, developing adaptive interventions for vulnerable populations. Partners include NIH, Wellcome Trust, WITS, HE²AT Centre, and University of California Berkeley.</p>
+                    <div class="tray-tags"><span class="tag">Air Pollution</span><span class="tag">Machine Learning</span><span class="tag">Climate Health</span><span class="tag">Maternal Health</span><span class="tag">Data Science</span></div>
+                </div>
+            </div>
+
+            <!-- ETIQUET -->
+            <div class="project-tray">
+                <div class="tray-header">
+                    <div class="tray-title">
+                        <h3>ETIQUET — Extrapolating Temperature and Air Quality Exposure in Space and Time</h3>
+                        <div class="tray-meta">
+                            <span class="project-status">Active</span>
+                            <span class="project-duration">Feb 2024 – Jun 2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tray-divider"></div>
+                <div class="tray-content">
+                    <p class="project-description">A groundbreaking initiative addressing the persistent scarcity of environmental exposure data in sub-Saharan Africa. ETIQUET develops scalable, scientifically rigorous models to estimate exposure to air pollution (PM₂.₅, NO₂) and temperature at a daily resolution across unsampled locations. The project integrates high-resolution satellite data, portable and ambient sensor networks, and epidemiological surveillance datasets using spatio-temporal kriging, land use regression, and semi-supervised deep learning pipelines. Partners: HE²AT Centre, WITS University, Midlands State University.</p>
+                    <div class="tray-tags"><span class="tag">Environmental Data</span><span class="tag">Deep Learning</span><span class="tag">Spatial Analysis</span><span class="tag">Air Quality</span><span class="tag">Temperature</span></div>
+                </div>
+            </div>
+
+            <!-- Fire Smoke -->
+            <div class="project-tray">
+                <div class="tray-header">
+                    <div class="tray-title">
+                        <h3>CHEAQI Landscape Fire Smoke Supplement — Fire Smoke &amp; Birth Outcomes in Sub-Saharan Africa</h3>
+                        <div class="tray-meta">
+                            <span class="project-status">Active</span>
+                            <span class="project-duration">2023 – Present</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tray-divider"></div>
+                <div class="tray-content">
+                    <p class="project-description">Sub-Saharan Africa is the most fire-affected region globally, responsible for nearly 70% of the world's burned area each year — with 41% of fires being agricultural. This NIH-funded supplement addresses the critical knowledge gap in fire smoke exposure and birth outcomes in Africa. The project integrates SILAM atmospheric composition data with machine learning algorithms and distributed lag models to assess fire smoke exposure patterns and their health impacts on maternal and child health. Partners: NIH, WITS, Finnish Meteorological Institute.</p>
+                    <div class="tray-tags"><span class="tag">Fire Smoke</span><span class="tag">Birth Outcomes</span><span class="tag">PM2.5</span><span class="tag">NIH Funded</span><span class="tag">Agricultural Fires</span></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="research-section-block">
+        <div class="section-header"><h2 class="section-title-h">Quick Links</h2></div>
+        <div class="research-nav-grid">
+            <a href="/publications.html" class="research-nav-btn"><i class="bi bi-book" style="margin-right:8px;"></i>Publications</a>
+            <a href="/team.html" class="research-nav-btn"><i class="bi bi-people" style="margin-right:8px;"></i>Research Team</a>
+            <a href="/partners.html" class="research-nav-btn"><i class="bi bi-building" style="margin-right:8px;"></i>Partners &amp; Funders</a>
+            <a href="https://portal.placealert.org" target="_blank" class="research-nav-btn"><i class="bi bi-database" style="margin-right:8px;"></i>Data Portal</a>
+        </div>
+    </div>
+
+</div>
+</main>
+
+<footer class="modern-footer">
+    <div class="sponsors-section"></div>
+    <div class="footer-main"><div class="container"><div class="footer-content">
+        <div class="footer-section footer-about"><div class="footer-logo-container"><div class="footer-logo"><img src="/images/backgrounds/PALs_Logo.png" alt="PALs Logo" class="footer-logo-img"></div><div class="footer-brand"><h3>Place Alert Labs</h3><p>Geospatial Health Research Excellence</p></div></div><p class="footer-description">Leading innovative research in geospatial health science at Midlands State University, driving evidence-based solutions for global health challenges across Africa.</p><div class="footer-contact"><div><i class="bi bi-geo-alt" style="color:white;"></i><span>Private Bag 9055, Senga, Gweru, Zimbabwe</span></div><div><i class="bi bi-telephone" style="color:white;"></i><span>+263 78 231 9736</span></div><div><i class="bi bi-envelope" style="color:white;"></i><span>pals@staff.msu.ac.zw</span></div></div></div>
+        <div class="footer-section"><h4>Quick Links</h4><ul class="footer-menu"><li><a href="/about.html">About Us</a></li><li><a href="/team.html">Our Team</a></li><li><a href="/partners.html">Our Partners</a></li><li><a href="/news.html">News</a></li><li><a href="/contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-section"><h4>Research</h4><ul class="footer-menu"><li><a href="/research.html">Research Overview</a></li><li><a href="/research.html#current-projects">Current Projects</a></li><li><a href="/publications.html">Publications</a></li><li><a href="https://portal.placealert.org" target="_blank">Data Portal</a></li></ul></div>
+        <div class="footer-section footer-social"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.linkedin.com/company/place-alert-labs/" target="_blank" class="social-link linkedin"><i class="bi bi-linkedin"></i><span>LinkedIn</span></a><a href="https://twitter.com/placealertlabs" target="_blank" class="social-link twitter"><i class="bi bi-twitter-x"></i><span>Twitter</span></a><a href="https://bsky.app/profile/place-alert-lab.bsky.social" target="_blank" class="social-link bluesky"><i class="bi bi-globe"></i><span>Bluesky</span></a><a href="mailto:pals@staff.msu.ac.zw" class="social-link email"><i class="bi bi-envelope"></i><span>Email</span></a></div><div class="newsletter-signup"><h5>Stay Updated</h5><p>Subscribe to our research updates</p><div class="newsletter-form"><input type="email" placeholder="Enter your email" class="newsletter-input"><button type="button" class="newsletter-btn"><i class="bi bi-arrow-right"></i></button></div></div></div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-content"><div class="copyright"><p>&copy; 2025 Place Alert Labs - Midlands State University. All rights reserved.</p><p class="copyright-sub">Advancing Geospatial Health Research Across Africa</p></div><div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Accessibility</a></div></div></div></div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="/assets/main.js"></script>
+</body>
+</html>

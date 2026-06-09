@@ -1,0 +1,40 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="teamGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#fde047;stop-opacity:0.1" />
+    </linearGradient>
+    <pattern id="networkPattern" width="80" height="80" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="40" x2="80" y2="40" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="40" y1="0" x2="40" y2="80" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <circle cx="40" cy="40" r="3" fill="rgba(255,255,255,0.2)"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#teamGradient)"/>
+  <rect width="100%" height="100%" fill="url(#networkPattern)"/>
+  <!-- Network connection elements -->
+  <circle cx="200" cy="200" r="15" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="400" cy="300" r="12" fill="rgba(255,255,255,0.15)"/>
+  <circle cx="600" cy="150" r="18" fill="rgba(255,255,255,0.18)"/>
+  <circle cx="800" cy="400" r="14" fill="rgba(255,255,255,0.12)"/>
+  <circle cx="1000" cy="250" r="16" fill="rgba(255,255,255,0.16)"/>
+  <circle cx="1200" cy="350" r="13" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="1400" cy="200" r="17" fill="rgba(255,255,255,0.17)"/>
+  <circle cx="1600" cy="450" r="15" fill="rgba(255,255,255,0.13)"/>
+  <circle cx="1800" cy="300" r="19" fill="rgba(255,255,255,0.19)"/>
+  <!-- Connection lines -->
+  <line x1="200" y1="200" x2="400" y2="300" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+  <line x1="400" y1="300" x2="600" y2="150" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="600" y1="150" x2="800" y2="400" stroke="rgba(255,255,255,0.12)" stroke-width="1.8"/>
+  <line x1="800" y1="400" x2="1000" y2="250" stroke="rgba(255,255,255,0.09)" stroke-width="1.2"/>
+  <line x1="1000" y1="250" x2="1200" y2="350" stroke="rgba(255,255,255,0.11)" stroke-width="1.6"/>
+  <line x1="1200" y1="350" x2="1400" y2="200" stroke="rgba(255,255,255,0.07)" stroke-width="1.3"/>
+  <line x1="1400" y1="200" x2="1600" y2="450" stroke="rgba(255,255,255,0.13)" stroke-width="1.7"/>
+  <line x1="1600" y1="450" x2="1800" y2="300" stroke="rgba(255,255,255,0.06)" stroke-width="1.1"/>
+</svg>
+
+
+
+
+

@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Africa Road Accessibility | PALS Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: #14171a; color: #fffbf5; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 4px; background: linear-gradient(90deg, #B87333 0% 25%, #1A535C 25% 50%, #6B8E6B 50% 75%, #7B6BA8 75%); flex-shrink: 0; }
+        .header { background: rgba(18,21,24,0.98); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.6rem 1.4rem; display: flex; align-items: center; gap: 1.5rem; flex-shrink: 0; }
+        .header-back { font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+        .header-back:hover { color: #B87333; }
+        .header-back::before { content: '← '; }
+        .header-title { flex: 1; }
+        .header-title h1 { font-size: 0.92rem; font-weight: 600; }
+        .header-title p { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
+        .header-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.25); text-align: right; line-height: 1.7; }
+        .map-wrap { flex: 1; position: relative; overflow: hidden; }
+        #map { width: 100%; height: 100%; }
+
+        .panel { position: absolute; bottom: 2rem; left: 1.25rem; background: rgba(14,17,20,0.94); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; padding: 1rem 1.1rem; width: 248px; z-index: 5; }
+        .panel-label { font-family: 'JetBrains Mono', monospace; font-size: 0.57rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 0.5rem; }
+
+        /* Pill toggle */
+        .pill-row { display: flex; gap: 4px; margin-bottom: 0.1rem; }
+        .pill { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); padding: 0.3rem 0; border-radius: 3px; cursor: pointer; transition: all 0.15s; }
+        .pill.active { background: rgba(184,115,51,0.25); border-color: #B87333; color: #e8a56a; }
+        .pill:hover:not(.active) { border-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.65); }
+
+        /* Legend */
+        .legend-gradient-dist { height: 10px; border-radius: 2px; background: linear-gradient(90deg, #d73027, #fc8d59, #fee08b, #d9ef8b, #91cf60, #1a9850); margin-bottom: 0.35rem; }
+        .legend-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.57rem; color: rgba(255,255,255,0.35); }
+        .legend-unit { margin-top: 0.4rem; font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: rgba(255,255,255,0.2); text-align: center; }
+        .bin-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.28rem; }
+        .bin-swatch { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+        .bin-label { font-size: 0.76rem; color: rgba(255,255,255,0.6); }
+
+        hr.pdiv { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0.8rem 0; }
+        select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fffbf5; font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; padding: 0.28rem 0.45rem; border-radius: 3px; outline: none; cursor: pointer; }
+        select:focus { border-color: #B87333; }
+        select option { background: #14171a; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.42rem; }
+        .toggle-row:last-child { margin-bottom: 0; }
+        .toggle-label { font-size: 0.76rem; color: rgba(255,255,255,0.65); display: flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+        .swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+        .toggle-switch { position: relative; width: 28px; height: 15px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-switch .slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 15px; cursor: pointer; transition: background 0.2s; }
+        .toggle-switch .slider::before { content: ''; position: absolute; width: 9px; height: 9px; left: 3px; top: 3px; background: rgba(255,255,255,0.45); border-radius: 50%; transition: transform 0.2s, background 0.2s; }
+        .toggle-switch input:checked + .slider { background: #B87333; }
+        .toggle-switch input:checked + .slider::before { transform: translateX(13px); background: white; }
+        .section-disabled { opacity: 0.35; pointer-events: none; }
+
+        .tt { position: absolute; background: rgba(10,13,16,0.97); border: 1px solid rgba(255,255,255,0.08); border-radius: 5px; padding: 0.65rem 0.85rem; pointer-events: none; z-index: 20; display: none; line-height: 1.65; min-width: 215px; }
+        .tt-country { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .tt-row { display: flex; justify-content: space-between; gap: 1rem; color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
+        .tt-val { color: #4ECDC4; font-weight: 500; }
+        .tt-hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0.35rem 0; }
+
+        .loading { position: absolute; inset: 0; background: rgba(10,13,16,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 30; gap: 1rem; }
+        .loading-text { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; }
+        .loading-bar-wrap { width: 200px; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+        .loading-bar { height: 100%; background: #B87333; border-radius: 2px; transition: width 0.35s ease; width: 0%; }
+
+        .mode-badge { position: absolute; top: 0.9rem; left: 50%; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); background: rgba(14,17,20,0.85); border: 1px solid rgba(255,255,255,0.07); border-radius: 3px; padding: 0.25rem 0.7rem; z-index: 4; pointer-events: none; }
+
+        .stats { position: absolute; top: 1rem; right: 1rem; background: rgba(14,17,20,0.94); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; padding: 0.85rem 1.05rem; z-index: 5; min-width: 192px; display: none; }
+        .stats.show { display: block; }
+        .stats-head { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding-bottom: 0.45rem; margin-bottom: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .s-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.28rem; }
+        .s-label { font-family: 'JetBrains Mono', monospace; font-size: 0.57rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.28); }
+        .s-val { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #4ECDC4; font-weight: 500; }
+
+        .updating { position: absolute; bottom: 0.6rem; right: 4rem; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.22); letter-spacing: 0.1em; z-index: 4; display: none; }
+
+        /* Light mode overrides */
+        body.light { background: #ede8df; color: #2d3436; }
+        body.light .header { background: rgba(248,245,240,0.98); border-color: rgba(45,52,54,0.1); }
+        body.light .header-back { color: rgba(45,52,54,0.38); }
+        body.light .header-back:hover { color: #B87333; }
+        body.light .header-title p, body.light .header-meta { color: rgba(45,52,54,0.42); }
+        body.light .panel { background: rgba(248,245,240,0.97); border-color: rgba(45,52,54,0.1); }
+        body.light .panel-label { color: rgba(45,52,54,0.42); }
+        body.light .legend-labels { color: rgba(45,52,54,0.6); }
+        body.light .legend-unit { color: rgba(45,52,54,0.38); }
+        body.light .bin-label { color: rgba(45,52,54,0.7); }
+        body.light hr.pdiv { border-color: rgba(45,52,54,0.08); }
+        body.light select { background: rgba(45,52,54,0.04); border-color: rgba(45,52,54,0.14); color: #2d3436; }
+        body.light select option { background: #ede8df; }
+        body.light .toggle-label { color: rgba(45,52,54,0.68); }
+        body.light .toggle-switch .slider { background: rgba(45,52,54,0.12); }
+        body.light .toggle-switch .slider::before { background: rgba(45,52,54,0.38); }
+        body.light .pill { background: rgba(45,52,54,0.05); border-color: rgba(45,52,54,0.12); color: rgba(45,52,54,0.45); }
+        body.light .pill.active { background: rgba(184,115,51,0.18); border-color: #B87333; color: #8a5a25; }
+        body.light .pill:hover:not(.active) { border-color: rgba(45,52,54,0.25); color: rgba(45,52,54,0.7); }
+        body.light .tt { background: rgba(248,245,240,0.98); border-color: rgba(45,52,54,0.12); color: #2d3436; }
+        body.light .tt-country { color: #2d3436; }
+        body.light .tt-row { color: rgba(45,52,54,0.52); }
+        body.light .tt-val { color: #1A535C; }
+        body.light .tt-hr { border-color: rgba(45,52,54,0.08); }
+        body.light .loading { background: rgba(237,232,223,0.92); }
+        body.light .loading-text { color: rgba(45,52,54,0.52); }
+        body.light .loading-bar-wrap { background: rgba(45,52,54,0.08); }
+        body.light .mode-badge { background: rgba(248,245,240,0.92); border-color: rgba(45,52,54,0.1); color: rgba(45,52,54,0.45); }
+        body.light .stats { background: rgba(248,245,240,0.97); border-color: rgba(45,52,54,0.1); }
+        body.light .stats-head { color: rgba(45,52,54,0.38); border-color: rgba(45,52,54,0.08); }
+        body.light .s-label { color: rgba(45,52,54,0.38); }
+        body.light .s-val { color: #1A535C; }
+        body.light .updating { color: rgba(45,52,54,0.32); }
+        body.light .section-disabled { opacity: 0.28; }
+
+        /* Theme button */
+        .theme-btn { background: none; border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; color: rgba(255,255,255,0.45); cursor: pointer; padding: 0.28rem 0.6rem; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; transition: border-color 0.2s, color 0.2s; flex-shrink: 0; display: flex; align-items: center; gap: 0.35rem; }
+        .theme-btn:hover { border-color: #B87333; color: #B87333; }
+        .theme-btn svg { width: 13px; height: 13px; fill: currentColor; }
+        body.light .theme-btn { border-color: rgba(45,52,54,0.15); color: rgba(45,52,54,0.45); }
+        body.light .theme-btn:hover { border-color: #B87333; color: #B87333; }
+    </style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="header">
+    <a href="/" class="header-back">Portal</a>
+    <div class="header-title">
+        <h1>Africa Road Accessibility</h1>
+        <p>H3 Res 7 &bull; OSM &bull; Euclidean distance to nearest highway / major road</p>
+    </div>
+    <div class="header-meta" id="meta">Loading…</div>
+    <button class="theme-btn" id="theme-btn" title="Switch to light mode">
+        <svg id="theme-icon-dark" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0-2a1 1 0 0 0 1-1V2a1 1 0 0 0-2 0v2a1 1 0 0 0 1 1zm0 16a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1zm9-9h-2a1 1 0 0 0 0 2h2a1 1 0 0 0 0-2zM5 12a1 1 0 0 0-1-1H2a1 1 0 0 0 0 2h2a1 1 0 0 0 1-1zm11.95 5.54-1.41-1.42a1 1 0 0 0-1.42 1.42l1.42 1.41a1 1 0 0 0 1.41-1.41zM7.05 7.05 5.64 5.64a1 1 0 0 0-1.42 1.41l1.42 1.42a1 1 0 0 0 1.41-1.42zm9.9-1.41a1 1 0 0 0-1.41 0l-1.42 1.42a1 1 0 0 0 1.42 1.41l1.41-1.41a1 1 0 0 0 0-1.42zM7.05 16.95a1 1 0 0 0-1.41 1.41l1.41 1.42a1 1 0 0 0 1.42-1.42z"/></svg>
+        <svg id="theme-icon-light" viewBox="0 0 24 24" style="display:none"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+        <span id="theme-label">Light</span>
+    </button>
+</div>
+
+<div class="map-wrap">
+    <div id="map"></div>
+
+    <div class="loading" id="loading">
+        <div class="loading-text" id="ltxt">Loading overview…</div>
+        <div class="loading-bar-wrap"><div class="loading-bar" id="lbar"></div></div>
+    </div>
+
+    <div class="mode-badge" id="mode-badge">Africa overview · H3 res 4</div>
+
+    <!-- Tooltip -->
+    <div class="tt" id="tt">
+        <div class="tt-country" id="tt-country"></div>
+        <div class="tt-row"><span>Highway dist</span><span class="tt-val" id="tt-hw"></span></div>
+        <div class="tt-row"><span>Major road dist</span><span class="tt-val" id="tt-mr"></span></div>
+        <hr class="tt-hr">
+        <div class="tt-row" id="tt-cell-row"><span>H3 cell</span><span class="tt-val" id="tt-cell" style="font-size:0.58rem"></span></div>
+    </div>
+
+    <!-- Control panel -->
+    <div class="panel">
+
+        <div class="panel-label">Road type</div>
+        <div class="pill-row">
+            <button class="pill active" id="pill-hw">Highways</button>
+            <button class="pill" id="pill-mr">Major Roads</button>
+        </div>
+
+        <hr class="pdiv">
+
+        <div class="panel-label">Display</div>
+        <div class="pill-row">
+            <button class="pill active" id="pill-cont">Continuous</button>
+            <button class="pill" id="pill-bins">Bins</button>
+        </div>
+
+        <hr class="pdiv">
+
+        <!-- Continuous legend -->
+        <div id="legend-continuous">
+            <div id="legend-gradient-bar" class="legend-gradient-dist"></div>
+            <div class="legend-labels">
+                <span id="leg-min">—</span>
+                <span id="leg-mid">—</span>
+                <span id="leg-max">—</span>
+            </div>
+            <div class="legend-unit" id="legend-unit-text">km · red = close (high exposure) · green = far</div>
+        </div>
+
+        <!-- Binned legend -->
+        <div id="legend-bins" style="display:none">
+            <div id="bin-rows"></div>
+        </div>
+
+        <hr class="pdiv">
+
+        <!-- Use as: colour mode -->
+        <div class="panel-label">Use as</div>
+        <div class="pill-row">
+            <button class="pill active" id="pill-pollution" title="Red = close to road (high pollution exposure)">Pollution proxy</button>
+            <button class="pill" id="pill-access" title="Green = close to road (accessible)">Accessibility</button>
+        </div>
+
+        <hr class="pdiv">
+
+        <!-- Road line overlay -->
+        <div class="panel-label">Road lines</div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:#e8a56a"></span>Highways</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-roads-hw"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:#4ECDC4"></span>Major roads</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-roads-mr"><span class="slider"></span></label>
+        </div>
+        <div id="roads-status" style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:rgba(255,255,255,0.28);text-align:center;padding:0.2rem 0;display:none"></div>
+
+        <hr class="pdiv">
+
+        <!-- Pop-weighted choropleth -->
+        <div class="toggle-row">
+            <label class="toggle-label" style="gap:0.3rem;flex-direction:column;align-items:flex-start;line-height:1.3">
+                <span>Show pop-weighted choropleth</span>
+                <span style="font-size:0.62rem;opacity:0.55">Σ(dist×pop) / Σ(pop) per admin unit</span>
+            </label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-pwdist"><span class="slider"></span></label>
+        </div>
+        <div id="pwdist-controls" style="display:none;margin-top:0.4rem">
+            <select id="pwdist-level" style="margin-bottom:0.4rem">
+                <option value="adm1">Provinces / States</option>
+                <option value="adm2">Districts</option>
+                <option value="adm3">Sub-districts</option>
+            </select>
+            <div id="pwdist-status" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:rgba(255,255,255,0.3);text-align:center;padding:0.25rem 0"></div>
+        </div>
+
+        <hr class="pdiv">
+
+        <div class="panel-label">Admin boundaries</div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.5)"></span>Countries</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm0" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.28)"></span>Provinces / States</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm1" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.16)"></span>Districts</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm2" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.09)"></span>Sub-districts</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm3" checked><span class="slider"></span></label>
+        </div>
+
+        <hr class="pdiv">
+
+        <div class="panel-label">Filter by country</div>
+        <select id="country-select"><option value="">All countries (overview)</option></select>
+    </div>
+
+    <div class="stats" id="stats">
+        <div class="stats-head" id="stats-head">Africa</div>
+        <div class="s-row"><span class="s-label">H3 cells</span><span class="s-val" id="st-cells">—</span></div>
+        <div class="s-row"><span class="s-label" id="st-med-label">Median dist</span><span class="s-val" id="st-med">—</span></div>
+        <div class="s-row"><span class="s-label">75th pct</span><span class="s-val" id="st-p75">—</span></div>
+        <div class="s-row"><span class="s-label">95th pct</span><span class="s-val" id="st-p95">—</span></div>
+    </div>
+
+    <div class="updating" id="updating">updating…</div>
+</div>
+
+<script>
+// ── Theme ─────────────────────────────────────────────────────────────────────
+const DARK_BASE  = ['https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png','https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png'];
+const LIGHT_BASE = ['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png','https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'];
+
+let isDark = localStorage.getItem('euc-theme') !== 'light';
+
+function applyTheme(dark, mapReady) {
+    isDark = dark;
+    if (dark) {
+        document.body.classList.remove('light');
+        document.getElementById('theme-icon-dark').style.display = '';
+        document.getElementById('theme-icon-light').style.display = 'none';
+        document.getElementById('theme-label').textContent = 'Light';
+        document.getElementById('theme-btn').title = 'Switch to light mode';
+    } else {
+        document.body.classList.add('light');
+        document.getElementById('theme-icon-dark').style.display = 'none';
+        document.getElementById('theme-icon-light').style.display = '';
+        document.getElementById('theme-label').textContent = 'Dark';
+        document.getElementById('theme-btn').title = 'Switch to dark mode';
+    }
+    localStorage.setItem('euc-theme', dark ? 'dark' : 'light');
+
+    if (!mapReady || !map) return;
+    map.getSource('basemap').setTiles(dark ? DARK_BASE : LIGHT_BASE);
+
+    const bndColor = dark ? 'rgba(255,255,255,0.6)'  : 'rgba(45,52,54,0.75)';
+    const lblColor = dark ? 'rgba(255,255,255,0.85)' : 'rgba(45,52,54,0.88)';
+    const lblHalo  = dark ? 'rgba(0,0,0,0.9)'        : 'rgba(255,255,255,0.95)';
+    const outLine  = dark ? 'rgba(0,0,0,0.2)'         : 'rgba(0,0,0,0.15)';
+
+    if (map.getLayer('country-lines'))  map.setPaintProperty('country-lines','line-color', bndColor);
+    if (map.getLayer('country-labels')) { map.setPaintProperty('country-labels','text-color', lblColor); map.setPaintProperty('country-labels','text-halo-color', lblHalo); }
+    if (map.getLayer('hex-outline'))    map.setPaintProperty('hex-outline','line-color', outLine);
+
+    const admCols = dark
+        ? ['rgba(255,255,255,0.45)','rgba(255,255,255,0.28)','rgba(255,255,255,0.18)']
+        : ['rgba(45,52,54,0.55)','rgba(45,52,54,0.30)','rgba(45,52,54,0.18)'];
+    ['adm1','adm2','adm3'].forEach((id, i) => {
+        if (map.getLayer(id+'-line'))  map.setPaintProperty(id+'-line','line-color', admCols[i]);
+        if (map.getLayer(id+'-label')) { map.setPaintProperty(id+'-label','text-color', lblColor); map.setPaintProperty(id+'-label','text-halo-color', lblHalo); }
+    });
+
+    if (pwdistActive && map.getLayer('pwdist-outline')) {
+        map.setPaintProperty('pwdist-outline','line-color', pwdistThemeColors().outline);
+    }
+}
+
+applyTheme(isDark, false);
+document.getElementById('theme-btn').addEventListener('click', () => applyTheme(!isDark, true));
+
+// ── Color config ──────────────────────────────────────────────────────────────
+// Two colour modes — user-switchable via panel
+const CSTOPS_POLLUTION = [   // red=close (high exposure), green=far (low exposure)
+    [0, '#d73027'], [0.2, '#fc8d59'], [0.4, '#fee08b'],
+    [0.6, '#d9ef8b'], [0.8, '#91cf60'], [1.0, '#1a9850'],
+];
+const CSTOPS_ACCESS = [      // green=close (accessible), red=far (remote)
+    [0, '#1a9850'], [0.2, '#91cf60'], [0.4, '#d9ef8b'],
+    [0.6, '#fee08b'], [0.8, '#fc8d59'], [1.0, '#d73027'],
+];
+
+const BINS_POLLUTION = [
+    { max: 1,        color: '#d73027', label: '< 1 km',      note: 'Very high exposure' },
+    { max: 5,        color: '#fc8d59', label: '1 – 5 km' },
+    { max: 25,       color: '#fee08b', label: '5 – 25 km' },
+    { max: 100,      color: '#91cf60', label: '25 – 100 km' },
+    { max: Infinity, color: '#1a9850', label: '> 100 km',    note: 'Very low exposure' },
+];
+const BINS_ACCESS = [
+    { max: 1,        color: '#1a9850', label: '< 1 km',      note: 'Very accessible' },
+    { max: 5,        color: '#91cf60', label: '1 – 5 km' },
+    { max: 25,       color: '#fee08b', label: '5 – 25 km' },
+    { max: 100,      color: '#fc8d59', label: '25 – 100 km' },
+    { max: Infinity, color: '#d73027', label: '> 100 km',    note: 'Very remote' },
+];
+
+function CSTOPS() { return colorMode === 'pollution' ? CSTOPS_POLLUTION : CSTOPS_ACCESS; }
+function BINS()   { return colorMode === 'pollution' ? BINS_POLLUTION   : BINS_ACCESS;   }
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let globalStats  = {};
+let boundsGJ     = null;
+let currentData  = {};
+let currentISO   = '';
+let mode         = 'hw';          // 'hw' | 'mr'
+let displayMode  = 'continuous';  // 'continuous' | 'binned'
+let colorMode    = 'pollution';   // 'pollution' | 'access'
+let map;
+
+const CHUNK_SIZE = 5000;  // cells per async chunk — keeps browser responsive
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const prog = (p, t) => { document.getElementById('lbar').style.width = p + '%'; if (t !== undefined) document.getElementById('ltxt').textContent = t; };
+const show = id => document.getElementById(id).style.display = 'block';
+const hide = id => document.getElementById(id).style.display = 'none';
+
+async function loadGZ(url) {
+    const blob = await fetch(url).then(r => { if (!r.ok) throw new Error(r.statusText); return r.blob(); });
+    const text = await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).text();
+    return JSON.parse(text);
+}
+
+function getValue(v) {
+    return mode === 'hw' ? (v.hw || 0) : (v.mr || 0);
+}
+
+function fmtKm(km) {
+    if (km == null || isNaN(km)) return '—';
+    if (km < 1) return (km * 1000).toFixed(0) + ' m';
+    if (km < 10) return km.toFixed(2) + ' km';
+    return km.toFixed(1) + ' km';
+}
+
+function setBadge(text) { document.getElementById('mode-badge').textContent = text; }
+
+// ── GeoJSON builder — chunked async to keep browser responsive at any cell count
+async function buildGeoJSON(data) {
+    const entries = Object.entries(data);
+    const features = [];
+    for (let i = 0; i < entries.length; i += CHUNK_SIZE) {
+        const slice = entries.slice(i, i + CHUNK_SIZE);
+        for (const [cellId, v] of slice) {
+            const dist = getValue(v);
+            if (dist <= 0) continue;
+            let boundary;
+            try { boundary = h3.cellToBoundary(cellId); } catch(e) { continue; }
+            const coords = boundary.map(([la, lo]) => [lo, la]);
+            coords.push(coords[0]);
+            features.push({
+                type: 'Feature',
+                id: features.length,
+                properties: {
+                    cellId,
+                    dist:    +dist.toFixed(3),
+                    hw:      +(v.hw || 0).toFixed(3),
+                    mr:      +(v.mr || 0).toFixed(3),
+                    country: v.n || v.i || '',
+                    iso:     v.i || '',
+                },
+                geometry: { type: 'Polygon', coordinates: [coords] }
+            });
+        }
+        // Yield to the browser event loop between chunks — prevents tab crash
+        await new Promise(r => setTimeout(r, 0));
+    }
+    return { type: 'FeatureCollection', features };
+}
+
+// ── Color expressions ─────────────────────────────────────────────────────────
+function quantileColorExpr(data) {
+    const vals = Object.values(data).map(v => getValue(v)).filter(x => x > 0).sort((a, b) => a - b);
+    if (!vals.length) return ['interpolate', ['linear'], ['get', 'dist'], 0, '#d73027', 1000, '#1a9850'];
+    const n = vals.length;
+    const q = p => vals[Math.min(n - 1, Math.floor(p * n))];
+    const stops = CSTOPS().map(([t, c]) => [q(t), c]).flat();
+    document.getElementById('leg-min').textContent = fmtKm(q(0))   + ' (closest)';
+    document.getElementById('leg-mid').textContent = fmtKm(q(0.5)) + ' (median)';
+    document.getElementById('leg-max').textContent = fmtKm(q(1))   + ' (farthest)';
+    return ['interpolate', ['linear'], ['get', 'dist'], ...stops];
+}
+
+function binnedColorExpr() {
+    const b = BINS();
+    return ['step', ['get', 'dist'],
+        b[0].color,
+        b[0].max, b[1].color,
+        b[1].max, b[2].color,
+        b[2].max, b[3].color,
+        b[3].max, b[4].color,
+    ];
+}
+
+function colorExpr(data) {
+    return displayMode === 'binned' ? binnedColorExpr() : quantileColorExpr(data);
+}
+
+function buildBinLegend() {
+    const note = colorMode === 'pollution'
+        ? 'Red = closer (higher exposure) · Green = farther'
+        : 'Green = closer (more accessible) · Red = farther';
+    document.getElementById('bin-rows').innerHTML = BINS().map(b =>
+        `<div class="bin-row">
+            <div class="bin-swatch" style="background:${b.color}"></div>
+            <span class="bin-label">${b.label}</span>
+         </div>`
+    ).join('') + `<div style="margin-top:0.4rem;font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:rgba(255,255,255,0.2)">${note}</div>`;
+}
+
+// ── Stats panel ───────────────────────────────────────────────────────────────
+function updateStats(iso) {
+    document.getElementById('stats').classList.add('show');
+    const prefix = mode === 'hw' ? 'hw_' : 'mr_';
+    const label  = mode === 'hw' ? 'highway' : 'major road';
+    document.getElementById('st-med-label').textContent = `Median (${label})`;
+
+    if (!iso) {
+        document.getElementById('stats-head').textContent = 'Africa';
+        const af = globalStats.africa || {};
+        const ms = mode === 'hw' ? (af.highway || {}) : (af.major || {});
+        document.getElementById('st-cells').textContent = (af.cells || 0).toLocaleString();
+        document.getElementById('st-med').textContent   = ms.p50  != null ? ms.p50  + ' km' : '—';
+        document.getElementById('st-p75').textContent   = ms.p75  != null ? ms.p75  + ' km' : '—';
+        document.getElementById('st-p95').textContent   = ms.p95  != null ? ms.p95  + ' km' : '—';
+    } else {
+        const cs = (globalStats.countries || {})[iso] || {};
+        document.getElementById('stats-head').textContent = cs.name || iso;
+        document.getElementById('st-cells').textContent = (cs.cells || 0).toLocaleString();
+        document.getElementById('st-med').textContent   = cs[prefix+'med'] != null ? cs[prefix+'med'] + ' km' : '—';
+        document.getElementById('st-p75').textContent   = cs[prefix+'p75'] != null ? cs[prefix+'p75'] + ' km' : '—';
+        document.getElementById('st-p95').textContent   = cs[prefix+'p95'] != null ? cs[prefix+'p95'] + ' km' : '—';
+    }
+}
+
+// ── Render H3 hex layer ───────────────────────────────────────────────────────
+let renderTimer = null;
+function render() {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(async () => {
+        show('updating');
+        try {
+            const gj = await buildGeoJSON(currentData);
+            document.getElementById('meta').textContent = (currentISO || 'Africa') + ' · ' + gj.features.length.toLocaleString() + ' cells';
+            map.getSource('hexagons').setData(gj);
+            map.setPaintProperty('hex-fill', 'fill-color', colorExpr(currentData));
+            if (pwdistActive) repaintPWDist();
+        } catch(err) {
+            console.error('render error:', err);
+        }
+        hide('updating');
+    }, 50);
+}
+
+// ── Admin boundaries ──────────────────────────────────────────────────────────
+const admLevels = [
+    { id: 'adm1', url: '/roadnet/data/provinces.geojson',     minzoom: 4, darkColor: 'rgba(255,255,255,0.45)', lightColor: 'rgba(45,52,54,0.55)', width: 0.9, labelZoom: 4,  labelSize: 11 },
+    { id: 'adm2', url: '/roadnet/data/districts.geojson',     minzoom: 6, darkColor: 'rgba(255,255,255,0.28)', lightColor: 'rgba(45,52,54,0.30)', width: 0.6, labelZoom: 7,  labelSize: 10 },
+    { id: 'adm3', url: '/roadnet/data/sub_districts.geojson', minzoom: 8, darkColor: 'rgba(255,255,255,0.18)', lightColor: 'rgba(45,52,54,0.18)', width: 0.4, labelZoom: 9,  labelSize: 9  },
+];
+
+async function loadAdminBoundaries() {
+    for (const lvl of admLevels) {
+        let loaded = false;
+        const tryLoad = async () => {
+            if (loaded || map.getZoom() < lvl.minzoom - 1.5) return;
+            loaded = true;
+            try {
+                const gj = await fetch(lvl.url).then(r => r.json());
+                map.addSource(lvl.id, { type: 'geojson', data: gj });
+                const lc = isDark ? lvl.darkColor : lvl.lightColor;
+                const tc = isDark ? 'rgba(255,255,255,0.8)' : 'rgba(45,52,54,0.85)';
+                const th = isDark ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.95)';
+                map.addLayer({ id: lvl.id+'-line', type: 'line', source: lvl.id, minzoom: lvl.minzoom,
+                    paint: { 'line-color': lc, 'line-width': lvl.width } });
+                map.addLayer({ id: lvl.id+'-label', type: 'symbol', source: lvl.id, minzoom: lvl.labelZoom,
+                    layout: { 'text-field': ['coalesce',['get','name_en'],['get','name']], 'text-font': ['Open Sans Regular'], 'text-size': lvl.labelSize, 'text-anchor': 'center', 'text-max-width': 8 },
+                    paint: { 'text-color': tc, 'text-halo-color': th, 'text-halo-width': 1.5 }
+                });
+                const tog = document.getElementById('tog-'+lvl.id);
+                if (tog) {
+                    const setV = on => { const v = on?'visible':'none'; ['line','label'].forEach(s => { if (map.getLayer(lvl.id+'-'+s)) map.setLayoutProperty(lvl.id+'-'+s,'visibility',v); }); };
+                    setV(tog.checked);
+                    tog.addEventListener('change', e => setV(e.target.checked));
+                }
+            } catch(e) { console.warn('Admin boundary load failed:', lvl.url, e); }
+        };
+        tryLoad();
+        map.on('zoomend', tryLoad);
+    }
+    document.getElementById('tog-adm0').addEventListener('change', e => {
+        const v = e.target.checked ? 'visible' : 'none';
+        ['country-lines','country-labels'].forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id,'visibility',v); });
+    });
+}
+
+// ── Pop-weighted distance choropleth ──────────────────────────────────────────
+const PWDIST_FILES = {
+    adm1: 'data/pwdist/adm1.geojson',
+    adm2: 'data/pwdist/adm2.geojson',
+    adm3: 'data/pwdist/adm3.geojson',
+};
+const pwdistCache = {};
+let pwdistActive  = false;
+let pwdistLevel   = 'adm1';
+
+function pwdistField() {
+    return mode === 'hw' ? 'pw_hw' : 'pw_mr';
+}
+
+// Build a strict-ascending quantile color expression over PWDIST values.
+// CSTOPS go from 0→red (close=high exposure) to 1→green (far=low exposure).
+function pwdistColorExpr(vals, field) {
+    if (!vals.length) return '#cccccc';
+    const sorted = [...vals].sort((a, b) => a - b);
+    const n = sorted.length;
+    const q = p => sorted[Math.min(n - 1, Math.floor(p * n))];
+    let lastVal = -Infinity;
+    const stops = [];
+    for (const [t, c] of CSTOPS()) {
+        let v = q(t);
+        if (v <= lastVal) v = lastVal + 1e-6;
+        stops.push(v, c);
+        lastVal = v;
+    }
+    return ['interpolate', ['linear'], ['get', field], ...stops];
+}
+
+function pwdistStatus(msg) {
+    document.getElementById('pwdist-status').textContent = msg;
+}
+
+function pwdistThemeColors() {
+    return isDark
+        ? { outline: 'rgba(255,255,255,0.25)', label: 'rgba(255,255,255,0.9)', halo: 'rgba(0,0,0,0.85)' }
+        : { outline: 'rgba(45,52,54,0.35)',    label: 'rgba(45,52,54,0.9)',    halo: 'rgba(255,255,255,0.92)' };
+}
+
+async function loadPWDist(level) {
+    if (pwdistCache[level]) return pwdistCache[level];
+    pwdistStatus('Loading…');
+    try {
+        const r = await fetch(PWDIST_FILES[level]);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const gj = await r.json();
+        pwdistCache[level] = gj;
+        pwdistStatus('');
+        return gj;
+    } catch(e) {
+        pwdistStatus('Data not yet generated — run generate_pweuclidean.py');
+        return null;
+    }
+}
+
+function removePWDistLayers() {
+    ['pwdist-fill','pwdist-outline'].forEach(id => {
+        if (map.getLayer(id))  map.removeLayer(id);
+    });
+    if (map.getSource('pwdist')) map.removeSource('pwdist');
+}
+
+async function renderPWDist(level) {
+    removePWDistLayers();
+    const gj = await loadPWDist(level);
+    if (!gj) return;
+
+    const field = pwdistField();
+    const vals = gj.features.map(f => f.properties[field]).filter(v => v != null && v > 0);
+
+    if (!vals.length) {
+        pwdistStatus('No values found in file');
+        return;
+    }
+
+    map.addSource('pwdist', { type: 'geojson', data: gj });
+
+    const tc = pwdistThemeColors();
+    map.addLayer({ id: 'pwdist-fill', type: 'fill', source: 'pwdist',
+        paint: { 'fill-color': pwdistColorExpr(vals, field), 'fill-opacity': 0.78 }
+    });
+    map.addLayer({ id: 'pwdist-outline', type: 'line', source: 'pwdist',
+        paint: { 'line-color': tc.outline, 'line-width': 0.6 }
+    });
+
+    // Dim hex layer so choropleth is readable
+    map.setPaintProperty('hex-fill', 'fill-opacity', 0.35);
+
+    const levelNames = { adm1: 'provinces', adm2: 'districts', adm3: 'sub-districts' };
+    const minV = Math.min(...vals).toFixed(1);
+    const maxV = Math.max(...vals).toFixed(1);
+    pwdistStatus(`${vals.length} ${levelNames[level]} · ${minV}–${maxV} km`);
+}
+
+function repaintPWDist() {
+    if (!map.getLayer('pwdist-fill')) return;
+    const gj = pwdistCache[pwdistLevel];
+    if (!gj) return;
+    const field = pwdistField();
+    const vals = gj.features.map(f => f.properties[field]).filter(v => v != null && v > 0);
+    if (!vals.length) return;
+    map.setPaintProperty('pwdist-fill', 'fill-color', pwdistColorExpr(vals, field));
+
+    // Update status min/max
+    const levelNames = { adm1: 'provinces', adm2: 'districts', adm3: 'sub-districts' };
+    const minV = Math.min(...vals).toFixed(1);
+    const maxV = Math.max(...vals).toFixed(1);
+    pwdistStatus(`${vals.length} ${levelNames[pwdistLevel]} · ${minV}–${maxV} km`);
+}
+
+function setPWDist(active) {
+    pwdistActive = active;
+    document.getElementById('pwdist-controls').style.display = active ? 'block' : 'none';
+    if (active) {
+        renderPWDist(pwdistLevel);
+    } else {
+        removePWDistLayers();
+        if (map.getLayer('hex-fill')) map.setPaintProperty('hex-fill','fill-opacity', 0.78);
+        pwdistStatus('');
+    }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+    // Pre-select mode from URL hash: #hw or #mr
+    const hash = location.hash.replace('#', '');
+    if (hash === 'mr') {
+        mode = 'mr';
+        document.getElementById('pill-mr').classList.add('active');
+        document.getElementById('pill-hw').classList.remove('active');
+    }
+
+    buildBinLegend();
+
+    map = new maplibregl.Map({
+        container: 'map',
+        style: {
+            version: 8,
+            glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+            sources: {
+                basemap: { type: 'raster', tileSize: 256, attribution: '© OpenStreetMap © CARTO',
+                    tiles: isDark ? DARK_BASE : LIGHT_BASE }
+            },
+            layers: [{ id: 'bg', type: 'raster', source: 'basemap' }]
+        },
+        center: [20, 2], zoom: 3.5, minZoom: 2, maxZoom: 16,
+    });
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+
+    // Load stats
+    prog(10, 'Loading statistics…');
+    globalStats = await fetch('data/euclidean_stats.json').then(r => r.json());
+
+    // Populate country dropdown
+    const sel = document.getElementById('country-select');
+    Object.entries(globalStats.country_names || globalStats.countries || {})
+        .map(([iso, v]) => [iso, typeof v === 'string' ? v : (v.name || iso)])
+        .sort((a, b) => a[1].localeCompare(b[1]))
+        .forEach(([iso, name]) => {
+            const o = document.createElement('option'); o.value = iso; o.textContent = name; sel.appendChild(o);
+        });
+
+    // Load overview
+    prog(20, 'Loading Africa overview…');
+    currentData = await loadGZ('data/overview_r4.json.gz');
+    document.getElementById('meta').textContent = 'Africa · ' + Object.keys(currentData).length.toLocaleString() + ' cells (res 4)';
+    updateStats('');
+
+    prog(70, 'Building map…');
+    await new Promise(r => { if (map.isStyleLoaded()) r(); else map.on('load', r); });
+
+    boundsGJ = await fetch('/roadnet/data/africa_bounds.geojson').then(r => r.json());
+    map.addSource('bounds', { type: 'geojson', data: boundsGJ });
+
+    // Hex layer — added first so boundaries render on top
+    const initGJ = await buildGeoJSON(currentData);
+    document.getElementById('meta').textContent = 'Africa · ' + initGJ.features.length.toLocaleString() + ' cells (res 4)';
+    map.addSource('hexagons', { type: 'geojson', data: initGJ });
+    map.addLayer({ id: 'hex-fill', type: 'fill', source: 'hexagons',
+        paint: {
+            'fill-color': colorExpr(currentData),
+            'fill-opacity': ['case', ['boolean', ['feature-state', 'hover'], false], 1.0, 0.78]
+        }
+    });
+    map.addLayer({ id: 'hex-outline', type: 'line', source: 'hexagons', minzoom: 5,
+        paint: { 'line-color': 'rgba(0,0,0,0.2)', 'line-width': 0.4 }
+    });
+
+    // Country boundaries
+    const _bndCol = isDark ? 'rgba(255,255,255,0.6)'  : 'rgba(45,52,54,0.75)';
+    const _lblCol = isDark ? 'rgba(255,255,255,0.85)' : 'rgba(45,52,54,0.88)';
+    const _halo   = isDark ? 'rgba(0,0,0,0.9)'        : 'rgba(255,255,255,0.95)';
+    map.addLayer({ id: 'country-lines', type: 'line', source: 'bounds',
+        paint: { 'line-color': _bndCol, 'line-width': ['interpolate',['linear'],['zoom'],2,0.8,5,1.4,8,2.0] }
+    });
+    map.addLayer({ id: 'country-labels', type: 'symbol', source: 'bounds', minzoom: 2,
+        layout: { 'text-field': ['get','name'], 'text-font': ['Open Sans Regular'], 'text-size': ['interpolate',['linear'],['zoom'],2,10,5,13], 'text-anchor': 'center' },
+        paint: { 'text-color': _lblCol, 'text-halo-color': _halo, 'text-halo-width': 1.8 }
+    });
+
+    prog(100, '');
+    await new Promise(r => setTimeout(r, 200));
+    hide('loading');
+
+    loadAdminBoundaries();
+
+    // ── Hex tooltip ────────────────────────────────────────────────────────────
+    const tt = document.getElementById('tt');
+    let hoverId = null;
+
+    map.on('mousemove', 'hex-fill', e => {
+        if (pwdistActive) return;
+        const feats = map.queryRenderedFeatures(e.point, { layers: ['hex-fill'] });
+        if (!feats.length) return;
+        const f = feats[0]; const p = f.properties;
+        map.getCanvas().style.cursor = 'crosshair';
+        if (hoverId !== null) map.setFeatureState({ source: 'hexagons', id: hoverId }, { hover: false });
+        hoverId = f.id;
+        map.setFeatureState({ source: 'hexagons', id: hoverId }, { hover: true });
+
+        document.getElementById('tt-country').textContent = p.country || p.iso || '—';
+        document.getElementById('tt-hw').textContent = fmtKm(Number(p.hw) || 0);
+        document.getElementById('tt-mr').textContent = fmtKm(Number(p.mr) || 0);
+        document.getElementById('tt-cell').textContent = p.cellId || '—';
+        show('tt-cell-row');
+
+        const mw = map.getCanvas().offsetWidth;
+        tt.style.left = (e.point.x + 18 + 220 > mw ? e.point.x - 232 : e.point.x + 18) + 'px';
+        tt.style.top  = Math.max(4, e.point.y - 20) + 'px';
+        tt.style.display = 'block';
+    });
+    map.on('mouseleave', 'hex-fill', () => {
+        if (pwdistActive) return;
+        map.getCanvas().style.cursor = ''; tt.style.display = 'none';
+        if (hoverId !== null) { map.setFeatureState({ source: 'hexagons', id: hoverId }, { hover: false }); hoverId = null; }
+    });
+
+    // ── PWDIST choropleth tooltip ──────────────────────────────────────────────
+    map.on('mousemove', 'pwdist-fill', e => {
+        const feats = map.queryRenderedFeatures(e.point, { layers: ['pwdist-fill'] });
+        if (!feats.length) return;
+        const p = feats[0].properties;
+        map.getCanvas().style.cursor = 'crosshair';
+        const name = (p.name_en && p.name_en.trim()) ? p.name_en : (p.name || '—');
+        document.getElementById('tt-country').textContent = name;
+        document.getElementById('tt-hw').textContent = fmtKm(p.pw_hw);
+        document.getElementById('tt-mr').textContent = fmtKm(p.pw_mr);
+        hide('tt-cell-row');
+
+        const mw = map.getCanvas().offsetWidth;
+        tt.style.left = (e.point.x + 18 + 220 > mw ? e.point.x - 232 : e.point.x + 18) + 'px';
+        tt.style.top  = Math.max(4, e.point.y - 20) + 'px';
+        tt.style.display = 'block';
+    });
+    map.on('mouseleave', 'pwdist-fill', () => {
+        map.getCanvas().style.cursor = '';
+        tt.style.display = 'none';
+        show('tt-cell-row');
+    });
+
+    // ── Road type toggle ───────────────────────────────────────────────────────
+    document.getElementById('pill-hw').addEventListener('click', () => {
+        if (mode === 'hw') return;
+        mode = 'hw';
+        document.getElementById('pill-hw').classList.add('active');
+        document.getElementById('pill-mr').classList.remove('active');
+        render();
+        updateStats(currentISO);
+    });
+    document.getElementById('pill-mr').addEventListener('click', () => {
+        if (mode === 'mr') return;
+        mode = 'mr';
+        document.getElementById('pill-mr').classList.add('active');
+        document.getElementById('pill-hw').classList.remove('active');
+        render();
+        updateStats(currentISO);
+    });
+
+    // ── Display mode toggle ────────────────────────────────────────────────────
+    document.getElementById('pill-cont').addEventListener('click', () => {
+        if (displayMode === 'continuous') return;
+        displayMode = 'continuous';
+        document.getElementById('pill-cont').classList.add('active');
+        document.getElementById('pill-bins').classList.remove('active');
+        show('legend-continuous'); hide('legend-bins');
+        render();
+        if (pwdistActive) repaintPWDist();
+    });
+    document.getElementById('pill-bins').addEventListener('click', () => {
+        if (displayMode === 'binned') return;
+        displayMode = 'binned';
+        document.getElementById('pill-bins').classList.add('active');
+        document.getElementById('pill-cont').classList.remove('active');
+        hide('legend-continuous'); show('legend-bins');
+        buildBinLegend();
+        render();
+        if (pwdistActive) repaintPWDist();
+    });
+
+    // ── Colour mode toggle (Pollution proxy / Accessibility) ──────────────────
+    function applyColorMode() {
+        const isPollution = colorMode === 'pollution';
+        // Legend gradient direction
+        const grad = isPollution
+            ? 'linear-gradient(90deg, #d73027, #fc8d59, #fee08b, #d9ef8b, #91cf60, #1a9850)'
+            : 'linear-gradient(90deg, #1a9850, #91cf60, #d9ef8b, #fee08b, #fc8d59, #d73027)';
+        document.getElementById('legend-gradient-bar').style.background = grad;
+        document.getElementById('legend-unit-text').textContent = isPollution
+            ? 'km · red = close (high exposure) · green = far'
+            : 'km · green = close (accessible) · red = far';
+        buildBinLegend();
+        render();
+        if (pwdistActive) repaintPWDist();
+    }
+    document.getElementById('pill-pollution').addEventListener('click', () => {
+        if (colorMode === 'pollution') return;
+        colorMode = 'pollution';
+        document.getElementById('pill-pollution').classList.add('active');
+        document.getElementById('pill-access').classList.remove('active');
+        applyColorMode();
+    });
+    document.getElementById('pill-access').addEventListener('click', () => {
+        if (colorMode === 'access') return;
+        colorMode = 'access';
+        document.getElementById('pill-access').classList.add('active');
+        document.getElementById('pill-pollution').classList.remove('active');
+        applyColorMode();
+    });
+
+    // ── Road line overlays ────────────────────────────────────────────────────
+    const roadCache = {};
+    const ROAD_FILES = {
+        hw: 'data/roads/highways.json.gz',
+        mr: 'data/roads/major_roads.json.gz',
+    };
+    const ROAD_COLORS = { hw: '#e8a56a', mr: '#4ECDC4' };
+    const ROAD_WIDTHS = { hw: ['interpolate',['linear'],['zoom'],3,0.8,7,1.5,10,2.5],
+                          mr: ['interpolate',['linear'],['zoom'],3,0.5,7,1.0,10,1.8] };
+
+    async function setRoadLayer(key, on) {
+        const srcId  = 'roads-' + key;
+        const layId  = 'roads-' + key + '-line';
+        const status = document.getElementById('roads-status');
+        status.style.display = 'block';
+        if (!on) {
+            if (map.getLayer(layId))  map.removeLayer(layId);
+            if (map.getSource(srcId)) map.removeSource(srcId);
+            status.style.display = 'none';
+            return;
+        }
+        status.textContent = 'Loading road lines…';
+        if (!roadCache[key]) {
+            try {
+                roadCache[key] = await loadGZ(ROAD_FILES[key]);
+            } catch(e) {
+                status.textContent = 'Road lines not yet generated — run generate_road_lines.py';
+                document.getElementById('tog-roads-' + key).checked = false;
+                return;
+            }
+        }
+        if (!map.getSource(srcId)) {
+            map.addSource(srcId, { type: 'geojson', data: roadCache[key] });
+        }
+        if (!map.getLayer(layId)) {
+            map.addLayer({ id: layId, type: 'line', source: srcId,
+                paint: { 'line-color': ROAD_COLORS[key], 'line-width': ROAD_WIDTHS[key], 'line-opacity': 0.85 }
+            });
+        } else {
+            map.setLayoutProperty(layId, 'visibility', 'visible');
+        }
+        const n = roadCache[key].features.length;
+        status.textContent = `${n.toLocaleString()} segments loaded`;
+    }
+
+    document.getElementById('tog-roads-hw').addEventListener('change', e => setRoadLayer('hw', e.target.checked));
+    document.getElementById('tog-roads-mr').addEventListener('change', e => setRoadLayer('mr', e.target.checked));
+
+    // ── Pop-weighted choropleth toggle ─────────────────────────────────────────
+    document.getElementById('tog-pwdist').addEventListener('change', e => setPWDist(e.target.checked));
+    document.getElementById('pwdist-level').addEventListener('change', e => {
+        pwdistLevel = e.target.value;
+        if (pwdistActive) renderPWDist(pwdistLevel);
+    });
+
+    // ── Country filter ─────────────────────────────────────────────────────────
+    sel.addEventListener('change', async e => {
+        currentISO = e.target.value;
+        document.getElementById('loading').style.display = 'flex';
+
+        if (!currentISO) {
+            prog(20, 'Loading overview…');
+            currentData = await loadGZ('data/overview_r4.json.gz');
+            prog(80, 'Rendering…');
+            render();
+            updateStats('');
+            setBadge('Africa overview · H3 res 4');
+            document.getElementById('meta').textContent = 'Africa overview · res 4';
+            map.flyTo({ center: [20, 2], zoom: 3.5, duration: 700 });
+        } else {
+            const name = (globalStats.country_names || {})[currentISO]
+                || ((globalStats.countries || {})[currentISO] || {}).name
+                || currentISO;
+            prog(20, `Loading ${name}…`);
+            try {
+                currentData = await loadGZ(`data/countries/${currentISO}.json.gz`);
+            } catch(err) {
+                alert(`No data for ${name}`); hide('loading'); return;
+            }
+            prog(70, 'Rendering…');
+            render();
+            updateStats(currentISO);
+            const ncells = Object.keys(currentData).length;
+            const modeLabel = mode === 'hw' ? 'Highways' : 'Major Roads';
+            setBadge(`${name} · H3 res 7 · ${ncells.toLocaleString()} cells · ${modeLabel}`);
+            document.getElementById('meta').textContent = `${name} · ${ncells.toLocaleString()} cells`;
+
+            if (boundsGJ) {
+                const feat = boundsGJ.features.find(f => f.properties.ISO === currentISO);
+                if (feat) {
+                    const pts = [];
+                    const col = g => { if (g.type==='Polygon') g.coordinates[0].forEach(c=>pts.push(c)); else if (g.type==='MultiPolygon') g.coordinates.forEach(p=>p[0].forEach(c=>pts.push(c))); };
+                    col(feat.geometry);
+                    if (pts.length) {
+                        const lns = pts.map(c=>c[0]), las = pts.map(c=>c[1]);
+                        map.fitBounds([[Math.min(...lns),Math.min(...las)],[Math.max(...lns),Math.max(...las)]], { padding: 60, duration: 700 });
+                    }
+                }
+            }
+        }
+        prog(100, '');
+        await new Promise(r => setTimeout(r, 200));
+        hide('loading');
+    });
+}
+
+init().catch(err => {
+    console.error(err);
+    document.getElementById('ltxt').textContent = 'Error: ' + err.message;
+    document.getElementById('lbar').style.background = '#e63946';
+});
+</script>
+</body>
+</html>

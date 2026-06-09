@@ -1972,6 +1972,8 @@
 
         function unlockPortal(name) {
             document.getElementById('authGate').classList.add('hidden');
+            const next = sessionStorage.getItem('pals_portal_next');
+            if (next) { sessionStorage.removeItem('pals_portal_next'); window.location.href = next; }
         }
 
         // ── Check for ?reset_token= in URL ───────────────────────────────────

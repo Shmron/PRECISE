@@ -1,0 +1,46 @@
+== NGINX UPDATE REQUIRED (needs sudo) ==
+
+Replace the default server block in /etc/nginx/sites-enabled/default with:
+
+----------------------------------------------------------------------
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/precise;
+    index index.html;
+    server_name _;
+
+    # Landing page
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # PRECISE catalogue (static)
+    location /catalogue/ {
+        alias /var/www/precise/catalogue/;
+        try_files $uri $uri/ /catalogue/index.html;
+    }
+
+    # Zororo's Streamlit dashboard
+    # NOTE: Zororo must restart their app with:
+    #   streamlit run app.py --server.port 8502 --server.baseUrlPath=/zororo
+    location /zororo/ {
+        proxy_pass http://127.0.0.1:8502/zororo/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 86400;
+    }
+}
+----------------------------------------------------------------------
+
+After editing, run:
+    sudo nginx -t && sudo systemctl reload nginx
+
+== ZORORO RESTART COMMAND ==
+Zororo needs to stop their current process on port 8502 and restart with:
+    streamlit run app.py --server.port 8502 --server.baseUrlPath=/zororo

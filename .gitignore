@@ -11,3 +11,14 @@ access_control.db
 duckdb_requests.jsonl
 nohup.out
 .duck_admin_pass
+# Service account keys — never commit
+*-sa-key.json
+*_sa_key.json
+# Runtime databases and job data
+*.db
+palsearth/jobs/
+# Claude Code local state
+.claude/
+# Large geospatial data directories (too large for git)
+roadnet/data/
+roadnet/worldpop/

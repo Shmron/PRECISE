@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Place Alert Labs - Geospatial Health Research</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+html { scroll-behavior: smooth; }
+.about-header, .who-we-are-title { scroll-margin-top: 150px; }
+
+.about-container {
+    margin-top: 200px;
+    max-width: 1200px;
+    margin-left: auto; margin-right: auto;
+    padding: 0 20px 80px;
+    line-height: 1.8;
+}
+
+.about-section-full { margin-bottom: 80px; width: 100%; }
+
+.about-header {
+    font-size: 2.5rem; font-weight: 700; color: #1f2937;
+    margin-bottom: 2rem; margin-top: 2rem;
+    position: relative; display: block; width: 100%;
+    text-align: right; max-width: 1000px;
+    margin-left: auto; margin-right: auto;
+}
+.about-header::after {
+    content: ''; position: absolute; bottom: -10px; right: 0;
+    width: 80px; height: 4px; background: #fbbf24; border-radius: 2px;
+}
+
+.about-highlight {
+    background-color: #f8f9fa; padding: 25px;
+    border-left: 4px solid #3498db; border-radius: 8px;
+    margin: 20px 0; font-style: italic; font-size: 1.1rem; color: #34495e;
+    max-width: 1000px; margin-left: auto; margin-right: auto;
+}
+
+.about-subsection { margin-bottom: 25px; max-width: 1000px; margin-left: auto; margin-right: auto; }
+.about-subheader  { font-size: 1.3rem; font-weight: 600; color: #2980b9; margin-bottom: 8px; }
+.about-text       { font-size: 1.1rem; color: #34495e; line-height: 1.6; }
+
+.about-list {
+    background-color: #f8f9fa; padding: 30px; border-radius: 8px;
+    margin-top: 20px; max-width: 1000px; margin-left: auto; margin-right: auto;
+}
+.about-list-item {
+    font-size: 1.1rem; color: #34495e; margin-bottom: 15px;
+    padding-left: 20px; position: relative;
+}
+.about-list-item::before { content: '•'; color: #3498db; font-weight: bold; position: absolute; left: 0; }
+
+.who-we-are-section { text-align: center; margin-bottom: 60px; }
+.who-we-are-title {
+    font-size: 2.5rem; font-weight: 700; color: #1f2937;
+    margin-bottom: 20px; text-align: right;
+    max-width: 1000px; margin-left: auto; margin-right: auto;
+    width: 100%; position: relative; display: block;
+}
+.who-we-are-title::after {
+    content: ''; position: absolute; bottom: -10px; right: 0;
+    width: 80px; height: 4px; background: #fbbf24; border-radius: 2px;
+}
+.who-we-are-content {
+    max-width: 1000px; margin: 20px auto 0;
+    padding: 40px;
+    background: linear-gradient(135deg,rgba(135,206,250,.1) 0%,rgba(173,216,230,.08) 50%,rgba(176,224,230,.1) 100%);
+    border-radius: 12px; border: 1px solid rgba(135,206,250,.2);
+    box-shadow: 0 4px 15px rgba(135,206,250,.1);
+}
+.who-we-are-content p { font-size: 1.15rem; line-height: 1.8; color: #2c3e50; margin-bottom: 1.5rem; text-align: justify; }
+
+@media (max-width:768px) {
+    .about-container { margin-top: 140px; }
+    .about-header, .who-we-are-title { font-size: 2rem; max-width: 100%; }
+    .who-we-are-content { padding: 25px 20px; margin: 0 15px; }
+    .who-we-are-content p { font-size: 1.05rem; text-align: left; }
+}
+</style>
+</head>
+<body>
+<!-- Floating Particles -->
+<div class="floating-particles">
+    <div class="particle particle-blue"></div><div class="particle particle-orange"></div>
+    <div class="particle particle-light-blue"></div><div class="particle particle-yellow"></div>
+    <div class="particle particle-grey"></div>
+</div>
+
+<!-- Search Overlay -->
+<div class="search-overlay" id="search-overlay">
+    <div class="search-container">
+        <div class="search-header"><h2>Search Place Alert Labs</h2><button class="search-close" id="search-close"><i class="bi bi-x-lg"></i></button></div>
+        <div class="search-input-container"><input type="text" id="search-input" placeholder="Search..." autocomplete="off"><button class="search-submit"><i class="bi bi-search"></i></button></div>
+        <div class="search-suggestions">
+            <div class="suggestion-category"><h3><i class="bi bi-microscope"></i> Research</h3><div class="suggestion-items"><a href="/research.html" class="suggestion-item">PRECISE Network</a><a href="/research.html" class="suggestion-item">CHEAQI-MNCH</a></div></div>
+            <div class="suggestion-category"><h3><i class="bi bi-people"></i> Team</h3><div class="suggestion-items"><a href="/team.html" class="suggestion-item">Dr. Prestige Makanga</a><a href="/team.html" class="suggestion-item">Prof. Mushore</a></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Chat -->
+<div class="floating-chat"><button class="chat-button whatsapp-btn" onclick="openWhatsApp()" title="Chat on WhatsApp"><i class="bi bi-whatsapp"></i><div class="chat-tooltip">Chat on WhatsApp</div></button></div>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-top"><div class="container"><div class="header-top-content"><div class="header-top-left">
+        <div class="header-info"><i class="bi bi-building"></i><a href="https://msu.ac.zw">MSU Site</a></div>
+        <div class="header-info"><i class="bi bi-envelope"></i><a href="mailto:pals@staff.msu.ac.zw">pals@staff.msu.ac.zw</a></div>
+    </div></div></div></div>
+    <div class="header-main"><div class="container"><div class="header-content">
+        <a href="/" class="logo"><div class="logo-text"><img src="/images/backgrounds/pals.png" alt="Place Alert Labs" class="logo-text-img"></div></a>
+        <nav class="nav">
+            <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item active"><a href="/about.html" class="nav-link">About Us <i class="bi bi-chevron-down dropdown-arrow"></i></a>
+                    <div class="dropdown">
+                        <a href="/about.html#vision" class="dropdown-item">Vision and Mission</a>
+                        <a href="/about.html#values" class="dropdown-item">Values and Principles</a>
+                        <a href="/about.html#about-us" class="dropdown-item">Who We Are</a>
+                        <a href="/about.html#strategic-pillars" class="dropdown-item">Strategic Pillars</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="/research.html" class="nav-link">Research <i class="bi bi-chevron-down dropdown-arrow"></i></a>
+                    <div class="dropdown">
+                        <a href="/research.html" class="dropdown-item">Research Overview</a>
+                        <a href="/research.html#current-projects" class="dropdown-item">Current Projects</a>
+                        <a href="/publications.html" class="dropdown-item">Publications</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="/team.html" class="nav-link">Team</a></li>
+                <li class="nav-item"><a href="/partners.html" class="nav-link">Our Partners <i class="bi bi-chevron-down dropdown-arrow"></i></a>
+                    <div class="dropdown">
+                        <a href="/partners.html#funding-partners" class="dropdown-item">Funding Partners</a>
+                        <a href="/partners.html#research-partners" class="dropdown-item">Research Partners</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="/news.html" class="nav-link">News</a></li>
+                <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="search-toggle" id="search-toggle" title="Search"><i class="bi bi-search"></i></button>
+            <a href="https://portal.placealert.org" target="_blank" class="nav-portal-btn"><i class="bi bi-database"></i> Data Portal &rarr;</a>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="bi bi-list"></i></button>
+        </nav>
+    </div></div></div>
+</header>
+
+<main>
+<div class="about-container">
+
+    <!-- Vision and Mission -->
+    <div class="about-section-full" id="vision">
+        <h2 class="about-header">Vision Statement</h2>
+        <div class="about-highlight">
+            Healthier and more resilient communities in Africa, where evidence-driven geospatial research and innovation guide equitable health policy and targeted health interventions.
+        </div>
+
+        <h2 class="about-header" id="mission">Mission Statement</h2>
+        <div class="about-highlight">
+            We use geospatial science to uncover environment–health links in data-scarce regions, building capacity to create decision-support tools and insights that improve health, inform policy, and empower communities.
+        </div>
+    </div>
+
+    <!-- Values and Principles -->
+    <div class="about-section-full" id="values">
+        <h2 class="about-header">Values</h2>
+
+        <div class="about-subsection">
+            <h3 class="about-subheader">1. Research Excellence</h3>
+            <p class="about-text">We uphold the highest standards of research quality, rigor, and ethics.</p>
+        </div>
+        <div class="about-subsection">
+            <h3 class="about-subheader">2. Innovation</h3>
+            <p class="about-text">We embrace creativity, novel technologies, and forward-thinking approaches to address emerging Geohealth challenges.</p>
+        </div>
+        <div class="about-subsection">
+            <h3 class="about-subheader">3. Equity and Inclusion</h3>
+            <p class="about-text">We champion diversity, fairness, and meaningful participation of all groups, especially underrepresented and vulnerable populations.</p>
+        </div>
+        <div class="about-subsection">
+            <h3 class="about-subheader">4. Teamwork and Integrity</h3>
+            <p class="about-text">We foster a supportive and collaborative environment where collective efforts lead to greater impact, acting with honesty, fairness, and consistency in all research and engagements.</p>
+        </div>
+
+        <h2 class="about-header" id="principles">Principles</h2>
+
+        <div class="about-subsection">
+            <h3 class="about-subheader">1. Transparency and Accountability</h3>
+            <p class="about-text">We maintain openness in our processes, share our findings responsibly, and hold ourselves answerable to our stakeholders.</p>
+        </div>
+        <div class="about-subsection">
+            <h3 class="about-subheader">2. Capacity Building</h3>
+            <p class="about-text">We are committed to strengthening human and institutional capabilities in environment-health across Africa.</p>
+        </div>
+        <div class="about-subsection">
+            <h3 class="about-subheader">3. Interdisciplinary Collaboration</h3>
+            <p class="about-text">We bring together diverse expertise across health, environment and policy to deliver integrated solutions.</p>
+        </div>
+    </div>
+
+    <!-- Who We Are -->
+    <div class="who-we-are-section">
+        <h1 id="about-us" class="who-we-are-title">Who We Are</h1>
+        <div class="who-we-are-content">
+            <p>Based at Midlands State University, Place Alert Labs (PALs) is an African-led environment-health research laboratory at the forefront of a critical intersection: where human health and environment meet. We utilize advanced Geographical Information Science (GISc) to transform complex spatial and health data into actionable insights that guide policy, empower communities, and protect public health in Africa's toughest health and climate challenges.</p>
+            <p>Our approach is grounded in collaboration, co-design/creation with communities, policymakers, and institutions to ensure our work is relevant, inclusive, and drives real-world impact. We are dedicated to cultivating the next generation of African leaders through education and mentorship, ensuring a sustainable legacy of health and resilience.</p>
+        </div>
+    </div>
+
+    <!-- Strategic Pillars -->
+    <div class="about-section-full">
+        <h2 id="strategic-pillars" class="about-header">Strategic Pillars</h2>
+        <div class="about-list">
+            <div class="about-list-item">Interdisciplinary environment-health research</div>
+            <div class="about-list-item">Innovation and Commercialization</div>
+            <div class="about-list-item">Policy Engagement and Translation</div>
+            <div class="about-list-item">Community Partnerships and Inclusion</div>
+            <div class="about-list-item">Education, Training, and Leadership Development</div>
+        </div>
+    </div>
+
+</div>
+</main>
+
+<!-- Footer -->
+<footer class="modern-footer">
+    <div class="sponsors-section"></div>
+    <div class="footer-main"><div class="container"><div class="footer-content">
+        <div class="footer-section footer-about">
+            <div class="footer-logo-container">
+                <div class="footer-logo"><img src="/images/backgrounds/PALs_Logo.png" alt="PALs Logo" class="footer-logo-img"></div>
+                <div class="footer-brand"><h3>Place Alert Labs</h3><p>Geospatial Health Research Excellence</p></div>
+            </div>
+            <p class="footer-description">Leading innovative research in geospatial health science at Midlands State University, driving evidence-based solutions for global health challenges across Africa.</p>
+            <div class="footer-contact">
+                <div><i class="bi bi-geo-alt" style="color:white;"></i><span>Private Bag 9055, Senga, Gweru, Zimbabwe</span></div>
+                <div><i class="bi bi-telephone" style="color:white;"></i><span>+263 78 231 9736</span></div>
+                <div><i class="bi bi-envelope" style="color:white;"></i><span>pals@staff.msu.ac.zw</span></div>
+            </div>
+        </div>
+        <div class="footer-section"><h4>Quick Links</h4><ul class="footer-menu"><li><a href="/about.html">About Us</a></li><li><a href="/team.html">Our Team</a></li><li><a href="/partners.html">Our Partners</a></li><li><a href="/news.html">News</a></li><li><a href="/contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-section"><h4>Research</h4><ul class="footer-menu"><li><a href="/research.html">Research Overview</a></li><li><a href="/research.html#current-projects">Current Projects</a></li><li><a href="/publications.html">Publications</a></li><li><a href="https://portal.placealert.org" target="_blank">Data Portal</a></li></ul></div>
+        <div class="footer-section footer-social">
+            <h4>Connect With Us</h4>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/company/place-alert-labs/" target="_blank" class="social-link linkedin"><i class="bi bi-linkedin"></i><span>LinkedIn</span></a>
+                <a href="https://twitter.com/placealertlabs" target="_blank" class="social-link twitter"><i class="bi bi-twitter-x"></i><span>Twitter</span></a>
+                <a href="https://bsky.app/profile/place-alert-lab.bsky.social" target="_blank" class="social-link bluesky"><i class="bi bi-globe"></i><span>Bluesky</span></a>
+                <a href="mailto:pals@staff.msu.ac.zw" class="social-link email"><i class="bi bi-envelope"></i><span>Email</span></a>
+            </div>
+            <div class="newsletter-signup"><h5>Stay Updated</h5><p>Subscribe to our research updates</p><div class="newsletter-form"><input type="email" placeholder="Enter your email" class="newsletter-input"><button type="button" class="newsletter-btn"><i class="bi bi-arrow-right"></i></button></div></div>
+        </div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-content">
+        <div class="copyright"><p>&copy; 2025 Place Alert Labs - Midlands State University. All rights reserved.</p><p class="copyright-sub">Advancing Geospatial Health Research Across Africa</p></div>
+        <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Accessibility</a></div>
+    </div></div></div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="/assets/main.js"></script>
+</body>
+</html>

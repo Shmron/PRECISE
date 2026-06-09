@@ -4460,20 +4460,40 @@ by most village residents.</div>
                 loginGate.classList.remove('hidden');
             }
 
-            // Check for ?reset_token= in URL — show reset pane if present
-            const _urlParams   = new URLSearchParams(window.location.search);
-            const _resetToken  = _urlParams.get('reset_token');
-            if (_resetToken) {
-                switchTab('reset');
-                loginGate.classList.remove('hidden');
-            } else {
-                // Validate existing token server-side before hiding the gate
-                const _tok = sessionStorage.getItem('catalogueToken');
-                if (_tok) {
-                    fetch(API_BASE + '/api/validate-session', { headers: { 'X-Session-Token': _tok } })
-                        .then(r => { if (r.ok) loginGate.classList.add('hidden'); else showGate(); })
-                        .catch(() => loginGate.classList.add('hidden'));
+            const _urlParams  = new URLSearchParams(window.location.search);
+            const _resetToken = _urlParams.get('reset_token');
+
+            function proceedToCatalogueCheck() {
+                if (_resetToken) {
+                    switchTab('reset');
+                    loginGate.classList.remove('hidden');
+                } else {
+                    const _tok = sessionStorage.getItem('catalogueToken');
+                    if (_tok) {
+                        fetch(API_BASE + '/api/validate-session', { headers: { 'X-Session-Token': _tok } })
+                            .then(r => { if (r.ok) loginGate.classList.add('hidden'); else showGate(); })
+                            .catch(() => loginGate.classList.add('hidden'));
+                    }
                 }
+            }
+
+            // Portal is the single front door — validate portal session before catalogue
+            const _portalTok = localStorage.getItem('pals_portal_token');
+            if (!_portalTok) {
+                sessionStorage.setItem('pals_portal_next', window.location.href);
+                window.location.href = '/';
+            } else {
+                fetch('/precise-api/api/portal/validate-session', { headers: { 'X-Session-Token': _portalTok } })
+                    .then(pr => {
+                        if (!pr.ok) {
+                            localStorage.removeItem('pals_portal_token');
+                            sessionStorage.setItem('pals_portal_next', window.location.href);
+                            window.location.href = '/';
+                            return;
+                        }
+                        proceedToCatalogueCheck();
+                    })
+                    .catch(() => proceedToCatalogueCheck()); // network error — don't block
             }
 
             loginForm.addEventListener('submit', async function(e) {

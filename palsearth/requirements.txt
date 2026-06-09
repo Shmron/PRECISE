@@ -1,0 +1,9 @@
+streamlit>=1.32.0
+bcrypt>=4.0.0
+geopandas>=0.14.0
+earthengine-api>=0.1.380
+pandas>=2.0.0
+numpy>=1.24.0
+pyarrow>=14.0.0
+anthropic>=0.25.0
+shapely>=2.0.0

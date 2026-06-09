@@ -1,0 +1,48 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="maternalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#be185d;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#9d174d;stop-opacity:0.4" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc"/>
+  
+  <!-- Maternal health visualization -->
+  <rect x="50" y="50" width="300" height="200" fill="url(#maternalGradient)" opacity="0.3" rx="10"/>
+  
+  <!-- Pregnant woman silhouette -->
+  <circle cx="150" cy="120" r="25" fill="#d4a574"/>
+  <ellipse cx="150" cy="180" rx="40" ry="60" fill="#ec4899" opacity="0.7"/>
+  
+  <!-- Health worker -->
+  <circle cx="250" cy="120" r="25" fill="#c9a876"/>
+  <rect x="230" y="150" width="40" height="60" fill="#10b981"/>
+  
+  <!-- Medical equipment -->
+  <rect x="100" y="200" width="30" height="20" fill="#374151" rx="3"/>
+  <rect x="270" y="200" width="30" height="20" fill="#374151" rx="3"/>
+  
+  <!-- Data visualization elements -->
+  <rect x="80" y="80" width="20" height="60" fill="#3b82f6" opacity="0.7"/>
+  <rect x="110" y="100" width="20" height="40" fill="#3b82f6" opacity="0.7"/>
+  <rect x="140" y="90" width="20" height="50" fill="#3b82f6" opacity="0.7"/>
+  <rect x="170" y="85" width="20" height="55" fill="#3b82f6" opacity="0.7"/>
+  <rect x="200" y="95" width="20" height="45" fill="#3b82f6" opacity="0.7"/>
+  <rect x="230" y="88" width="20" height="52" fill="#3b82f6" opacity="0.7"/>
+  <rect x="260" y="92" width="20" height="48" fill="#3b82f6" opacity="0.7"/>
+  <rect x="290" y="87" width="20" height="53" fill="#3b82f6" opacity="0.7"/>
+  
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#374151">Maternal Health Research</text>
+  
+  <!-- Subtitle -->
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#6b7280">Supporting African Women's Health</text>
+</svg>
+
+
+
+
+

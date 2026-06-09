@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Team - Place Alert Labs</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+.team-section { background: linear-gradient(135deg,var(--bg-secondary) 0%,var(--bg-primary) 50%,var(--bg-tertiary) 100%); padding: 12rem 0 4rem; position: relative; margin-top: 6rem; }
+.team-header  { text-align: center; margin-bottom: 4rem; }
+.team-title   { font-size: 2.8rem; font-weight: 800; color: var(--msu-primary); margin-bottom: 1rem; line-height: 1.2; letter-spacing: -.5px; }
+.team-subtitle { font-size: 1.3rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6; font-weight: 500; }
+
+.team-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 1.5rem; max-width: 1200px; margin: 0 auto; padding: 0 1rem;
+}
+.team-card {
+    background: var(--card-bg); border-radius: 15px; overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,.1); transition: all .3s cubic-bezier(.4,0,.2,1);
+    border: 1px solid var(--border-color); padding: 1.5rem;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem;
+}
+.team-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 40px rgba(0,0,0,.15); border-color: var(--msu-primary); }
+
+.team-photo { position: relative; width: 80px; height: 80px; border-radius: 50%; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.15); flex-shrink: 0; }
+.team-photo-img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform .3s ease; }
+.team-card:hover .team-photo-img { transform: scale(1.1); }
+
+.team-info { text-align: center; }
+.team-name     { font-size: 1rem; font-weight: 700; color: var(--msu-primary); margin-bottom: .3rem; line-height: 1.3; }
+.team-position { font-size: .8rem; color: var(--text-secondary); font-weight: 500; line-height: 1.3; }
+
+.team-links { display: flex; gap: .6rem; justify-content: center; }
+.research-link {
+    width: 32px; height: 32px; background: var(--bg-tertiary); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; transition: all .3s ease; border: 2px solid transparent;
+    color: var(--msu-primary);
+}
+.research-link:hover { background: var(--msu-primary); color: white; transform: translateY(-2px) scale(1.1); }
+.research-icon { width: 16px; height: 16px; }
+
+.view-more-btn {
+    background: linear-gradient(135deg,var(--msu-primary),var(--msu-secondary));
+    color: white; border: none; padding: .6rem 1.2rem; border-radius: 20px;
+    font-size: .8rem; font-weight: 600; cursor: pointer; transition: all .3s ease;
+    text-transform: uppercase; letter-spacing: .5px;
+}
+.view-more-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,58,138,.4); }
+
+/* Modal */
+.team-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,.8); backdrop-filter: blur(5px); }
+.team-modal.show { display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.modal-content { background: var(--card-bg); border-radius: 20px; box-shadow: 0 25px 80px rgba(0,0,0,.3); max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-color); }
+.modal-header  { display: grid; grid-template-columns: 250px 1fr; gap: 2rem; padding: 2rem; border-bottom: 1px solid var(--border-color); background: linear-gradient(135deg,rgba(30,58,138,.12),rgba(63,81,181,.12)); border-radius: 20px 20px 0 0; position: relative; align-items: start; }
+.modal-photo   { position: relative; flex-shrink: 0; width: 100%; height: 280px; }
+.modal-photo-img { width: 100%; height: 100%; border-radius: 10px; object-fit: cover; object-position: center top; border: 3px solid rgba(30,58,138,.2); }
+.modal-title h2 { font-size: 1.5rem; font-weight: 700; color: var(--msu-primary); margin-bottom: .5rem; }
+.modal-title > p { color: var(--text-secondary); font-size: .95rem; margin-bottom: 1rem; font-weight: 500; }
+.modal-description p { font-size: .9rem; color: var(--text-secondary); margin-bottom: .75rem; line-height: 1.6; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: rgba(30,58,138,.1); border: none; color: var(--msu-primary); font-size: 1.2rem; cursor: pointer; padding: .5rem; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; transition: all .3s ease; }
+.modal-close:hover { background: var(--msu-primary); color: white; }
+.modal-body { padding: 1.5rem 2rem 2rem; }
+.modal-links h3 { font-size: 1rem; font-weight: 600; color: var(--msu-primary); margin-bottom: 1rem; }
+.modal-link-grid { display: flex; flex-wrap: wrap; gap: .75rem; }
+.modal-link-item { display: flex; align-items: center; gap: .5rem; background: rgba(30,58,138,.08); padding: .6rem 1rem; border-radius: 8px; text-decoration: none; color: var(--msu-primary); font-size: .85rem; font-weight: 500; transition: all .3s ease; border: 1px solid rgba(30,58,138,.15); }
+.modal-link-item:hover { background: var(--msu-primary); color: white; transform: translateY(-1px); }
+
+@media (max-width:1200px) { .team-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width:600px)  { .team-grid { grid-template-columns: 1fr; } .modal-header { grid-template-columns: 1fr; } .modal-photo { height: 200px; } }
+</style>
+</head>
+<body>
+<div class="floating-particles"><div class="particle particle-blue"></div><div class="particle particle-orange"></div><div class="particle particle-light-blue"></div><div class="particle particle-yellow"></div><div class="particle particle-grey"></div></div>
+<div class="search-overlay" id="search-overlay"><div class="search-container"><div class="search-header"><h2>Search Place Alert Labs</h2><button class="search-close" id="search-close"><i class="bi bi-x-lg"></i></button></div><div class="search-input-container"><input type="text" id="search-input" placeholder="Search..." autocomplete="off"><button class="search-submit"><i class="bi bi-search"></i></button></div></div></div>
+<div class="floating-chat"><button class="chat-button whatsapp-btn" onclick="openWhatsApp()" title="Chat on WhatsApp"><i class="bi bi-whatsapp"></i><div class="chat-tooltip">Chat on WhatsApp</div></button></div>
+
+<header class="header">
+    <div class="header-top"><div class="container"><div class="header-top-content"><div class="header-top-left"><div class="header-info"><i class="bi bi-building"></i><a href="https://msu.ac.zw">MSU Site</a></div><div class="header-info"><i class="bi bi-envelope"></i><a href="mailto:pals@staff.msu.ac.zw">pals@staff.msu.ac.zw</a></div></div></div></div></div>
+    <div class="header-main"><div class="container"><div class="header-content">
+        <a href="/" class="logo"><div class="logo-text"><img src="/images/backgrounds/pals.png" alt="Place Alert Labs" class="logo-text-img"></div></a>
+        <nav class="nav"><ul class="nav-menu" id="nav-menu">
+            <li class="nav-item"><a href="/about.html" class="nav-link">About Us <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/about.html#vision" class="dropdown-item">Vision and Mission</a><a href="/about.html#values" class="dropdown-item">Values and Principles</a><a href="/about.html#about-us" class="dropdown-item">Who We Are</a><a href="/about.html#strategic-pillars" class="dropdown-item">Strategic Pillars</a></div></li>
+            <li class="nav-item"><a href="/research.html" class="nav-link">Research <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/research.html" class="dropdown-item">Research Overview</a><a href="/research.html#current-projects" class="dropdown-item">Current Projects</a><a href="/publications.html" class="dropdown-item">Publications</a></div></li>
+            <li class="nav-item active"><a href="/team.html" class="nav-link">Team</a></li>
+            <li class="nav-item"><a href="/partners.html" class="nav-link">Our Partners <i class="bi bi-chevron-down dropdown-arrow"></i></a><div class="dropdown"><a href="/partners.html#funding-partners" class="dropdown-item">Funding Partners</a><a href="/partners.html#research-partners" class="dropdown-item">Research Partners</a></div></li>
+            <li class="nav-item"><a href="/news.html" class="nav-link">News</a></li>
+            <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+        </ul>
+        <button class="search-toggle" id="search-toggle" title="Search"><i class="bi bi-search"></i></button>
+        <a href="https://portal.placealert.org" target="_blank" class="nav-portal-btn"><i class="bi bi-database"></i> Data Portal &rarr;</a>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle"><i class="bi bi-list"></i></button>
+        </nav>
+    </div></div></div>
+</header>
+
+<main>
+<section class="team-section">
+    <div class="container">
+        <div class="team-header">
+            <h2 class="team-title">Meet Our Interdisciplinary Team</h2>
+            <p class="team-subtitle">Making our research possible with passion, expertise, and innovation</p>
+        </div>
+        <div class="team-grid">
+
+            <!-- Dr Prestige Tatenda Makanga -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="team-photo"><img src="/images/team/makanga.jpeg" alt="Dr. Prestige Tatenda Makanga" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Dr Prestige Tatenda Makanga</h3><p class="team-position">Lead Researcher</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=eFbLBBkAAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/prestigemakanga/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(1)">View More</button>
+            </div>
+
+            <!-- Professor Terence Darlington Mushore -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="team-photo"><img src="/images/team/mushore.jpeg" alt="Professor Terence Darlington Mushore" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Professor Terence Darlington Mushore</h3><p class="team-position">Research Manager</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=w54_uEQAAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="#" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(2)">View More</button>
+            </div>
+
+            <!-- Dr Upenyu Mupfiga -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="team-photo"><img src="/images/team/upenyu-mupfiga.jpeg" alt="Dr Upenyu Mupfiga" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Dr Upenyu Mupfiga</h3><p class="team-position">Post-doctoral Spatial Data Scientist</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=pp9IG8sAAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/upenyu-mupfiga-76a62099/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(3)">View More</button>
+            </div>
+
+            <!-- Cherlynn Dumbura -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="team-photo"><img src="/images/team/dumbura.jpeg" alt="Cherlynn Dumbura" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Cherlynn Dumbura</h3><p class="team-position">Research Fellow</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=36FgVAoAAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="#" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(4)">View More</button>
+            </div>
+
+            <!-- Liberty Makacha -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="team-photo"><img src="/images/team/makacha.jpeg" alt="Liberty Makacha" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Liberty Makacha</h3><p class="team-position">Research Scientist</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=6YCpCt0AAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/liberty-makacha-431a715b/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(5)">View More</button>
+            </div>
+
+            <!-- Handsome Bongani Nyoni -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="team-photo"><img src="/images/palshome/mrnyo.jpeg" alt="Handsome Bongani Nyoni" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Handsome Bongani Nyoni</h3><p class="team-position">Geospatial Data Scientist</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=PqT_5F8AAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/bongani-handsome-nyoni-62a132119/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(6)">View More</button>
+            </div>
+
+            <!-- Anotida Marrian Chapunza -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="700">
+                <div class="team-photo"><img src="/images/team/chapunza.jpeg" alt="Anotida Marrian Chapunza" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Anotida Marrian Chapunza</h3><p class="team-position">Research Assistant &amp; Finance/Administration Assistant</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=Unhw6D0AAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/anotida-marrian-chapunza-972727200/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(7)">View More</button>
+            </div>
+
+            <!-- Reason Mlambo (Alumni) -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="800">
+                <div class="team-photo"><img src="https://i1.rgstatic.net/ii/profile.image/718115738497024-1548223542284_Q512/Reason-Mlambo-2.jpg" alt="Reason Mlambo" class="team-photo-img"></div>
+                <div class="team-info"><h3 class="team-name">Reason Mlambo</h3><p class="team-position">Alumni</p></div>
+                <div class="team-links">
+                    <a href="https://scholar.google.com/citations?hl=en&user=pu74E10AAAAJ" target="_blank" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/reason-mlambo-4a173085/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(8)">View More</button>
+            </div>
+
+            <!-- Laura Munthali (Research Affiliate) -->
+            <div class="team-card" data-aos="fade-up" data-aos-delay="900">
+                <div class="team-photo"><img src="/images/team/makacha.jpeg" alt="Laura Munthali" class="team-photo-img" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:linear-gradient(135deg,#1e3a8a,#3b82f6);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;\'>LM</div>'"></div>
+                <div class="team-info"><h3 class="team-name">Laura Munthali</h3><p class="team-position">Research Affiliate</p></div>
+                <div class="team-links">
+                    <a href="#" class="research-link" title="Google Scholar"><img src="/images/icons/google-scholar.svg" alt="Google Scholar" class="research-icon"></a>
+                    <a href="https://www.linkedin.com/in/laura-munthali-03a768278/" target="_blank" class="research-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <button class="view-more-btn" onclick="openTeamModal(9)">View More</button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Team Modals -->
+<div id="teamModal1" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/team/makanga.jpeg" alt="Dr. Prestige Tatenda Makanga" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Dr Prestige Tatenda Makanga</h2><p>Lead Researcher</p>
+                <div class="modal-description">
+                    <p>Leading expert in environmental health and geospatial artificial intelligence with over 10 years of research experience.</p>
+                    <p>Specializes in developing innovative solutions for health-environment interactions using advanced GIS technologies.</p>
+                    <p>Published extensively in peer-reviewed journals and has led multiple international research collaborations.</p>
+                    <p>Passionate about building capacity in African geospatial health research and mentoring the next generation of scientists.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(1)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:makangap@staff.msu.ac.zw" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=25027901300" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+            <a href="tel:+263785011872" class="modal-link-item"><i class="bi bi-telephone"></i><span>+263785011872</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal2" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/team/mushore.jpeg" alt="Prof Terence Darlington Mushore" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Professor Terence Darlington Mushore</h2><p>Research Manager</p>
+                <div class="modal-description">
+                    <p>Prof. Mushore is an accomplished environmental scientist and geospatial data expert, serving as Research Manager at Place Alert Labs.</p>
+                    <p>He leads major projects such as the Landscape Fire Smoke Project and CHEAQI-MNCH, applying advanced machine learning and monitoring techniques.</p>
+                    <p>His research focuses on understanding the health impacts of pollution through climate science and environmental change studies.</p>
+                    <p>With expertise in geospatial modelling of air quality and exposure, he contributes significantly to environmental health research.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(2)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:mushored@staff.msu.ac.zw" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=56507246300" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal3" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/team/upenyu-mupfiga.jpeg" alt="Dr Upenyu Naomi Mupfiga" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Dr Upenyu Naomi Mupfiga</h2><p>Post-doctoral Spatial Data Scientist</p>
+                <div class="modal-description">
+                    <p>Dr. Upenyu Mupfiga is a post-doctoral researcher and lecturer specializing in spatial data science at Place Alert Labs.</p>
+                    <p>She contributes to environmental modelling and exposure studies under the CHEAQI-MNCH project while mentoring students.</p>
+                    <p>Her research focuses on remote sensing and environmental modelling, land cover/use change and climate-health interactions.</p>
+                    <p>With expertise in spatial data analytics for resilience and sustainability, she leads sustainability-focused research at MSU.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(3)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:mupfigau@staff.msu.ac.zw" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=57224515488" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal4" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/team/dumbura.jpeg" alt="Cherlynn Dumbura" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Cherlynn Dumbura</h2><p>Research Fellow</p>
+                <div class="modal-description">
+                    <p>Cherlynn is an early-career researcher applying data science and biostatistics to study the impacts of climate change on maternal and child health.</p>
+                    <p>She coordinates research across projects under the HE²AT Centre consortium and Place Alert Labs with extensive experience in malnutrition research.</p>
+                    <p>Her work focuses on biostatistics and epidemiological analysis, data science for health outcomes, and project coordination.</p>
+                    <p>With expertise in multi-country collaboration, she has conducted research in Zimbabwe and Zambia on malnutrition recovery in children.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(4)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:cherlynn.dumbura@ceshhar.org" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=57222501225" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal5" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/team/makacha.jpeg" alt="Liberty Makacha" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Liberty Makacha</h2><p>Research Scientist</p>
+                <div class="modal-description">
+                    <p>Liberty is a dedicated research scientist at Place Alert Labs, contributing to major environmental health projects.</p>
+                    <p>His work integrates GIS, data analytics, and environmental modelling to improve understanding of air quality and health risks.</p>
+                    <p>With expertise in environmental exposure modelling, GIS and spatial analytics for health outcomes, he focuses on climate and air quality science.</p>
+                    <p>He is particularly focused on addressing environmental health challenges in vulnerable African communities.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(5)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:makachal@staff.msu.ac.zw" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=57214692800" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal6" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/palshome/mrnyo.jpeg" alt="Handsome Bongani Nyoni" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Handsome Bongani Nyoni</h2><p>Geospatial Data Scientist</p>
+                <div class="modal-description">
+                    <p>Bongani is a geospatial data scientist and PhD candidate specializing in environmental exposure modelling.</p>
+                    <p>His work spans CHEAQI-MNCH, ETIQUET, and KADI projects, developing AI-driven methods to predict air quality and climate-health risks.</p>
+                    <p>With expertise in GeoAI for environmental exposure modelling, he focuses on air quality (PM2.5, NO₂) and climate-health interactions.</p>
+                    <p>Bongani specializes in semi-supervised learning and deep learning for sparse datasets, advancing machine learning applications for African contexts.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(6)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:nyonih@staff.msu.ac.zw" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal7" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="/images/team/chapunza.jpeg" alt="Anotida Marrian Chapunza" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Anotida Marrian Chapunza</h2><p>Research Assistant &amp; Finance/Administration Assistant</p>
+                <div class="modal-description">
+                    <p>Anotida is a results-oriented researcher and administrator supporting the ETIQUET Project at Place Alert Labs.</p>
+                    <p>She applies statistical and machine learning methods to environmental datasets while managing financial and administrative operations.</p>
+                    <p>With expertise in data science and machine learning (Python, R), she specializes in GIS and spatial data analysis.</p>
+                    <p>Her interests lie in combining informatics, GIS, and AI to address health challenges in Africa.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(7)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:chapunzaa@staff.msu.ac.zw" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal8" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo"><img src="https://i1.rgstatic.net/ii/profile.image/718115738497024-1548223542284_Q512/Reason-Mlambo-2.jpg" alt="Reason Mlambo" class="modal-photo-img"></div>
+            <div class="modal-title">
+                <h2>Reason Mlambo</h2><p>Alumni</p>
+                <div class="modal-description">
+                    <p>Reason is an accomplished researcher and alumnus of Place Alert Labs with significant contributions to environmental health research.</p>
+                    <p>His work has focused on geospatial analysis and environmental exposure assessment in African contexts.</p>
+                    <p>With expertise in remote sensing and spatial data analysis, he has contributed to multiple research projects.</p>
+                    <p>Reason has been instrumental in advancing research methodologies and capacity building initiatives.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(8)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=57193570135" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+<div id="teamModal9" class="team-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-photo" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:10px;"><span style="font-size:4rem;color:white;">LM</span></div>
+            <div class="modal-title">
+                <h2>Laura Munthali</h2><p>Research Affiliate</p>
+                <div class="modal-description">
+                    <p>Laura Munthali is a dedicated research professional with expertise in maternal and child health research.</p>
+                    <p>She is a Senior Research Nurse and Masters Science Student in Global Health at Liverpool School of Tropical Medicine.</p>
+                    <p>Her work focuses on improving maternal and neonatal health outcomes through rigorous research and community engagement.</p>
+                    <p>Laura is committed to advancing health research in Malawi and contributing to evidence-based policy development.</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeTeamModal(9)"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body"><div class="modal-links"><h3>Research Profiles &amp; Contact</h3><div class="modal-link-grid">
+            <a href="mailto:laura.munthali@lstmed.ac.uk" class="modal-link-item"><i class="bi bi-envelope"></i><span>Email</span></a>
+            <a href="https://www.scopus.com/authid/detail.uri?authorId=57212191623" target="_blank" class="modal-link-item"><i class="bi bi-check-circle"></i><span>Scopus</span></a>
+        </div></div></div>
+    </div>
+</div>
+
+</main>
+
+<footer class="modern-footer">
+    <div class="sponsors-section"></div>
+    <div class="footer-main"><div class="container"><div class="footer-content">
+        <div class="footer-section footer-about"><div class="footer-logo-container"><div class="footer-logo"><img src="/images/backgrounds/PALs_Logo.png" alt="PALs Logo" class="footer-logo-img"></div><div class="footer-brand"><h3>Place Alert Labs</h3><p>Geospatial Health Research Excellence</p></div></div><p class="footer-description">Leading innovative research in geospatial health science at Midlands State University.</p><div class="footer-contact"><div><i class="bi bi-geo-alt" style="color:white;"></i><span>Private Bag 9055, Senga, Gweru, Zimbabwe</span></div><div><i class="bi bi-telephone" style="color:white;"></i><span>+263 78 231 9736</span></div><div><i class="bi bi-envelope" style="color:white;"></i><span>pals@staff.msu.ac.zw</span></div></div></div>
+        <div class="footer-section"><h4>Quick Links</h4><ul class="footer-menu"><li><a href="/about.html">About Us</a></li><li><a href="/team.html">Our Team</a></li><li><a href="/partners.html">Our Partners</a></li><li><a href="/news.html">News</a></li><li><a href="/contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-section"><h4>Research</h4><ul class="footer-menu"><li><a href="/research.html">Research Overview</a></li><li><a href="/research.html#current-projects">Current Projects</a></li><li><a href="/publications.html">Publications</a></li><li><a href="https://portal.placealert.org" target="_blank">Data Portal</a></li></ul></div>
+        <div class="footer-section footer-social"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.linkedin.com/company/place-alert-labs/" target="_blank" class="social-link linkedin"><i class="bi bi-linkedin"></i><span>LinkedIn</span></a><a href="https://twitter.com/placealertlabs" target="_blank" class="social-link twitter"><i class="bi bi-twitter-x"></i><span>Twitter</span></a><a href="https://bsky.app/profile/place-alert-lab.bsky.social" target="_blank" class="social-link bluesky"><i class="bi bi-globe"></i><span>Bluesky</span></a><a href="mailto:pals@staff.msu.ac.zw" class="social-link email"><i class="bi bi-envelope"></i><span>Email</span></a></div><div class="newsletter-signup"><h5>Stay Updated</h5><p>Subscribe to our research updates</p><div class="newsletter-form"><input type="email" placeholder="Enter your email" class="newsletter-input"><button type="button" class="newsletter-btn"><i class="bi bi-arrow-right"></i></button></div></div></div>
+    </div></div></div>
+    <div class="footer-bottom"><div class="container"><div class="footer-bottom-content"><div class="copyright"><p>&copy; 2025 Place Alert Labs - Midlands State University. All rights reserved.</p><p class="copyright-sub">Advancing Geospatial Health Research Across Africa</p></div><div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Accessibility</a></div></div></div></div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="/assets/main.js"></script>
+<script>
+function openTeamModal(id) {
+    const modal = document.getElementById('teamModal' + id);
+    if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
+}
+function closeTeamModal(id) {
+    const modal = document.getElementById('teamModal' + id);
+    if (modal) { modal.classList.remove('show'); document.body.style.overflow = 'auto'; }
+}
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('team-modal')) {
+        e.target.classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.team-modal.show').forEach(m => { m.classList.remove('show'); document.body.style.overflow = 'auto'; });
+    }
+});
+</script>
+</body>
+</html>

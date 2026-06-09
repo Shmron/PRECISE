@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Africa Road Network Density | PALS Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=JetBrains Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: #14171a; color: #fffbf5; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { height: 4px; background: linear-gradient(90deg, #B87333 0% 25%, #1A535C 25% 50%, #6B8E6B 50% 75%, #7B6BA8 75%); flex-shrink: 0; }
+        .header { background: rgba(18,21,24,0.98); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.6rem 1.4rem; display: flex; align-items: center; gap: 1.5rem; flex-shrink: 0; }
+        .header-back { font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+        .header-back:hover { color: #B87333; }
+        .header-back::before { content: '← '; }
+        .header-title { flex: 1; }
+        .header-title h1 { font-size: 0.92rem; font-weight: 600; }
+        .header-title p { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: rgba(255,255,255,0.3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.1rem; }
+        .header-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.25); text-align: right; line-height: 1.7; }
+        .map-wrap { flex: 1; position: relative; overflow: hidden; }
+        #map { width: 100%; height: 100%; }
+
+        .panel { position: absolute; bottom: 2rem; left: 1.25rem; background: rgba(14,17,20,0.94); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; padding: 1rem 1.1rem; width: 238px; z-index: 5; }
+        .panel-label { font-family: 'JetBrains Mono', monospace; font-size: 0.57rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 0.55rem; }
+        .legend-gradient { height: 10px; border-radius: 2px; background: linear-gradient(90deg, #ffffb2, #fed976, #fecc5c, #fd8d3c, #f03b20, #bd0026, #800026); margin-bottom: 0.35rem; }
+        .legend-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.57rem; color: rgba(255,255,255,0.35); }
+        .legend-unit { margin-top: 0.4rem; font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: rgba(255,255,255,0.2); text-align: center; }
+        hr.pdiv { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0.8rem 0; }
+        select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fffbf5; font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; padding: 0.28rem 0.45rem; border-radius: 3px; outline: none; cursor: pointer; }
+        select:focus { border-color: #B87333; }
+        select option { background: #14171a; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.42rem; }
+        .toggle-row:last-child { margin-bottom: 0; }
+        .toggle-label { font-size: 0.76rem; color: rgba(255,255,255,0.65); display: flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+        .swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+        .toggle-switch { position: relative; width: 28px; height: 15px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-switch .slider { position: absolute; inset: 0; background: rgba(255,255,255,0.1); border-radius: 15px; cursor: pointer; transition: background 0.2s; }
+        .toggle-switch .slider::before { content: ''; position: absolute; width: 9px; height: 9px; left: 3px; top: 3px; background: rgba(255,255,255,0.45); border-radius: 50%; transition: transform 0.2s, background 0.2s; }
+        .toggle-switch input:checked + .slider { background: #B87333; }
+        .toggle-switch input:checked + .slider::before { transform: translateX(13px); background: white; }
+        .section-disabled { opacity: 0.35; pointer-events: none; }
+
+        .tt { position: absolute; background: rgba(10,13,16,0.97); border: 1px solid rgba(255,255,255,0.08); border-radius: 5px; padding: 0.65rem 0.85rem; pointer-events: none; z-index: 20; display: none; line-height: 1.65; min-width: 205px; }
+        .tt-country { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .tt-row { display: flex; justify-content: space-between; gap: 1rem; color: rgba(255,255,255,0.45); font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; }
+        .tt-val { color: #4ECDC4; font-weight: 500; }
+        .tt-hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0.35rem 0; }
+        .tt-bar-row { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.22rem; }
+        .tt-bar-label { font-family: 'JetBrains Mono', monospace; font-size: 0.59rem; color: rgba(255,255,255,0.35); width: 55px; flex-shrink: 0; }
+        .tt-bar-track { flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+        .tt-bar-fill { height: 100%; border-radius: 2px; }
+        .tt-bar-km { font-family: 'JetBrains Mono', monospace; font-size: 0.59rem; color: rgba(255,255,255,0.35); width: 44px; text-align: right; flex-shrink: 0; }
+
+        .loading { position: absolute; inset: 0; background: rgba(10,13,16,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 30; gap: 1rem; }
+        .loading-text { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; }
+        .loading-bar-wrap { width: 200px; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+        .loading-bar { height: 100%; background: #B87333; border-radius: 2px; transition: width 0.35s ease; width: 0%; }
+
+        .mode-badge { position: absolute; top: 0.9rem; left: 50%; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); background: rgba(14,17,20,0.85); border: 1px solid rgba(255,255,255,0.07); border-radius: 3px; padding: 0.25rem 0.7rem; z-index: 4; pointer-events: none; }
+
+        .stats { position: absolute; top: 1rem; right: 1rem; background: rgba(14,17,20,0.94); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.07); border-radius: 6px; padding: 0.85rem 1.05rem; z-index: 5; min-width: 188px; display: none; }
+        .stats.show { display: block; }
+        .stats-head { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding-bottom: 0.45rem; margin-bottom: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .s-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.28rem; }
+        .s-label { font-family: 'JetBrains Mono', monospace; font-size: 0.57rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.28); }
+        .s-val { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #4ECDC4; font-weight: 500; }
+
+        .updating { position: absolute; bottom: 0.6rem; right: 4rem; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.22); letter-spacing: 0.1em; z-index: 4; display: none; }
+    </style>
+</head>
+<body>
+<div class="topbar"></div>
+<div class="header">
+    <a href="/" class="header-back">Portal</a>
+    <div class="header-title">
+        <h1>Africa Road Network Density</h1>
+        <p>H3 Res 7 &bull; OSM Mar 2026 &bull; RND = total road km ÷ actual cell area</p>
+    </div>
+    <div class="header-meta" id="meta">Loading…</div>
+</div>
+
+<div class="map-wrap">
+    <div id="map"></div>
+
+    <div class="loading" id="loading">
+        <div class="loading-text" id="ltxt">Loading overview…</div>
+        <div class="loading-bar-wrap"><div class="loading-bar" id="lbar"></div></div>
+    </div>
+
+    <div class="mode-badge" id="mode-badge">Africa overview · H3 res 4</div>
+
+    <!-- Tooltip -->
+    <div class="tt" id="tt">
+        <div class="tt-country" id="tt-country"></div>
+        <div class="tt-row"><span>RND</span><span class="tt-val" id="tt-rnd"></span></div>
+        <div class="tt-row" id="tt-tei-row" style="display:none"><span>Traffic exposure index</span><span class="tt-val" id="tt-tei"></span></div>
+        <hr class="tt-hr" id="tt-bars-hr" style="display:none">
+        <div id="tt-bars" style="display:none">
+            <div class="tt-bar-row"><span class="tt-bar-label">Major</span><div class="tt-bar-track"><div class="tt-bar-fill" id="bf-major" style="background:#e63946"></div></div><span class="tt-bar-km" id="bv-major"></span></div>
+            <div class="tt-bar-row"><span class="tt-bar-label">Primary</span><div class="tt-bar-track"><div class="tt-bar-fill" id="bf-primary" style="background:#fd8d3c"></div></div><span class="tt-bar-km" id="bv-primary"></span></div>
+            <div class="tt-bar-row"><span class="tt-bar-label">Minor</span><div class="tt-bar-track"><div class="tt-bar-fill" id="bf-minor" style="background:#fecc5c"></div></div><span class="tt-bar-km" id="bv-minor"></span></div>
+            <div class="tt-bar-row"><span class="tt-bar-label">Local/Track</span><div class="tt-bar-track"><div class="tt-bar-fill" id="bf-local" style="background:rgba(255,255,178,0.6)"></div></div><span class="tt-bar-km" id="bv-local"></span></div>
+        </div>
+        <hr class="tt-hr">
+        <div class="tt-row"><span>H3 cell</span><span class="tt-val" id="tt-cell" style="font-size:0.58rem"></span></div>
+    </div>
+
+    <!-- Control panel -->
+    <div class="panel">
+        <div class="panel-label">Road Network Density (km/km²)</div>
+        <div class="legend-gradient"></div>
+        <div class="legend-labels"><span id="leg-min">—</span><span id="leg-mid">—</span><span id="leg-max" style="color:#f03b20">—</span></div>
+        <div class="legend-unit">km/km² · continuous quantile scale</div>
+
+        <hr class="pdiv">
+
+        <div id="road-toggles">
+            <div class="panel-label">Road types <span id="tog-hint" style="color:rgba(255,255,255,0.2);font-size:0.5rem;letter-spacing:0;text-transform:none">(select a country)</span></div>
+            <div id="road-toggle-body" class="section-disabled">
+                <div class="toggle-row">
+                    <label class="toggle-label"><span class="swatch" style="background:#e63946"></span>Major (motorway/trunk)</label>
+                    <label class="toggle-switch"><input type="checkbox" id="tog-major" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <label class="toggle-label"><span class="swatch" style="background:#fd8d3c"></span>Primary / Secondary</label>
+                    <label class="toggle-switch"><input type="checkbox" id="tog-primary" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <label class="toggle-label"><span class="swatch" style="background:#fecc5c"></span>Minor / Unclassified</label>
+                    <label class="toggle-switch"><input type="checkbox" id="tog-minor" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,178,0.8);border:1px solid rgba(255,255,255,0.1)"></span>Local / Track</label>
+                    <label class="toggle-switch"><input type="checkbox" id="tog-local" checked><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+
+        <hr class="pdiv">
+
+        <div class="panel-label">Admin boundaries</div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.5)"></span>Countries</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm0" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.28)"></span>Provinces / States</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm1" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.16)"></span>Districts</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm2" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <label class="toggle-label"><span class="swatch" style="background:rgba(255,255,255,0.09)"></span>Sub-districts</label>
+            <label class="toggle-switch"><input type="checkbox" id="tog-adm3" checked><span class="slider"></span></label>
+        </div>
+
+        <hr class="pdiv">
+
+        <div class="panel-label">Filter by country</div>
+        <select id="country-select"><option value="">All countries (overview)</option></select>
+    </div>
+
+    <div class="stats" id="stats">
+        <div class="stats-head" id="stats-head">Africa</div>
+        <div class="s-row"><span class="s-label">H3 cells</span><span class="s-val" id="st-cells">—</span></div>
+        <div class="s-row"><span class="s-label">Mean RND</span><span class="s-val" id="st-mean">—</span></div>
+        <div class="s-row"><span class="s-label">Median RND</span><span class="s-val" id="st-med">—</span></div>
+        <div class="s-row"><span class="s-label">95th pct</span><span class="s-val" id="st-p95">—</span></div>
+        <div class="s-row"><span class="s-label">Max RND</span><span class="s-val" id="st-max">—</span></div>
+    </div>
+
+    <div class="updating" id="updating">updating…</div>
+</div>
+
+<script>
+const CSTOPS = [
+    [0, '#ffffb2'], [0.15, '#fed976'], [0.35, '#fecc5c'],
+    [0.55, '#fd8d3c'], [0.72, '#f03b20'], [0.88, '#bd0026'], [1.0, '#800026'],
+];
+
+let globalStats = {};
+let boundsGJ    = null;
+let currentData = {};      // whatever is currently loaded (overview or country)
+let currentISO  = '';
+let colorMax    = 1;
+let activeTypes = { major: true, primary: true, minor: true, local: true };
+let map;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const prog = (p, t) => {
+    document.getElementById('lbar').style.width = p + '%';
+    if (t !== undefined) document.getElementById('ltxt').textContent = t;
+};
+const show  = id => document.getElementById(id).style.display = 'block';
+const hide  = id => document.getElementById(id).style.display = 'none';
+
+async function loadGZ(url) {
+    const blob = await fetch(url).then(r => { if (!r.ok) throw new Error(r.statusText); return r.blob(); });
+    const text = await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).text();
+    return JSON.parse(text);
+}
+
+// Quantile color scale — each color stop maps to an actual data percentile.
+// This ensures the full yellow→red range always spans the real distribution,
+// so RND=4 and RND=14 will be visually distinct if the data goes that high.
+function quantileColorExpr(data) {
+    const vals = [];
+    for (const v of Object.values(data)) {
+        const r = getRND(v);
+        if (r > 0) vals.push(r);
+    }
+    if (vals.length === 0) return ['interpolate', ['linear'], ['get', 'rnd'], 0, '#ffffb2', 1, '#800026'];
+    vals.sort((a, b) => a - b);
+    const n = vals.length;
+    const q = p => vals[Math.min(n - 1, Math.floor(p * n))];
+
+    // Map each color stop fraction to the corresponding data percentile value
+    const stops = CSTOPS.map(([t, c]) => [q(t), c]).flat();
+
+    // Update legend to show actual data range (min · median · max)
+    document.getElementById('leg-min').textContent = q(0).toFixed(2);
+    document.getElementById('leg-mid').textContent = q(0.5).toFixed(2);
+    document.getElementById('leg-max').textContent = q(1.0).toFixed(2);
+
+    return ['interpolate', ['linear'], ['get', 'rnd'], ...stops];
+}
+
+function getRND(v) {
+    const c = v.c;
+    const base = typeof v.r === 'number' ? v.r : (typeof v.d === 'number' ? v.d : 0);
+    if (!c || Object.keys(c).length === 0) return base;
+    if (activeTypes.major && activeTypes.primary && activeTypes.minor && activeTypes.local) return base;
+    const total = (c.major||0)+(c.primary||0)+(c.minor||0)+(c.local||0);
+    if (total === 0) return 0;
+    const sel = (activeTypes.major?(c.major||0):0)+(activeTypes.primary?(c.primary||0):0)
+              + (activeTypes.minor?(c.minor||0):0)+(activeTypes.local?(c.local||0):0);
+    return base * (sel / total);
+}
+
+function buildGeoJSON(data) {
+    const features = [];
+    for (const [cellId, v] of Object.entries(data)) {
+        const rnd = getRND(v);
+        if (rnd <= 0) continue;
+        let boundary;
+        try { boundary = h3.cellToBoundary(cellId); } catch(e) { continue; }
+        const coords = boundary.map(([la, lo]) => [lo, la]);
+        coords.push(coords[0]);
+        const c = v.c || {};
+        features.push({
+            type: 'Feature',
+            id: features.length,
+            properties: {
+                cellId,
+                rnd:     +rnd.toFixed(5),
+                tei:     +(v.x||0).toFixed(4),
+                country: v.n || v.i || '',
+                iso:     v.i || '',
+                major:   +(c.major||0).toFixed(2),
+                primary: +(c.primary||0).toFixed(2),
+                minor:   +(c.minor||0).toFixed(2),
+                local:   +(c.local||0).toFixed(2),
+            },
+            geometry: { type: 'Polygon', coordinates: [coords] }
+        });
+    }
+    return { type: 'FeatureCollection', features };
+}
+
+function updateStats(iso) {
+    document.getElementById('stats').classList.add('show');
+    if (!iso) {
+        document.getElementById('stats-head').textContent = 'Africa';
+        document.getElementById('st-cells').textContent = (globalStats.n_cells_africa||0).toLocaleString();
+        document.getElementById('st-mean').textContent  = (globalStats.mean_density||0).toFixed(3)+' km/km²';
+        document.getElementById('st-med').textContent   = (globalStats.p50||0).toFixed(3)+' km/km²';
+        document.getElementById('st-p95').textContent   = (globalStats.p95||0).toFixed(3)+' km/km²';
+        document.getElementById('st-max').textContent   = (globalStats.max_density||0).toFixed(2)+' km/km²';
+    } else {
+        const cs = (globalStats.countries||{})[iso]||{};
+        document.getElementById('stats-head').textContent = (globalStats.country_names||{})[iso]||iso;
+        document.getElementById('st-cells').textContent = (cs.cells||0).toLocaleString();
+        document.getElementById('st-mean').textContent  = (cs.mean_density||0).toFixed(3)+' km/km²';
+        document.getElementById('st-med').textContent   = '—';
+        document.getElementById('st-p95').textContent   = '—';
+        document.getElementById('st-max').textContent   = cs.total_km ? cs.total_km.toLocaleString()+' km' : '—';
+    }
+}
+
+function setBadge(text) { document.getElementById('mode-badge').textContent = text; }
+
+let renderTimer = null;
+function render() {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(() => {
+        show('updating');
+        requestAnimationFrame(() => {
+            const gj = buildGeoJSON(currentData);
+            map.getSource('hexagons').setData(gj);
+            // Recompute quantile scale from current (possibly filtered) data
+            map.setPaintProperty('hex-fill', 'fill-color', quantileColorExpr(currentData));
+            hide('updating');
+        });
+    }, 50);
+}
+
+// ── Admin boundaries ──────────────────────────────────────────────────────────
+const admLevels = [
+    { id: 'adm1', url: 'data/provinces.geojson',    minzoom: 4,  color: 'rgba(255,255,255,0.45)',  width: 0.9, labelZoom: 4,  labelSize: 11 },
+    { id: 'adm2', url: 'data/districts.geojson',    minzoom: 6,  color: 'rgba(255,255,255,0.28)', width: 0.6, labelZoom: 7,  labelSize: 10 },
+    { id: 'adm3', url: 'data/sub_districts.geojson',minzoom: 8,  color: 'rgba(255,255,255,0.18)', width: 0.4, labelZoom: 9,  labelSize: 9  },
+];
+
+async function loadAdminBoundaries() {
+    for (const lvl of admLevels) {
+        let loaded = false;
+        const tryLoad = async () => {
+            if (loaded || map.getZoom() < lvl.minzoom - 1.5) return;
+            loaded = true;
+            try {
+                const gj = await fetch(lvl.url).then(r => r.json());
+                map.addSource(lvl.id, { type: 'geojson', data: gj });
+                map.addLayer({ id: lvl.id+'-line', type: 'line', source: lvl.id, minzoom: lvl.minzoom,
+                    paint: { 'line-color': lvl.color, 'line-width': lvl.width } });
+                map.addLayer({ id: lvl.id+'-label', type: 'symbol', source: lvl.id, minzoom: lvl.labelZoom,
+                    layout: { 'text-field': ['coalesce',['get','name_en'],['get','name']], 'text-font': ['Open Sans Regular'], 'text-size': lvl.labelSize, 'text-anchor': 'center', 'text-max-width': 8 },
+                    paint: { 'text-color': 'rgba(255,255,255,0.8)', 'text-halo-color': 'rgba(0,0,0,0.9)', 'text-halo-width': 1.5 }
+                });
+                const tog = document.getElementById('tog-'+lvl.id);
+                if (tog) {
+                    const setV = on => { const v = on?'visible':'none'; ['line','label'].forEach(s => { if (map.getLayer(lvl.id+'-'+s)) map.setLayoutProperty(lvl.id+'-'+s,'visibility',v); }); };
+                    setV(tog.checked);
+                    tog.addEventListener('change', e => setV(e.target.checked));
+                }
+            } catch(e) { console.warn('Admin boundary load failed:', lvl.url, e); }
+        };
+        tryLoad();
+        map.on('zoomend', tryLoad);
+    }
+    document.getElementById('tog-adm0').addEventListener('change', e => {
+        const v = e.target.checked?'visible':'none';
+        ['country-lines','country-labels'].forEach(id => { if (map.getLayer(id)) map.setLayoutProperty(id,'visibility',v); });
+    });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+    map = new maplibregl.Map({
+        container: 'map',
+        style: {
+            version: 8,
+            glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+            sources: { basemap: { type: 'raster', tileSize: 256, attribution: '© OpenStreetMap © CARTO',
+                tiles: ['https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+                        'https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png'] }},
+            layers: [{ id: 'bg', type: 'raster', source: 'basemap' }]
+        },
+        center: [20, 2], zoom: 3.5, minZoom: 2, maxZoom: 16,
+    });
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+
+    // 1. Load stats
+    prog(10, 'Loading statistics…');
+    globalStats = await fetch('data/roadnet_stats.json').then(r => r.json());
+
+    // Populate country dropdown
+    const sel = document.getElementById('country-select');
+    Object.entries(globalStats.country_names||{}).sort((a,b)=>a[1].localeCompare(b[1])).forEach(([iso,name])=>{
+        const o = document.createElement('option'); o.value=iso; o.textContent=name; sel.appendChild(o);
+    });
+
+    // 2. Load lightweight overview
+    prog(20, 'Loading Africa overview…');
+    const ovStats = await fetch('data/overview_r4_stats.json').then(r => r.json());
+    // Legend labels set dynamically by quantileColorExpr when data loads
+
+    currentData = await loadGZ('data/overview_r4.json.gz');
+    document.getElementById('meta').textContent = 'Africa · '+Object.keys(currentData).toLocaleString()+' cells (res 4)';
+    updateStats('');
+
+    prog(70, 'Building map…');
+    await new Promise(r => { if (map.isStyleLoaded()) r(); else map.on('load', r); });
+
+    // Load bounds source early (needed for country zoom-to)
+    boundsGJ = await fetch('data/africa_bounds.geojson').then(r=>r.json());
+    map.addSource('bounds', { type: 'geojson', data: boundsGJ });
+
+    // Hex layer — added first so boundaries render on top
+    map.addSource('hexagons', { type: 'geojson', data: buildGeoJSON(currentData) });
+    map.addLayer({ id: 'hex-fill', type: 'fill', source: 'hexagons',
+        paint: { 'fill-color': quantileColorExpr(currentData), 'fill-opacity': ['case',['boolean',['feature-state','hover'],false],1.0,0.75] }
+    });
+    map.addLayer({ id: 'hex-outline', type: 'line', source: 'hexagons', minzoom: 5,
+        paint: { 'line-color': 'rgba(0,0,0,0.2)', 'line-width': 0.4 }
+    });
+
+    // Country boundary lines on top of hexagons
+    map.addLayer({ id: 'country-lines', type: 'line', source: 'bounds',
+        paint: { 'line-color': 'rgba(255,255,255,0.6)', 'line-width': ['interpolate',['linear'],['zoom'],2,0.8,5,1.4,8,2.0] }
+    });
+    map.addLayer({ id: 'country-labels', type: 'symbol', source: 'bounds', minzoom: 2,
+        layout: { 'text-field': ['get','name'], 'text-font': ['Open Sans Regular'], 'text-size': ['interpolate',['linear'],['zoom'],2,10,5,13], 'text-anchor': 'center' },
+        paint: { 'text-color': 'rgba(255,255,255,0.85)', 'text-halo-color': 'rgba(0,0,0,0.9)', 'text-halo-width': 1.8 }
+    });
+
+    prog(100, '');
+    await new Promise(r => setTimeout(r, 200));
+    hide('loading');
+
+    // Admin boundaries (lazy)
+    loadAdminBoundaries();
+
+    // ── Hover tooltip ──────────────────────────────────────────────────────────
+    const tt = document.getElementById('tt');
+    let hoverId = null;
+
+    map.on('mousemove', 'hex-fill', e => {
+        const feats = map.queryRenderedFeatures(e.point, { layers: ['hex-fill'] });
+        if (!feats.length) return;
+        const f = feats[0]; const p = f.properties;
+        map.getCanvas().style.cursor = 'crosshair';
+        if (hoverId !== null) map.setFeatureState({ source:'hexagons', id:hoverId }, { hover:false });
+        hoverId = f.id;
+        map.setFeatureState({ source:'hexagons', id:hoverId }, { hover:true });
+
+        const rnd = Number(p.rnd)||0, tei = Number(p.tei)||0;
+        const hasBreak = (Number(p.major)+Number(p.primary)+Number(p.minor)+Number(p.local)) > 0.001;
+        document.getElementById('tt-country').textContent = p.country||p.iso||'—';
+        document.getElementById('tt-rnd').textContent = rnd.toFixed(4)+' km/km²';
+        document.getElementById('tt-cell').textContent = p.cellId||'—';
+        document.getElementById('tt-tei-row').style.display = tei>0?'flex':'none';
+        if (tei>0) document.getElementById('tt-tei').textContent = tei.toFixed(4);
+        document.getElementById('tt-bars').style.display = hasBreak?'block':'none';
+        document.getElementById('tt-bars-hr').style.display = hasBreak?'block':'none';
+        if (hasBreak) {
+            const mv = Math.max(Number(p.major),Number(p.primary),Number(p.minor),Number(p.local),0.001);
+            [['major','#e63946'],['primary','#fd8d3c'],['minor','#fecc5c'],['local','rgba(255,255,178,0.6)']].forEach(([cls])=>{
+                const km = Number(p[cls]);
+                document.getElementById('bf-'+cls).style.width = (km/mv*100)+'%';
+                document.getElementById('bv-'+cls).textContent = km.toFixed(1)+' km';
+            });
+        }
+        const mw = map.getCanvas().offsetWidth;
+        tt.style.left = (e.point.x+18+210>mw ? e.point.x-225 : e.point.x+18)+'px';
+        tt.style.top  = Math.max(4, e.point.y-20)+'px';
+        tt.style.display = 'block';
+    });
+    map.on('mouseleave','hex-fill',()=>{
+        map.getCanvas().style.cursor=''; tt.style.display='none';
+        if (hoverId!==null){map.setFeatureState({source:'hexagons',id:hoverId},{hover:false});hoverId=null;}
+    });
+
+    // ── Road type toggles (only active when country loaded) ────────────────────
+    ['major','primary','minor','local'].forEach(cls => {
+        document.getElementById('tog-'+cls).addEventListener('change', e => {
+            activeTypes[cls]=e.target.checked;
+            if (currentISO) render();
+        });
+    });
+
+    // ── Country filter ─────────────────────────────────────────────────────────
+    sel.addEventListener('change', async e => {
+        currentISO = e.target.value;
+        document.getElementById('loading').style.display = 'flex';
+
+        if (!currentISO) {
+            // Back to overview
+            prog(20, 'Loading overview…');
+            currentData = await loadGZ('data/overview_r4.json.gz');
+            prog(80,'Rendering…');
+            document.getElementById('road-toggle-body').classList.add('section-disabled');
+            document.getElementById('tog-hint').style.display='inline';
+            render();
+            updateStats('');
+            setBadge('Africa overview · H3 res 4');
+            document.getElementById('meta').textContent = 'Africa overview · res 4';
+            map.flyTo({ center:[20,2], zoom:3.5, duration:700 });
+        } else {
+            const name = (globalStats.country_names||{})[currentISO]||currentISO;
+            prog(20, `Loading ${name}…`);
+            try {
+                currentData = await loadGZ(`data/countries/${currentISO}.json.gz`);
+            } catch(err) {
+                alert(`No data for ${name}`); hide('loading'); return;
+            }
+            prog(70,'Rendering…');
+            const hasBreakdown = Object.values(currentData).some(v=>v.c&&Object.keys(v.c).length>0);
+            document.getElementById('road-toggle-body').classList.toggle('section-disabled',!hasBreakdown);
+            document.getElementById('tog-hint').style.display = hasBreakdown?'none':'inline';
+            render();
+            updateStats(currentISO);
+            const ncells = Object.keys(currentData).length;
+            setBadge(`${name} · H3 res 7 · ${ncells.toLocaleString()} cells`);
+            document.getElementById('meta').textContent = `${name} · ${ncells.toLocaleString()} cells`;
+
+            // Zoom to country
+            if (boundsGJ) {
+                const feat = boundsGJ.features.find(f=>f.properties.ISO===currentISO);
+                if (feat) {
+                    const pts=[];
+                    const col = g => { if(g.type==='Polygon') g.coordinates[0].forEach(c=>pts.push(c)); else if(g.type==='MultiPolygon') g.coordinates.forEach(p=>p[0].forEach(c=>pts.push(c))); };
+                    col(feat.geometry);
+                    if (pts.length) {
+                        const lns=pts.map(c=>c[0]),las=pts.map(c=>c[1]);
+                        map.fitBounds([[Math.min(...lns),Math.min(...las)],[Math.max(...lns),Math.max(...las)]],{padding:60,duration:700});
+                    }
+                }
+            }
+        }
+        prog(100,'');
+        await new Promise(r=>setTimeout(r,200));
+        hide('loading');
+    });
+}
+
+init().catch(err => {
+    console.error(err);
+    document.getElementById('ltxt').textContent = 'Error: '+err.message;
+    document.getElementById('lbar').style.background = '#e63946';
+});
+</script>
+</body>
+</html>
