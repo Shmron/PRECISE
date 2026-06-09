@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Place Alert Labs | Open Research Portal</title>
+    <title>Place Alert Labs | PALs Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -495,6 +495,30 @@
             gap: 1.5rem;
         }
 
+
+        /* In-grid divider between sections */
+        .grid-divider {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0 0.5rem;
+            color: var(--slate);
+            opacity: 0.55;
+        }
+        .grid-divider::before, .grid-divider::after {
+            content: '';
+            flex: 1;
+            border-top: 1px solid rgba(45,52,54,0.10);
+        }
+        .grid-divider span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
         .project-card {
             background: var(--ivory);
             border: 1px solid rgba(45, 52, 54, 0.08);
@@ -752,8 +776,8 @@
         /* ── Scroll reveal ──────────────────────────────────────────────────── */
         .reveal {
             opacity: 0;
-            transform: translateY(18px);
-            transition: opacity 0.55s ease, transform 0.55s ease;
+            transform: translateY(22px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
         .reveal.visible {
@@ -943,6 +967,214 @@
             font-style: italic;
             line-height: 1.3;
         }
+
+        /* ── Hero texture overlay ────────────────────────────────────────── */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(184,115,51,0.09) 1px, transparent 0),
+                radial-gradient(circle at 1px 1px, rgba(26,83,92,0.05) 1px, transparent 0);
+            background-size: 28px 28px, 56px 56px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; right: 60px;
+            width: 380px; height: 380px;
+            border: 1.5px solid var(--copper);
+            border-radius: 50%;
+            opacity: 0.07;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Readability fix for hero sub ────────────────────────────────── */
+        .hero-sub { font-weight: 400 !important; }
+
+        /* ── Card radius + accent-coloured hover shadows ─────────────────── */
+        .project-card          { border-radius: 8px !important; }
+        .project-card:hover    { box-shadow: 0 12px 40px rgba(45,52,54,0.10) !important; }
+
+        .accent-coral:hover    { box-shadow: 0 12px 40px rgba(224,122,95,0.18) !important; }
+        .accent-copper:hover   { box-shadow: 0 12px 40px rgba(184,115,51,0.18) !important; }
+        .accent-lavender:hover { box-shadow: 0 12px 40px rgba(123,107,168,0.18) !important; }
+        .accent-sage:hover     { box-shadow: 0 12px 40px rgba(107,142,107,0.18) !important; }
+        .accent-teal:hover     { box-shadow: 0 12px 40px rgba(78,205,196,0.18) !important; }
+        .accent-slate:hover    { box-shadow: 0 12px 40px rgba(61,90,115,0.18) !important; }
+        .accent-green:hover    { box-shadow: 0 12px 40px rgba(16,185,129,0.18) !important; }
+
+        /* ── Sidebar card left accent strip ──────────────────────────────── */
+        .sidebar-card {
+            border-left: 3px solid var(--copper) !important;
+            background: white !important;
+            box-shadow: 0 2px 12px rgba(45,52,54,0.05) !important;
+        }
+
+        /* ── Website link in nav ─────────────────────────────────────────── */
+        .nav-website-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.06em;
+            color: var(--copper);
+            text-decoration: none;
+            padding: 0.35rem 0.75rem;
+            border: 1px solid rgba(184,115,51,0.3);
+            border-radius: 5px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .nav-website-link:hover {
+            background: rgba(184,115,51,0.08);
+            border-color: var(--copper);
+            color: var(--copper);
+        }
+
+        /* ── Stat count-up ───────────────────────────────────────────────── */
+        .stat-num[data-target] { display: inline-block; }
+
+        /* ── Auth gate ──────────────────────────────────────────────────────── */
+        #authGate {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        .gate-card {
+            background: var(--ivory);
+            border: 1px solid rgba(184,115,51,0.15);
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(45,52,54,0.10);
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem 2.5rem 2rem;
+        }
+        .gate-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+        .gate-logo-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .gate-logo-mark img { width: 100%; height: 100%; object-fit: contain; }
+        .gate-logo-text strong {
+            display: block;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--charcoal);
+            line-height: 1.2;
+        }
+        .gate-logo-text span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--slate);
+            letter-spacing: 0.05em;
+        }
+        .gate-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            margin-bottom: 0.35rem;
+        }
+        .gate-subtitle {
+            font-size: 0.875rem;
+            color: var(--slate);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        .gate-field {
+            margin-bottom: 1rem;
+        }
+        .gate-field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--slate);
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.02em;
+        }
+        .gate-field input,
+        .gate-field textarea {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1px solid rgba(61,90,115,0.25);
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            color: var(--charcoal);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .gate-field input:focus,
+        .gate-field textarea:focus {
+            border-color: var(--teal-deep);
+            box-shadow: 0 0 0 3px rgba(26,83,92,0.1);
+        }
+        .gate-field textarea { resize: vertical; min-height: 72px; }
+        .gate-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--teal-deep);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+            margin-top: 0.25rem;
+        }
+        .gate-btn:hover { background: #123b42; }
+        .gate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .gate-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.83rem;
+        }
+        .gate-links a {
+            color: var(--copper);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .gate-links a:hover { color: var(--teal-deep); text-decoration: underline; }
+        .gate-msg {
+            font-size: 0.85rem;
+            padding: 0.65rem 0.9rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .gate-msg.error { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; display: block; }
+        .gate-msg.success { background: #f0fdf4; color: #166534; border: 1px solid #86efac; display: block; }
+        .gate-divider {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #9ca3af;
+            margin: 1.25rem 0 0.75rem;
+        }
+        .gate-view { display: none; }
+        .gate-view.active { display: block; }
+        #authGate.hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -956,7 +1188,7 @@
                 <div class="nav-logo-mark"><img src="/place_alert_labs_logo.jpg" alt="Place Alert Labs"></div>
                 <div>
                     <div class="nav-logo-title">Place Alert Labs</div>
-                    <div class="nav-logo-sub">placealert.org</div>
+                    <div class="nav-logo-sub">PALs Portal</div>
                 </div>
             </a>
             <div class="nav-links">
@@ -964,6 +1196,7 @@
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#data-access" class="nav-link">Data Access</a>
             </div>
+            <a href="https://placealert.org" class="nav-website-link" title="Go to Place Alert Labs website">PALs Website</a>
             <button class="nav-chat-btn" id="navChatBtn">Ask a question</button>
             <button class="nav-hamburger" id="navHamburger" aria-label="Open menu">
                 <span></span><span></span><span></span>
@@ -979,7 +1212,7 @@
     <!-- ── Hero ────────────────────────────────────────────────────────────── -->
     <section class="hero">
         <div class="hero-inner">
-            <div class="hero-label">Place Alert Labs &mdash; Open Research Portal</div>
+            <div class="hero-label">Place Alert Labs &mdash; PALs Portal</div>
             <h1 class="hero-title">Geospatial &amp; Climate<br><em>Health Intelligence</em></h1>
             <p class="hero-sub">
                 Open data tools, indicator catalogues, and analytical platforms for
@@ -987,17 +1220,17 @@
             </p>
             <div class="hero-stats">
                 <div class="stat-item">
-                    <div class="stat-num">10+</div>
+                    <div class="stat-num" data-target="10" data-suffix="+">0+</div>
                     <div class="stat-label">Years of Research</div>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <div class="stat-num">80K+</div>
+                    <div class="stat-num" data-target="80" data-suffix="K+">0K+</div>
                     <div class="stat-label">Participants Characterised</div>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <div class="stat-num">50+</div>
+                    <div class="stat-num" data-target="50" data-suffix="+">0+</div>
                     <div class="stat-label">Environmental Exposures</div>
                 </div>
                 <div class="stat-divider"></div>
@@ -1007,7 +1240,7 @@
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <div class="stat-num">8</div>
+                    <div class="stat-num" data-target="8" data-suffix="">0</div>
                     <div class="stat-label">Open Platforms</div>
                 </div>
             </div>
@@ -1104,7 +1337,7 @@
     <!-- ── Projects ────────────────────────────────────────────────────────── -->
     <section class="projects-section" id="projects">
         <div class="section-wrap">
-            <div class="section-label">Active Projects &amp; Platforms</div>
+            <div class="section-label">Tools &amp; Platforms</div>
 
             <div class="filter-tabs" role="group" aria-label="Filter projects">
                 <button class="filter-tab active" data-filter="all">All</button>
@@ -1115,7 +1348,7 @@
 
             <div class="projects-grid">
 
-                <!-- HE2AT Catalogue -->
+                <!-- HE2AT Catalogue — FEATURED -->
                 <a href="/heat-catalogue/" class="project-card accent-coral reveal" data-category="research">
                     <div class="card-tag">HE2AT Centre</div>
                     <div class="card-title">Environmental Exposure Catalogue</div>
@@ -1134,7 +1367,7 @@
                     <div class="card-arrow">View Catalogue</div>
                 </a>
 
-                <!-- PRECISE Catalogue -->
+                <!-- PRECISE Catalogue — FEATURED -->
                 <a href="/catalogue/" class="project-card reveal" data-category="research">
                     <div class="card-tag">PRECISE Network</div>
                     <div class="card-title">Environmental &amp; Social Determinants of Maternal Health</div>
@@ -1154,133 +1387,109 @@
                 </a>
 
                 <!-- SPECTRA -->
-                <a href="/apex/" class="project-card accent-copper reveal" data-category="research" style="transition-delay:0.05s">
+                <a href="/apex/" class="project-card accent-copper reveal" data-category="research">
                     <div class="card-tag">CHEAQI-MNCH</div>
                     <div class="card-title">SPECTRA</div>
                     <p class="card-desc">
-                        <strong style="color:var(--charcoal)">Spatiotemporal Personal Exposure Characterization &amp; TRAjectory Analyzer.</strong>
-                        An open-source platform for personal environmental exposure assessment,
-                        integrating GPS trajectory analytics, wearable sensor data, and
-                        indoor/outdoor context classification for environmental epidemiology research.
+                        Personal environmental exposure assessment — GPS trajectory analytics,
+                        wearable sensor data, and indoor/outdoor context classification for
+                        environmental epidemiology research.
                     </p>
                     <div class="card-meta">
                         <span class="card-badge">R Shiny</span>
                         <span class="card-badge">GPS Trajectory</span>
                         <span class="card-badge">Wearable Sensors</span>
-                        <span class="card-badge">Exposure Profiling</span>
                     </div>
                     <div class="card-arrow">Open App</div>
                 </a>
 
                 <!-- GIPEX -->
-                <a href="/gipex/" class="project-card accent-teal reveal" data-category="research" style="transition-delay:0.1s">
+                <a href="/gipex/" class="project-card accent-teal reveal" data-category="research">
                     <div class="card-tag">CHEAQI-MNCH</div>
                     <div class="card-title">GIPEX</div>
                     <p class="card-desc">
-                        <strong style="color:var(--charcoal)">Geospatial Indicators for Proxy Environmental eXposure.</strong>
-                        A geospatial platform for extracting and analysing proxy environmental
-                        exposure indicators — surface heat, air pollution (NO₂, PM₂.₅, aerosol),
-                        vegetation indices, water indicators, built-up intensity, night-time lights,
-                        and atmospheric conditions — across custom grid cells or study areas.
-                        Designed for settings where no ground-based monitoring stations exist,
-                        providing satellite-derived and reanalysis-based proxies for
-                        epidemiological and public health exposure assessment.
+                        Satellite-derived proxy exposure indicators — surface heat, air pollution
+                        (NO₂, PM₂.₅), vegetation, built-up intensity, and night-time lights
+                        across custom study areas. For settings without ground-based monitoring.
                     </p>
                     <div class="card-meta">
                         <span class="card-badge">Satellite-derived</span>
                         <span class="card-badge">Air Pollution</span>
-                        <span class="card-badge">Surface Heat</span>
-                        <span class="card-badge">Google Earth Engine</span>
+                        <span class="card-badge">Earth Engine</span>
                     </div>
                     <div class="card-arrow">Open App</div>
                 </a>
 
                 <!-- HarmonAIze -->
-                <a href="/harmonaize/" class="project-card accent-sage reveal" data-category="research" style="transition-delay:0.15s">
+                <a href="/harmonaize/" class="project-card accent-sage reveal" data-category="research">
                     <div class="card-tag">HarmonAIze</div>
                     <div class="card-title">Climate &amp; Health Data Harmonisation</div>
                     <p class="card-desc">
-                        An open-source toolkit for harmonising heterogeneous climate and health
-                        datasets at scale. AI-assisted workflows handle variable mapping, unit
-                        conversion, and schema unification — purpose-built for resource-constrained
-                        settings where data quality and interoperability are critical.
+                        AI-assisted harmonisation of heterogeneous climate and health datasets —
+                        variable mapping, unit conversion, and schema unification for
+                        resource-constrained research settings.
                     </p>
                     <div class="card-meta">
                         <span class="card-badge">AI-assisted</span>
                         <span class="card-badge">Climate</span>
-                        <span class="card-badge">Health</span>
                         <span class="card-badge">Open Source</span>
                     </div>
                     <div class="card-arrow">Open App</div>
                 </a>
 
-                <!-- Road Network Density -->
-                <a href="/roadnet/" class="project-card accent-teal reveal" data-category="research" style="transition-delay:0.2s">
-                    <div class="card-tag">Geospatial Analysis</div>
-                    <div class="card-title">Africa Road Network Density</div>
-                    <p class="card-desc">
-                        An Africa-wide H3 hexagon map of road network density (RND) derived from
-                        OpenStreetMap. RND — total road length per unit area — provides a
-                        continent-scale spatial proxy for traffic-related air pollution exposure.
-                        Explore at ~5&thinsp;km&sup2; resolution with country-level filtering.
-                    </p>
-                    <div class="card-meta">
-                        <span class="card-badge">H3 Res&nbsp;7</span>
-                        <span class="card-badge">OpenStreetMap</span>
-                        <span class="card-badge">Africa-wide</span>
-                        <span class="card-badge">GIS</span>
-                    </div>
-                    <div class="card-arrow">Open Map</div>
-                </a>
-
                 <!-- PALSearth -->
-                <a href="/palsearth/" class="project-card accent-green reveal" data-category="research" style="transition-delay:0.25s">
+                <a href="/palsearth/" class="project-card accent-green reveal" data-category="research">
                     <div class="card-tag">Geospatial Extraction</div>
                     <div class="card-title">PALSearth</div>
                     <p class="card-desc">
                         Point-and-extract environmental data for any location and time window.
-                        Upload a CSV or shapefile, select from NDVI, land surface temperature,
-                        rainfall, elevation, soil properties, and more — then download
-                        analysis-ready results. Powered by Google Earth Engine.
+                        Upload coordinates, select NDVI, LST, rainfall, elevation, soil, and more —
+                        download analysis-ready results via Google Earth Engine.
                     </p>
                     <div class="card-meta">
                         <span class="card-badge">Earth Engine</span>
                         <span class="card-badge">Climate</span>
-                        <span class="card-badge">GIS</span>
                         <span class="card-badge">Africa</span>
                     </div>
                     <div class="card-arrow">Open PALSearth</div>
                 </a>
 
-                <!-- PALSlab Hub -->
-                <a href="https://pals.placealert.org" class="project-card accent-lavender reveal" data-category="hub" style="transition-delay:0.05s">
-                    <div class="card-tag">PALS Lab</div>
-                    <div class="card-title">PALSlab Hub</div>
+                <!-- Road Network Density -->
+                <a href="/roadnet/" class="project-card accent-teal reveal" data-category="research">
+                    <div class="card-tag">Geospatial Analysis</div>
+                    <div class="card-title">Africa Road Network Density</div>
                     <p class="card-desc">
-                        The shared analytical environment for the PALS Lab research group.
-                        Python and R kernels, pre-loaded libraries, shared data directories,
-                        and direct database connectivity — everything in one place for collaborative
-                        analysis and scripting.
+                        Africa-wide H3 hexagon map of road network density derived from
+                        OpenStreetMap — a continent-scale spatial proxy for traffic-related
+                        air pollution exposure at ~5&thinsp;km² resolution.
                     </p>
                     <div class="card-meta">
-                        <span class="card-badge">JupyterHub</span>
-                        <span class="card-badge">Python</span>
-                        <span class="card-badge">R</span>
-                        <span class="card-badge">Shared Workspace</span>
+                        <span class="card-badge">H3 Res&nbsp;7</span>
+                        <span class="card-badge">OpenStreetMap</span>
+                        <span class="card-badge">Africa-wide</span>
                     </div>
-                    <div class="card-arrow">Open Hub</div>
+                    <div class="card-arrow">Open Map</div>
                 </a>
 
-            </div>
-        </div>
-    </section>
+                <!-- Road Proximity (Euclidean Distance) -->
+                <a href="/euclidean/" class="project-card accent-teal reveal" data-category="research">
+                    <div class="card-tag">Geospatial Analysis</div>
+                    <div class="card-title">Africa Road Proximity</div>
+                    <p class="card-desc">
+                        Straight-line distance to the nearest highway and major road for every
+                        H3 cell in Africa — pollution exposure proxy and road accessibility
+                        measure with population-weighted admin choropleth.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-badge">H3 Res&nbsp;7</span>
+                        <span class="card-badge">WorldPop</span>
+                        <span class="card-badge">Africa-wide</span>
+                    </div>
+                    <div class="card-arrow">Open Map</div>
+                </a>
 
-    <!-- ── Data Access ──────────────────────────────────────────────────────── -->
-    <section class="projects-section" id="data-access" style="padding-top:0">
-        <div class="section-wrap">
-            <div class="section-label">Data Access</div>
-
-            <div class="projects-grid">
+                <!-- ── divider ── -->
+                <div class="grid-divider" data-category-divider="true"><span>Data Access</span></div>
 
                 <!-- Database Access Request -->
                 <a href="/dbrequest/request" class="project-card accent-slate reveal" data-category="data">
@@ -1288,9 +1497,8 @@
                     <div class="card-title">Database Access Request</div>
                     <p class="card-desc">
                         Request a personal API token for programmatic access to the PALS Lab
-                        research database. Tokens enable authenticated queries against the
-                        PRECISE Big Table and linked datasets — ready to use from the Hub,
-                        notebooks, or any HTTP client.
+                        research database — authenticated queries against the PRECISE Big Table
+                        from the Hub, notebooks, or any HTTP client.
                     </p>
                     <div class="card-meta">
                         <span class="card-badge">API Token</span>
@@ -1301,23 +1509,41 @@
                 </a>
 
                 <!-- DuckDB Access Request -->
-                <a href="/duckrequest/request" class="project-card accent-green reveal" data-category="data" style="transition-delay:0.05s">
+                <a href="/duckrequest/request" class="project-card accent-green reveal" data-category="data">
                     <div class="card-tag">Data Access · Fast Queries</div>
                     <div class="card-title">Database Access Request — DuckDB</div>
                     <p class="card-desc">
-                        Request direct access to the PRECISE Big Table via
-                        <strong style="color:var(--charcoal)">DuckDB</strong> —
-                        a fast in-process analytical database. Instantly receive a Python or R
-                        connection snippet ready to paste into your PALSlab Hub notebook.
-                        Designed for large analytical queries across ~3.2M records.
+                        Fast in-process analytical access to the PRECISE Big Table via DuckDB.
+                        Receive a Python or R connection snippet ready for your PALSlab
+                        notebook — designed for large queries across ~3.2M records.
                     </p>
                     <div class="card-meta">
                         <span class="card-badge">DuckDB</span>
-                        <span class="card-badge">Fast Queries</span>
                         <span class="card-badge">Python / R</span>
                         <span class="card-badge">3.2M Records</span>
                     </div>
                     <div class="card-arrow">Request Access</div>
+                </a>
+
+                <!-- ── divider ── -->
+                <div class="grid-divider" data-category-divider="true"><span>Lab Hub</span></div>
+
+                <!-- PALSlab Hub -->
+                <a href="https://pals.placealert.org" class="project-card accent-lavender reveal" data-category="hub">
+                    <div class="card-tag">PALS Lab</div>
+                    <div class="card-title">PALSlab Hub</div>
+                    <p class="card-desc">
+                        The shared analytical environment for the PALS Lab research group —
+                        Python and R kernels, pre-loaded libraries, shared data directories,
+                        and direct database connectivity for collaborative analysis.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-badge">JupyterHub</span>
+                        <span class="card-badge">Python</span>
+                        <span class="card-badge">R</span>
+                        <span class="card-badge">Shared Workspace</span>
+                    </div>
+                    <div class="card-arrow">Open Hub</div>
                 </a>
 
             </div>
@@ -1346,7 +1572,7 @@
                     <div class="footer-logo-mark"><img src="/place_alert_labs_logo.jpg" alt="Place Alert Labs"></div>
                     <div class="footer-logo-text">
                         <div class="footer-name">Place Alert Labs</div>
-                        <div class="footer-url">placealert.org</div>
+                        <div class="footer-url">PALs Portal</div>
                     </div>
                 </div>
                 <p class="footer-desc">
@@ -1363,14 +1589,16 @@
                     <a href="/apex/">SPECTRA</a>
                     <a href="/harmonaize/">HarmonAIze</a>
                     <a href="/roadnet/">Africa Road Network Density</a>
+                    <a href="/euclidean/">Africa Road Proximity</a>
                     <a href="/palsearth/">PALSearth</a>
                     <a href="https://pals.placealert.org">PALSlab Hub</a>
+                    <a href="https://placealert.org" style="color:var(--copper);opacity:0.9;">↗ PALs Website</a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
             <div class="footer-bottom-left">
-                &copy; 2026 Place Alert Labs &mdash; Open Research Portal
+                &copy; 2026 Place Alert Labs &mdash; PALs Portal
             </div>
             <div class="footer-funders">
                 <span class="funder-pill">NIH</span>
@@ -1485,10 +1713,14 @@
                 const show = filter === 'all' || card.dataset.category === filter;
                 card.dataset.hidden = show ? 'false' : 'true';
             });
+            // Hide dividers when filtering to a specific category
+            document.querySelectorAll('.grid-divider[data-category-divider]').forEach(div => {
+                div.style.display = filter === 'all' ? '' : 'none';
+            });
         });
     });
 
-    // ── Scroll reveal ────────────────────────────────────────────────────────
+    // ── Scroll reveal with staggered above-fold init ────────────────────────
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(e => {
             if (e.isIntersecting) {
@@ -1498,7 +1730,38 @@
         });
     }, { threshold: 0.08 });
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    const revealEls = document.querySelectorAll('.reveal');
+    revealEls.forEach((el, i) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+            // already in view — stagger in on load
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        } else {
+            observer.observe(el);
+        }
+    });
+
+    // ── Count-up animation for hero stats ───────────────────────────────────
+    const statObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            const el = e.target;
+            const target = +el.dataset.target;
+            const suffix = el.dataset.suffix || '';
+            const duration = 1400;
+            const start = performance.now();
+            const tick = (now) => {
+                const elapsed = Math.min(now - start, duration);
+                const progress = 1 - Math.pow(1 - elapsed / duration, 3); // ease-out cubic
+                el.textContent = Math.round(target * progress) + suffix;
+                if (elapsed < duration) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+            statObserver.unobserve(el);
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-num[data-target]').forEach(el => statObserver.observe(el));
 
     // ── Chat widget ──────────────────────────────────────────────────────────
     (function() {
@@ -1581,6 +1844,293 @@
         input.addEventListener('keydown', e => {
             if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); const q = input.value.trim(); input.value = ''; ask(q); }
         });
+    })();
+    </script>
+
+    <!-- ── Auth Gate ───────────────────────────────────────────────────────── -->
+    <div id="authGate">
+      <div class="gate-card">
+        <div class="gate-logo-row">
+          <div class="gate-logo-mark">
+            <img src="/place_alert_labs_logo.jpg" alt="PALs">
+          </div>
+          <div class="gate-logo-text">
+            <strong>Place Alert Labs</strong>
+            <span>PORTAL · placealert.org</span>
+          </div>
+        </div>
+
+        <!-- Login view -->
+        <div id="gateViewLogin" class="gate-view active">
+          <div class="gate-title">Sign in</div>
+          <div class="gate-subtitle">Access the PALs research portal.</div>
+          <div id="loginMsg" class="gate-msg"></div>
+          <div class="gate-field">
+            <label>Email</label>
+            <input id="loginEmail" type="email" placeholder="you@institution.org" autocomplete="email">
+          </div>
+          <div class="gate-field">
+            <label>Password</label>
+            <input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <button class="gate-btn" id="loginBtn" onclick="doLogin()">Sign in</button>
+          <div class="gate-links">
+            <a onclick="showView('signup')">Create an account</a>
+            <a onclick="showView('forgot')">Forgot password?</a>
+          </div>
+        </div>
+
+        <!-- Sign-up view -->
+        <div id="gateViewSignup" class="gate-view">
+          <div class="gate-title">Request access</div>
+          <div class="gate-subtitle">Fill in the form below. An admin will review and approve your account.</div>
+          <div id="signupMsg" class="gate-msg"></div>
+          <div class="gate-field">
+            <label>Full name</label>
+            <input id="signupName" type="text" placeholder="Dr Jane Smith" autocomplete="name">
+          </div>
+          <div class="gate-field">
+            <label>Institution</label>
+            <input id="signupInstitution" type="text" placeholder="University / Organisation">
+          </div>
+          <div class="gate-field">
+            <label>Email</label>
+            <input id="signupEmail" type="email" placeholder="you@institution.org" autocomplete="email">
+          </div>
+          <div class="gate-field">
+            <label>Password <span style="font-weight:400;color:#9ca3af">(min. 8 characters)</span></label>
+            <input id="signupPassword" type="password" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <div class="gate-field">
+            <label>Confirm password</label>
+            <input id="signupPassword2" type="password" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <div class="gate-field">
+            <label>Why do you need access? <span style="font-weight:400;color:#9ca3af">(optional)</span></label>
+            <textarea id="signupPurpose" placeholder="Brief description of your research use case…"></textarea>
+          </div>
+          <button class="gate-btn" id="signupBtn" onclick="doSignup()">Request access</button>
+          <div class="gate-links">
+            <a onclick="showView('login')">&#8592; Back to sign in</a>
+          </div>
+        </div>
+
+        <!-- Forgot password view -->
+        <div id="gateViewForgot" class="gate-view">
+          <div class="gate-title">Reset password</div>
+          <div class="gate-subtitle">Enter your email and we'll send a reset link if your account is approved.</div>
+          <div id="forgotMsg" class="gate-msg"></div>
+          <div class="gate-field">
+            <label>Email</label>
+            <input id="forgotEmail" type="email" placeholder="you@institution.org" autocomplete="email">
+          </div>
+          <button class="gate-btn" id="forgotBtn" onclick="doForgot()">Send reset link</button>
+          <div class="gate-links">
+            <a onclick="showView('login')">&#8592; Back to sign in</a>
+          </div>
+        </div>
+
+        <!-- Reset password view (shown via ?reset_token= URL param) -->
+        <div id="gateViewReset" class="gate-view">
+          <div class="gate-title">Set new password</div>
+          <div class="gate-subtitle">Choose a new password for your account.</div>
+          <div id="resetMsg" class="gate-msg"></div>
+          <div class="gate-field">
+            <label>New password <span style="font-weight:400;color:#9ca3af">(min. 8 characters)</span></label>
+            <input id="resetPassword" type="password" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <div class="gate-field">
+            <label>Confirm password</label>
+            <input id="resetPassword2" type="password" placeholder="••••••••" autocomplete="new-password">
+          </div>
+          <button class="gate-btn" id="resetBtn" onclick="doReset()">Set password</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    (function() {
+        const API = '/precise-api/api/portal';
+        const TOKEN_KEY = 'pals_portal_token';
+
+        function showView(name) {
+            document.querySelectorAll('.gate-view').forEach(v => v.classList.remove('active'));
+            document.getElementById('gateView' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+        }
+
+        function setMsg(id, text, type) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = 'gate-msg ' + type;
+        }
+
+        function clearMsg(id) {
+            const el = document.getElementById(id);
+            el.className = 'gate-msg';
+            el.textContent = '';
+        }
+
+        function unlockPortal(name) {
+            document.getElementById('authGate').classList.add('hidden');
+        }
+
+        // ── Check for ?reset_token= in URL ───────────────────────────────────
+        const params = new URLSearchParams(window.location.search);
+        const resetToken = params.get('reset_token');
+        if (resetToken) {
+            showView('reset');
+        }
+
+        // ── Check existing session ────────────────────────────────────────────
+        const stored = localStorage.getItem(TOKEN_KEY);
+        if (stored && !resetToken) {
+            fetch(API + '/validate-session', {
+                headers: { 'X-Session-Token': stored }
+            }).then(r => {
+                if (r.ok) {
+                    unlockPortal();
+                } else {
+                    localStorage.removeItem(TOKEN_KEY);
+                    document.getElementById('authGate').style.display = 'flex';
+                }
+            }).catch(() => {
+                document.getElementById('authGate').style.display = 'flex';
+            });
+        } else if (!resetToken) {
+            document.getElementById('authGate').style.display = 'flex';
+        } else {
+            document.getElementById('authGate').style.display = 'flex';
+        }
+
+        // ── Login ─────────────────────────────────────────────────────────────
+        window.doLogin = async function() {
+            const email    = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            clearMsg('loginMsg');
+            if (!email || !password) { setMsg('loginMsg', 'Email and password are required.', 'error'); return; }
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true; btn.textContent = 'Signing in…';
+            try {
+                const r = await fetch(API + '/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const d = await r.json();
+                if (d.ok) {
+                    localStorage.setItem(TOKEN_KEY, d.token);
+                    unlockPortal(d.name);
+                } else {
+                    setMsg('loginMsg', d.error || 'Sign-in failed.', 'error');
+                }
+            } catch(e) {
+                setMsg('loginMsg', 'Network error. Please try again.', 'error');
+            }
+            btn.disabled = false; btn.textContent = 'Sign in';
+        };
+
+        // Enter key on login form
+        ['loginEmail','loginPassword'].forEach(id => {
+            document.getElementById(id).addEventListener('keydown', e => {
+                if (e.key === 'Enter') doLogin();
+            });
+        });
+
+        // ── Sign up ───────────────────────────────────────────────────────────
+        window.doSignup = async function() {
+            const name        = document.getElementById('signupName').value.trim();
+            const institution = document.getElementById('signupInstitution').value.trim();
+            const email       = document.getElementById('signupEmail').value.trim();
+            const password    = document.getElementById('signupPassword').value;
+            const password2   = document.getElementById('signupPassword2').value;
+            const purpose     = document.getElementById('signupPurpose').value.trim();
+            clearMsg('signupMsg');
+            if (!name || !email || !password) { setMsg('signupMsg', 'Name, email and password are required.', 'error'); return; }
+            if (password.length < 8) { setMsg('signupMsg', 'Password must be at least 8 characters.', 'error'); return; }
+            if (password !== password2) { setMsg('signupMsg', 'Passwords do not match.', 'error'); return; }
+            const btn = document.getElementById('signupBtn');
+            btn.disabled = true; btn.textContent = 'Submitting…';
+            try {
+                const r = await fetch(API + '/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, institution, email, password, purpose })
+                });
+                const d = await r.json();
+                if (d.ok) {
+                    setMsg('signupMsg', d.message || 'Request submitted! You will receive an email once approved.', 'success');
+                    btn.textContent = 'Request submitted';
+                } else {
+                    setMsg('signupMsg', d.error || 'Signup failed.', 'error');
+                    btn.disabled = false; btn.textContent = 'Request access';
+                }
+            } catch(e) {
+                setMsg('signupMsg', 'Network error. Please try again.', 'error');
+                btn.disabled = false; btn.textContent = 'Request access';
+            }
+        };
+
+        // ── Forgot password ───────────────────────────────────────────────────
+        window.doForgot = async function() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            clearMsg('forgotMsg');
+            if (!email) { setMsg('forgotMsg', 'Please enter your email address.', 'error'); return; }
+            const btn = document.getElementById('forgotBtn');
+            btn.disabled = true; btn.textContent = 'Sending…';
+            try {
+                const r = await fetch(API + '/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const d = await r.json();
+                setMsg('forgotMsg', d.message || 'If that email is registered, a reset link has been sent.', 'success');
+            } catch(e) {
+                setMsg('forgotMsg', 'Network error. Please try again.', 'error');
+            }
+            btn.disabled = false; btn.textContent = 'Send reset link';
+        };
+
+        document.getElementById('forgotEmail').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doForgot();
+        });
+
+        // ── Reset password ────────────────────────────────────────────────────
+        window.doReset = async function() {
+            const password  = document.getElementById('resetPassword').value;
+            const password2 = document.getElementById('resetPassword2').value;
+            clearMsg('resetMsg');
+            if (!password) { setMsg('resetMsg', 'Please enter a new password.', 'error'); return; }
+            if (password.length < 8) { setMsg('resetMsg', 'Password must be at least 8 characters.', 'error'); return; }
+            if (password !== password2) { setMsg('resetMsg', 'Passwords do not match.', 'error'); return; }
+            const btn = document.getElementById('resetBtn');
+            btn.disabled = true; btn.textContent = 'Saving…';
+            try {
+                const r = await fetch(API + '/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: resetToken, password })
+                });
+                const d = await r.json();
+                if (d.ok) {
+                    setMsg('resetMsg', 'Password updated! Redirecting to sign in…', 'success');
+                    setTimeout(() => {
+                        window.history.replaceState({}, '', '/');
+                        showView('login');
+                        document.getElementById('authGate').style.display = 'flex';
+                    }, 1800);
+                } else {
+                    setMsg('resetMsg', d.error || 'Reset failed.', 'error');
+                    btn.disabled = false; btn.textContent = 'Set password';
+                }
+            } catch(e) {
+                setMsg('resetMsg', 'Network error. Please try again.', 'error');
+                btn.disabled = false; btn.textContent = 'Set password';
+            }
+        };
+
+        // Expose showView globally for onclick handlers
+        window.showView = showView;
     })();
     </script>
 </body>

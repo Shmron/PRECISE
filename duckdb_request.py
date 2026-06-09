@@ -914,6 +914,15 @@ def admin_dashboard():
  </div>
 </div>
 
+<!-- PALs Portal Users -->
+<div class="page wide" style="margin:0 auto;padding:0 24px 32px">
+ <div class="card">
+  <div class="logo" style="margin-bottom:4px">PALs Portal — User Accounts</div>
+  <div class="sub" style="margin-bottom:16px">portal.placealert.org &nbsp;·&nbsp; Self-service sign-ups with admin approval</div>
+  <div id="portalUsersTable"><em style="color:#9ca3af">Loading…</em></div>
+ </div>
+</div>
+
 <!-- Approve modal -->
 <div class="modal-backdrop" id="approveModal">
   <div class="modal">
@@ -1156,6 +1165,99 @@ function openCatReject(id, name) {
   document.getElementById('catRejectNotes').value = '';
   document.getElementById('catRejectModal').classList.add('open');
 }
+
+/* ── Portal user management ── */
+function renderPortalUsersTable(users) {
+  const el = document.getElementById('portalUsersTable');
+  if (!el) return;
+  if (!users.length) { el.innerHTML='<p style="color:#9ca3af;font-size:13px">No portal users yet.</p>'; return; }
+  const statusBadge = s => ({
+    pending:  '<span class="badge badge-pending">Pending</span>',
+    approved: '<span class="badge badge-approved">Approved</span>',
+    rejected: '<span class="badge badge-rejected">Rejected</span>',
+    revoked:  '<span class="badge" style="background:#f3e8ff;color:#6b21a8">Revoked</span>',
+  })[s] || s;
+  el.innerHTML = '<table><tr><th>Date</th><th>User</th><th>Institution / Purpose</th><th>Status</th><th>Actions</th></tr>'
+    + users.map(u => {
+      const notes = u.notes || '';
+      const inst = (notes.match(/institution=([^;]*)/) || [])[1] || '—';
+      const purpose = (notes.match(/purpose=(.*)$/) || [])[1] || '';
+      const actions = u.status === 'pending'
+        ? `<button class="btn btn-sm btn-approve" onclick="openPortalApprove('${u.id}','${u.name.replace(/'/g,"\\'")}')">Approve</button>
+           <button class="btn btn-sm btn-reject" style="margin-left:4px" onclick="openPortalReject('${u.id}','${u.name.replace(/'/g,"\\'")}')">Reject</button>`
+        : u.status === 'approved'
+        ? `<button class="btn btn-sm" style="background:#7c3aed;color:white;margin-left:4px" onclick="portalRevoke('${u.id}','${u.name.replace(/'/g,"\\'")}')">Revoke</button>`
+        : u.status === 'revoked'
+        ? `<button class="btn btn-sm" style="background:#6b7280;color:white" onclick="portalReinstate('${u.id}','${u.name.replace(/'/g,"\\'")}')">Reinstate</button>`
+        : '';
+      return `<tr>
+        <td><small>${u.created_at.slice(0,10)}</small></td>
+        <td>${u.name}<br><small style="color:#6b7280">${u.email}</small></td>
+        <td><small>${inst}</small>${purpose ? `<br><small style="color:#9ca3af">${purpose.slice(0,80)}</small>` : ''}</td>
+        <td>${statusBadge(u.status)}</td>
+        <td>${actions}</td>
+      </tr>`;
+    }).join('')
+    + '</table>';
+}
+
+async function loadPortalUsers() {
+  const r = await fetch(PREFIX + '/admin/portal-users');
+  const users = await r.json();
+  renderPortalUsersTable(users);
+}
+
+let _portalUserId = null;
+function openPortalApprove(id, name) {
+  _portalUserId = id;
+  document.getElementById('portalApproveFor').textContent = name;
+  document.getElementById('portalApproveModal').classList.add('open');
+}
+function openPortalReject(id, name) {
+  _portalUserId = id;
+  document.getElementById('portalRejectFor').textContent = name;
+  document.getElementById('portalRejectNotes').value = '';
+  document.getElementById('portalRejectModal').classList.add('open');
+}
+async function submitPortalApprove() {
+  const btn = document.querySelector('#portalApproveModal .btn-approve');
+  btn.disabled = true; btn.textContent = 'Approving…';
+  const r = await fetch(PREFIX + '/admin/portal-approve', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: _portalUserId})
+  });
+  const d = await r.json();
+  if (d.ok) { closeModals(); loadPortalUsers(); } else { alert('Error: ' + d.error); btn.disabled=false; btn.textContent='Approve'; }
+}
+async function submitPortalReject() {
+  const notes = document.getElementById('portalRejectNotes').value.trim();
+  const r = await fetch(PREFIX + '/admin/portal-reject', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: _portalUserId, notes})
+  });
+  const d = await r.json();
+  if (d.ok) { closeModals(); loadPortalUsers(); } else alert('Error: ' + d.error);
+}
+async function portalRevoke(id, name) {
+  if (!confirm('Revoke portal access for ' + name + '?')) return;
+  const r = await fetch(PREFIX + '/admin/portal-revoke', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: id})
+  });
+  const d = await r.json();
+  if (d.ok) loadPortalUsers(); else alert('Error: ' + d.error);
+}
+async function portalReinstate(id, name) {
+  if (!confirm('Reinstate portal access for ' + name + '?')) return;
+  const r = await fetch(PREFIX + '/admin/portal-reinstate', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: id})
+  });
+  const d = await r.json();
+  if (d.ok) loadPortalUsers(); else alert('Error: ' + d.error);
+}
+
+loadPortalUsers();
 </script>
 
 <!-- Catalogue approve modal -->
@@ -1200,6 +1302,33 @@ function openCatReject(id, name) {
     <div class="modal-footer">
       <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
       <button class="btn btn-reject" onclick="submitCatReject()">Reject Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- Portal approve modal -->
+<div class="modal-backdrop" id="portalApproveModal">
+  <div class="modal">
+    <h3>Approve Portal Account</h3>
+    <p id="portalApproveFor" style="font-size:13px;color:#6b7280;margin-bottom:16px"></p>
+    <p style="font-size:13px;color:#374151;margin-bottom:0">An approval email will be sent and the user can log in immediately.</p>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
+      <button class="btn btn-approve" onclick="submitPortalApprove()">Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Portal reject modal -->
+<div class="modal-backdrop" id="portalRejectModal">
+  <div class="modal">
+    <h3>Reject Portal Account</h3>
+    <p id="portalRejectFor" style="font-size:13px;color:#6b7280;margin-bottom:16px"></p>
+    <label>Reason (optional, emailed to requester)</label>
+    <textarea id="portalRejectNotes" style="min-height:60px" placeholder="e.g. Outside our research scope"></textarea>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
+      <button class="btn btn-reject" onclick="submitPortalReject()">Reject</button>
     </div>
   </div>
 </div>
@@ -1287,6 +1416,30 @@ def admin_revoke():
 # ══════════════════════════════════════════════════════════════════════════════
 
 CATALOGUE_LABELS = {'precise': 'PRECISE Catalogue', 'he2at': 'HE²AT Catalogue'}
+
+
+# ── Portal signup notifications ───────────────────────────────────────────────
+
+def notify_portal_approved(name, email):
+    _send(
+        email,
+        '[PALs Portal] Your account has been approved',
+        f'Hi {name},\n\n'
+        f'Your PALs Portal account has been approved.\n\n'
+        f'Sign in at: https://portal.placealert.org/\n\n'
+        f'PALS Lab Team'
+    )
+
+
+def notify_portal_rejected(name, email, notes=''):
+    _send(
+        email,
+        '[PALs Portal] Your account request was not approved',
+        f'Hi {name},\n\n'
+        f'Unfortunately your request for a PALs Portal account was not approved at this time.\n\n'
+        + (f'Reason: {notes}\n\n' if notes else '')
+        + 'You may contact the administrator if you have questions.\n\nPALS Lab Team'
+    )
 
 
 def notify_catalogue_admin(req_id, catalogue, name, email, institution, reason):
@@ -1438,6 +1591,71 @@ def admin_cat_user_reinstate():
     if not user_id:
         return jsonify({'ok': False, 'error': 'Missing user_id'})
     access_db.reinstate_catalogue_user(user_id)
+    return jsonify({'ok': True})
+
+
+# ── Portal user admin routes ──────────────────────────────────────────────────
+
+@app.route('/admin/portal-users')
+@admin_required
+def admin_portal_users():
+    users = access_db.get_portal_users()
+    return jsonify(users)
+
+
+@app.route('/admin/portal-approve', methods=['POST'])
+@admin_required
+def admin_portal_approve():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    user = access_db.approve_portal_user(user_id)
+    if not user:
+        return jsonify({'ok': False, 'error': 'User not found'})
+    notify_portal_approved(user['name'], user['email'])
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/portal-reject', methods=['POST'])
+@admin_required
+def admin_portal_reject():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    notes   = d.get('notes', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    user = access_db.reject_portal_user(user_id)
+    if not user:
+        return jsonify({'ok': False, 'error': 'User not found'})
+    notify_portal_rejected(user['name'], user['email'], notes)
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/portal-revoke', methods=['POST'])
+@admin_required
+def admin_portal_revoke():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    user = access_db.revoke_portal_user(user_id)
+    if user:
+        _send(user['email'],
+              '[PALs Portal] Your access has been revoked',
+              f'Hi {user["name"]},\n\nYour PALs Portal access has been revoked.\n'
+              f'Contact the administrator if you believe this is an error.\n\nPALS Lab Team')
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/portal-reinstate', methods=['POST'])
+@admin_required
+def admin_portal_reinstate():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    access_db.reinstate_portal_user(user_id)
     return jsonify({'ok': True})
 
 

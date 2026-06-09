@@ -85,9 +85,15 @@ def init_db():
                 token_budget INTEGER DEFAULT 1000000,
                 tokens_used  INTEGER DEFAULT 0,
                 is_active    INTEGER DEFAULT 1,
+                status       TEXT DEFAULT 'approved',
                 created_at   TEXT NOT NULL,
                 last_used    TEXT,
                 notes        TEXT
+            );
+            CREATE TABLE IF NOT EXISTS user_reset_tokens (
+                token      TEXT PRIMARY KEY,
+                user_id    TEXT NOT NULL,
+                expires_at TEXT NOT NULL
             );
         ''')
         # Add user_id to catalogue_tokens if upgrading from an older schema
@@ -104,6 +110,11 @@ def init_db():
                 c.execute(sql)
             except Exception:
                 pass
+        # Add status column to catalogue_users if upgrading
+        try:
+            c.execute("ALTER TABLE catalogue_users ADD COLUMN status TEXT DEFAULT 'approved'")
+        except Exception:
+            pass
     _seed_admins()
 
 
@@ -583,6 +594,157 @@ def get_shared_conversation(share_id):
     d = dict(row)
     d['messages'] = json.loads(d['messages'])
     return d
+
+
+# ── Portal user accounts (public sign-up + admin approval) ───────────────────
+
+def create_portal_user(name, email, password, institution='', purpose=''):
+    """Create a portal signup request — status='pending', is_active=0.
+    Returns (user_id, None) on success or (None, existing_status) if email exists."""
+    email = email.lower().strip()
+    with _conn() as c:
+        existing = c.execute(
+            "SELECT id, status FROM catalogue_users WHERE catalogue='portal' AND email=?",
+            (email,)
+        ).fetchone()
+        if existing:
+            return None, existing['status']
+    user_id = secrets.token_hex(8)
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute(
+            '''INSERT INTO catalogue_users
+               (id, catalogue, name, email, password, token_budget, is_active, status, created_at, notes)
+               VALUES (?,?,?,?,?,?,?,?,?,?)''',
+            (user_id, 'portal', name, email, password, 0, 0, 'pending', now,
+             f'institution={institution};purpose={purpose}')
+        )
+    return user_id, None
+
+
+def get_portal_user_by_email(email):
+    with _conn() as c:
+        row = c.execute(
+            "SELECT * FROM catalogue_users WHERE catalogue='portal' AND email=?",
+            (email.lower().strip(),)
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def get_portal_users(status=None):
+    with _conn() as c:
+        if status:
+            rows = c.execute(
+                "SELECT * FROM catalogue_users WHERE catalogue='portal' AND status=? ORDER BY created_at DESC",
+                (status,)
+            ).fetchall()
+        else:
+            rows = c.execute(
+                "SELECT * FROM catalogue_users WHERE catalogue='portal' ORDER BY created_at DESC"
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def authenticate_portal_user(email, password):
+    """Authenticate a portal user — only succeeds if status='approved' and is_active=1."""
+    with _conn() as c:
+        row = c.execute(
+            """SELECT * FROM catalogue_users
+               WHERE catalogue='portal' AND email=? AND password=?
+                 AND status='approved' AND is_active=1""",
+            (email.lower().strip(), password)
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def approve_portal_user(user_id):
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET status='approved', is_active=1 WHERE id=? AND catalogue='portal'",
+            (user_id,)
+        )
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def reject_portal_user(user_id):
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET status='rejected', is_active=0 WHERE id=? AND catalogue='portal'",
+            (user_id,)
+        )
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def revoke_portal_user(user_id):
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET status='revoked', is_active=0 WHERE id=? AND catalogue='portal'",
+            (user_id,)
+        )
+        c.execute("DELETE FROM catalogue_tokens WHERE user_id=?", (user_id,))
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def reinstate_portal_user(user_id):
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET status='approved', is_active=1 WHERE id=? AND catalogue='portal'",
+            (user_id,)
+        )
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def portal_logout(token):
+    with _conn() as c:
+        c.execute("DELETE FROM catalogue_tokens WHERE token=?", (token,))
+
+
+# ── Portal password-reset tokens ──────────────────────────────────────────────
+
+_TOKEN_TTL_USER_RESET = 3600  # 1 hour
+
+
+def create_user_reset_token(user_id):
+    token = secrets.token_urlsafe(32)
+    expires = (datetime.datetime.utcnow() +
+               datetime.timedelta(seconds=_TOKEN_TTL_USER_RESET)).isoformat()
+    with _conn() as c:
+        c.execute("DELETE FROM user_reset_tokens WHERE user_id=?", (user_id,))
+        c.execute(
+            "INSERT INTO user_reset_tokens (token, user_id, expires_at) VALUES (?,?,?)",
+            (token, user_id, expires)
+        )
+    return token
+
+
+def verify_user_reset_token(token):
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        row = c.execute(
+            "SELECT user_id, expires_at FROM user_reset_tokens WHERE token=?", (token,)
+        ).fetchone()
+    if not row:
+        return None
+    if now > row['expires_at']:
+        with _conn() as c:
+            c.execute("DELETE FROM user_reset_tokens WHERE token=?", (token,))
+        return None
+    return row['user_id']
+
+
+def consume_user_reset_token(token, new_password):
+    """Set new password if token valid. Returns user_id on success, None on failure."""
+    user_id = verify_user_reset_token(token)
+    if not user_id:
+        return None
+    with _conn() as c:
+        c.execute("UPDATE catalogue_users SET password=? WHERE id=?", (new_password, user_id))
+        c.execute("DELETE FROM user_reset_tokens WHERE token=?", (token,))
+    return user_id
 
 
 init_db()

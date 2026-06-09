@@ -590,7 +590,7 @@
             outline: none;
             border-color: var(--teal-deep);
         }
-        .login-box button {
+        .login-box button[type="submit"] {
             width: 100%;
             padding: 1rem;
             background: var(--teal-deep);
@@ -602,7 +602,7 @@
             cursor: pointer;
             transition: background 0.2s, transform 0.2s;
         }
-        .login-box button:hover {
+        .login-box button[type="submit"]:hover {
             background: var(--copper);
             transform: translateY(-2px);
         }
@@ -613,21 +613,8 @@
             display: none;
         }
         .login-error.show { display: block; }
-        .login-logo {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--copper) 0%, var(--copper-light) 100%);
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-logo svg {
-            width: 30px;
-            height: 30px;
-            fill: white;
-        }
+        .login-logo { display: none; }
+        .login-logo-img { width: 110px; height: auto; margin: 0 auto 1.25rem; display: block; }
         .main-content.blurred {
             filter: blur(10px);
             pointer-events: none;
@@ -726,9 +713,7 @@
     <!-- Login Gate Overlay -->
     <div id="loginGate" class="login-gate">
         <div class="login-box">
-            <div class="login-logo">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-            </div>
+            <img src="/precise-logo.png" alt="PRECISE Network" class="login-logo-img">
             <h2>PRECISE Network</h2>
             <p class="login-subtitle">Research data catalogue — PALS Lab</p>
 
@@ -948,9 +933,15 @@ NDVI pixels contained within each village boundary.</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Distance to Highways</div>
                         <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
-                        <div onclick="event.stopPropagation();openLightbox('/Euclidean_Distance_Highways_Flowchart.png')" style="display:inline-flex;align-items:center;gap:0.4rem;margin:0.4rem 0 0.25rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
+                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin:0.4rem 0 0.25rem;">
+                        <div onclick="event.stopPropagation();openLightbox('/Euclidean_Distance_Highways_Flowchart.png')" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
                             <img src="/Euclidean_Distance_Highways_Flowchart.png" alt="Calculation Flowchart" style="height:34px;width:auto;border-radius:3px;object-fit:contain;">
                             <span style="font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;white-space:nowrap;">Flowchart ↗</span>
+                        </div>
+                        <div onclick="event.stopPropagation();window.open('/euclidean/#hw','_blank')" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
+                            <span style="font-size:0.85rem;">🗺</span>
+                            <span style="font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;white-space:nowrap;">View Map ↗</span>
+                        </div>
                         </div>
                         <div class="stats-display">
                             <div><span class="stats-label">Kenya</span><span class="stats-value">1.8 [0.5, 3.1] P95: 5.4</span></div>
@@ -987,9 +978,15 @@ grid cell i to the nearest highway.</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Distance to Major Roads</div>
                         <div class="variable-unit">Population-Weighted Euclidean Distance (km)</div>
-                        <div onclick="event.stopPropagation();openLightbox('/Euclidean_Distance_Major_Roads_Flowchart.png')" style="display:inline-flex;align-items:center;gap:0.4rem;margin:0.4rem 0 0.25rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
+                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin:0.4rem 0 0.25rem;">
+                        <div onclick="event.stopPropagation();openLightbox('/Euclidean_Distance_Major_Roads_Flowchart.png')" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
                             <img src="/Euclidean_Distance_Major_Roads_Flowchart.png" alt="Calculation Flowchart" style="height:34px;width:auto;border-radius:3px;object-fit:contain;">
                             <span style="font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;white-space:nowrap;">Flowchart ↗</span>
+                        </div>
+                        <div onclick="event.stopPropagation();window.open('/euclidean/#mr','_blank')" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
+                            <span style="font-size:0.85rem;">🗺</span>
+                            <span style="font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;white-space:nowrap;">View Map ↗</span>
+                        </div>
                         </div>
                         <div class="stats-display">
                             <div><span class="stats-label">Kenya</span><span class="stats-value">1.3 [0.5, 2.7] P95: 4.9</span></div>
@@ -1299,9 +1296,15 @@ grid cell i to the nearest major road.</div>
                     <div class="variable-card" onclick="toggleCard(this)">
                         <div class="variable-name">Road Network Density</div>
                         <div class="variable-unit">Population-Weighted (km⁻¹)</div>
-                        <div onclick="event.stopPropagation();openLightbox('/Population%20Weighted%20Road%20Network%20Density.png')" style="display:inline-flex;align-items:center;gap:0.4rem;margin:0.4rem 0 0.25rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
+                        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin:0.4rem 0 0.25rem;">
+                        <div onclick="event.stopPropagation();openLightbox('/Population%20Weighted%20Road%20Network%20Density.png')" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
                             <img src="/Population%20Weighted%20Road%20Network%20Density.png" alt="Calculation Flowchart" style="height:34px;width:auto;border-radius:3px;object-fit:contain;">
                             <span style="font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;white-space:nowrap;">Flowchart ↗</span>
+                        </div>
+                        <div onclick="event.stopPropagation();window.open('/roadnet/','_blank')" style="display:inline-flex;align-items:center;gap:0.4rem;cursor:pointer;background:var(--sand);border:1px solid var(--mist);border-radius:6px;padding:0.3rem 0.55rem;max-width:fit-content;transition:background 0.2s;" onmouseover="this.style.background='var(--ivory)'" onmouseout="this.style.background='var(--sand)'">
+                            <span style="font-size:0.85rem;">🗺</span>
+                            <span style="font-size:0.68rem;color:var(--slate);font-family:'JetBrains Mono',monospace;white-space:nowrap;">View Map ↗</span>
+                        </div>
                         </div>
                         <div class="stats-display">
                             <div><span class="stats-label">Kenya</span><span class="stats-value">4.0 [2.1, 17.5] P95: 20.9</span></div>
@@ -4427,12 +4430,19 @@ by most village residents.</div>
                 loginGate.classList.remove('hidden');
             }
 
-            // Validate existing token server-side before hiding the gate
-            const _tok = sessionStorage.getItem('catalogueToken');
-            if (_tok) {
-                fetch(API_BASE + '/api/validate-session', { headers: { 'X-Session-Token': _tok } })
-                    .then(r => { if (r.ok) loginGate.classList.add('hidden'); else showGate(); })
-                    .catch(() => loginGate.classList.add('hidden'));
+            // Open-access demo window: 4 June 2026, 11:00–13:00 CAT (UTC+2)
+            const _demoStart = new Date('2026-06-04T09:00:00Z');
+            const _demoEnd   = new Date('2026-06-04T11:00:00Z');
+            if (Date.now() >= _demoStart && Date.now() < _demoEnd) {
+                loginGate.classList.add('hidden');
+            } else {
+                // Validate existing token server-side before hiding the gate
+                const _tok = sessionStorage.getItem('catalogueToken');
+                if (_tok) {
+                    fetch(API_BASE + '/api/validate-session', { headers: { 'X-Session-Token': _tok } })
+                        .then(r => { if (r.ok) loginGate.classList.add('hidden'); else showGate(); })
+                        .catch(() => loginGate.classList.add('hidden'));
+                }
             }
 
             loginForm.addEventListener('submit', async function(e) {

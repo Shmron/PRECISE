@@ -7,6 +7,8 @@ import os
 import json
 import sys
 import time
+import smtplib
+from email.message import EmailMessage
 from collections import defaultdict
 sys.path.insert(0, '/home/rutendo/PRECISE')
 import access_db
@@ -17,6 +19,29 @@ CORS(app)
 
 DB_PATH        = '/home/rutendo/PRECISE/precise.duckdb'
 SENSOR_DB_PATH = '/home/rutendo/PRECISE/sensor.duckdb'
+
+SMTP_FROM    = 'rutendosibanda18@gmail.com'
+SMTP_PASS    = os.environ.get('SMTP_APP_PASSWORD', '')
+ADMIN_EMAILS = [
+    'rutendo.sibanda@ceshhar.org',
+    'nyonih@staff.msu.ac.zw',
+    'zororo.chinwadzimba@ceshhar.org',
+]
+PORTAL_URL   = 'https://portal.placealert.org'
+
+
+def _send_email(to, subject, body):
+    try:
+        msg = EmailMessage()
+        msg['Subject'] = subject
+        msg['From']    = SMTP_FROM
+        msg['To']      = to
+        msg.set_content(body)
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
+            s.login(SMTP_FROM, SMTP_PASS)
+            s.send_message(msg)
+    except Exception:
+        pass  # never let email failure break the response
 
 CATALOGUE_ACCESS_CODE = os.environ.get('CATALOGUE_ACCESS_CODE', 'PRECISE2024')
 
@@ -36,11 +61,12 @@ def _allow_ip(ip: str) -> bool:
     return True
 
 # ── Portal chat system prompt (informational only, no DB access) ──────────────
-_PORTAL_SYSTEM = """You are the Place Alert Labs (PALs) portal assistant at placealert.org. Be concise and helpful. Use markdown for links and lists.
+_PORTAL_SYSTEM = """You are the Place Alert Labs (PALs) portal assistant at portal.placealert.org. Be concise and helpful. Use markdown for links and lists.
 
 ABOUT PALs: Place Alert Labs is an initiative advancing geographically precise public health through climate, environmental, and geospatial intelligence. Funded by NIH, Google, Grand Challenges Canada, and UKRI. Team: Dr Prestige Tatenda Makanga, Liberty Makacha, Terrence Mushore, Reason Mlambo, Cherlynn Dumbura, Bongani Nyoni, Anotida Chapunza, Tendai Shangwe, Zororo Chinwadzimba, Rutendo Sibanda.
 
-PORTAL (placealert.org) — open landing page with links to all tools. No login required to view.
+WEBSITE (placealert.org) — public-facing organisation website with about, research, team, news, and partners pages.
+PORTAL (portal.placealert.org) — open landing page with links to all research tools. No login required to view.
 
 PALS LAB HUB (pals.placealert.org):
 - JupyterHub for the research team. Python & R kernels available.
@@ -49,34 +75,48 @@ PALS LAB HUB (pals.placealert.org):
 - Forgot password: click "Forgot your password?" on the login page — a reset link will be emailed to you.
 - Once logged in, your home folder has a PALS/ directory shared with the team.
 
-DATABASE ACCESS — DuckDB (placealert.org/duckrequest/request):
+DATABASE ACCESS — DuckDB (portal.placealert.org/duckrequest/request):
 - Request direct access to the PRECISE Big Table (~3.1M rows, 129 columns) via DuckDB.
 - Fill in the request form; tokens are reviewed and issued by the admin.
 - Once approved, use the provided Python or R snippet inside any PALSlab Hub notebook.
 
-PRECISE CATALOGUE (placealert.org/catalogue/):
+PRECISE CATALOGUE (portal.placealert.org/catalogue/):
 - Catalogue of Environmental & Social Determinants of Maternal Health across Kenya, Mozambique, The Gambia.
 - Requires an access code — use the "Request Access" tab on the login screen to ask for one.
 - Contains an AI research assistant ("Shmron") for querying the PRECISE participant dataset.
 
-PALSEARTH (placealert.org/palsearth/):
+PALSEARTH (portal.placealert.org/palsearth/):
 - Point-and-extract environmental data for any location and time window.
 - Upload a CSV or shapefile, select datasets (NDVI, temperature, rainfall, soil, air quality, elevation), download results.
 - Powered by Google Earth Engine.
 
-GIPEX (placealert.org/gipex/):
+GIPEX (portal.placealert.org/gipex/):
 - Geospatial Indicators for Proxy Environmental eXposure.
 - Extracts satellite-derived environmental exposure indicators across custom grid cells or study areas.
 
-SPECTRA (placealert.org/apex/):
+SPECTRA (portal.placealert.org/apex/):
 - Spatiotemporal Personal Exposure Characterization & TRAjectory Analyzer.
 - GPS trajectory analytics, wearable sensor integration, indoor/outdoor exposure classification.
 
-AFRICA ROAD NETWORK DENSITY MAP (placealert.org/roadnet/):
-- Interactive hexagonal map of road network density across Africa derived from OpenStreetMap.
+AFRICA ROAD NETWORK DENSITY MAP (portal.placealert.org/roadnet/):
+- Interactive H3 hexagon map (res 7, ~5 km²/cell) of road network density (RND = road km per km²) across Africa, derived from OpenStreetMap.
+- RND is a spatial proxy for traffic-related air pollution exposure. Higher density = more vehicular emissions exposure.
+- Features: country-level filtering, road class toggles (motorway/trunk/primary/secondary/minor/local), population-weighted RND choropleth overlay at province/district/sub-district level.
 
-HARMONAIZE (placealert.org/harmonaize/):
-- Climate & Health Data Harmonisation toolkit.
+AFRICA ROAD PROXIMITY MAP (portal.placealert.org/euclidean/):
+- Interactive map of straight-line (Euclidean) distance from every H3 cell in Africa to the nearest highway and to the nearest major road, derived from OpenStreetMap and WorldPop.
+- Serves dual purposes: (1) as a vehicular pollution exposure proxy — cells closer to roads have higher likely exposure; (2) as a road accessibility metric — cells farther from roads have poorer access.
+- Highways = motorway + trunk roads. Major roads = highways + primary + secondary roads. Highways are always a subset of major roads, so distance-to-major-road ≤ distance-to-highway.
+- Features: toggle between Highways and Major Roads mode; colour inversion button to switch between "Pollution proxy" (red=close/high exposure, green=far/low) and "Accessibility" (green=close/accessible, red=far/remote) framing; population-weighted admin choropleth at province/district/sub-district level showing Σ(pop×dist)/Σ(pop) per unit; toggleable road line overlays showing actual highway and major road geometries; binned and continuous colour scales.
+- Data: H3 res 7 cells (~5 km²), WorldPop 2020 100m population raster for the population-weighted choropleth.
+
+HE2AT ENVIRONMENTAL EXPOSURE CATALOGUE (portal.placealert.org/heat-catalogue/):
+- Comprehensive catalogue of 35+ climate and environmental exposure variables for understanding heat-health impacts across Sub-Saharan Africa, built for the HE2AT Centre.
+- Covers 9 exposure domains: temperature, air quality, thermal comfort, soil, vegetation, urbanisation, and more. Documents variables for 9 countries and 74,000+ participants.
+
+HARMONAIZE (portal.placealert.org/harmonaize/):
+- AI-assisted toolkit for harmonising heterogeneous climate and health datasets at scale.
+- Handles variable mapping, unit conversion, and schema unification across datasets.
 
 For technical issues or account problems, contact the PALs admin."""
 
@@ -144,6 +184,132 @@ def catalogue_user_login():
         'tokens_used':  user['tokens_used'],
         'token_budget': user['token_budget'],
     })
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PORTAL AUTH  (sign-up / login / logout / forgot-password / reset-password)
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.route('/api/portal/signup', methods=['POST'])
+def portal_signup():
+    d           = request.json or {}
+    name        = d.get('name', '').strip()
+    email       = d.get('email', '').strip()
+    password    = d.get('password', '')
+    institution = d.get('institution', '').strip()
+    purpose     = d.get('purpose', '').strip()
+
+    if not name or not email or not password:
+        return jsonify({'ok': False, 'error': 'Name, email and password are required'}), 400
+    if len(password) < 8:
+        return jsonify({'ok': False, 'error': 'Password must be at least 8 characters'}), 400
+
+    user_id, conflict = access_db.create_portal_user(name, email, password, institution, purpose)
+    if user_id is None:
+        if conflict == 'pending':
+            return jsonify({'ok': False, 'error': 'A request for this email is already pending review.'}), 409
+        if conflict == 'approved':
+            return jsonify({'ok': False, 'error': 'An account with this email already exists. Please sign in.'}), 409
+        return jsonify({'ok': False, 'error': 'This email is already registered.'}), 409
+
+    # Notify all admins
+    body = (
+        f'A new portal account request requires your approval.\n\n'
+        f'Name:        {name}\n'
+        f'Email:       {email}\n'
+        f'Institution: {institution}\n\n'
+        f'Purpose:\n{purpose or "(not provided)"}\n\n'
+        f'Review at: https://portal.placealert.org/duckrequest/admin\n'
+        f'User ID: {user_id}'
+    )
+    for addr in ADMIN_EMAILS:
+        _send_email(addr, f'[PALs Portal] New account request from {name}', body)
+
+    return jsonify({'ok': True, 'message': 'Your request has been submitted. You will receive an email once approved.'})
+
+
+@app.route('/api/portal/login', methods=['POST'])
+def portal_login():
+    d        = request.json or {}
+    email    = d.get('email', '').strip()
+    password = d.get('password', '')
+
+    if not email or not password:
+        return jsonify({'ok': False, 'error': 'Email and password are required'}), 400
+
+    # Check if user exists at all (to give a better pending message)
+    existing = access_db.get_portal_user_by_email(email)
+    if existing and existing.get('status') == 'pending':
+        return jsonify({'ok': False, 'error': 'Your account is pending admin approval. You will receive an email when approved.'}), 403
+    if existing and existing.get('status') == 'rejected':
+        return jsonify({'ok': False, 'error': 'Your access request was not approved. Contact the administrator.'}), 403
+    if existing and existing.get('status') == 'revoked':
+        return jsonify({'ok': False, 'error': 'Your account has been revoked. Contact the administrator.'}), 403
+
+    user = access_db.authenticate_portal_user(email, password)
+    if not user:
+        return jsonify({'ok': False, 'error': 'Invalid email or password'}), 401
+
+    token = access_db.issue_user_catalogue_token(user['id'])
+    return jsonify({'ok': True, 'token': token, 'name': user['name']})
+
+
+@app.route('/api/portal/logout', methods=['POST'])
+def portal_logout():
+    token = request.headers.get('X-Session-Token', '')
+    if token:
+        access_db.portal_logout(token)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/portal/validate-session', methods=['GET'])
+def portal_validate_session():
+    token = request.headers.get('X-Session-Token', '')
+    if token and access_db.validate_catalogue_token(token):
+        user = access_db.get_catalogue_user_from_token(token)
+        if user and user.get('catalogue') == 'portal':
+            return jsonify({'ok': True, 'name': user['name']})
+    return jsonify({'ok': False}), 401
+
+
+@app.route('/api/portal/forgot-password', methods=['POST'])
+def portal_forgot_password():
+    email = (request.json or {}).get('email', '').strip()
+    # Always return OK to avoid email enumeration
+    if email:
+        user = access_db.get_portal_user_by_email(email)
+        if user and user.get('status') == 'approved':
+            token = access_db.create_user_reset_token(user['id'])
+            reset_url = f'{PORTAL_URL}/?reset_token={token}'
+            _send_email(
+                email,
+                '[PALs Portal] Password reset request',
+                f'Hi {user["name"]},\n\n'
+                f'You requested a password reset for your PALs Portal account.\n\n'
+                f'Click the link below to set a new password (valid for 1 hour):\n'
+                f'{reset_url}\n\n'
+                f'If you did not request this, ignore this email.\n\n'
+                f'PALS Lab Team'
+            )
+    return jsonify({'ok': True, 'message': 'If that email is registered and approved, a reset link has been sent.'})
+
+
+@app.route('/api/portal/reset-password', methods=['POST'])
+def portal_reset_password():
+    d        = request.json or {}
+    token    = d.get('token', '').strip()
+    password = d.get('password', '')
+
+    if not token or not password:
+        return jsonify({'ok': False, 'error': 'Token and password are required'}), 400
+    if len(password) < 8:
+        return jsonify({'ok': False, 'error': 'Password must be at least 8 characters'}), 400
+
+    user_id = access_db.consume_user_reset_token(token, password)
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Reset link is invalid or has expired'}), 400
+
+    return jsonify({'ok': True, 'message': 'Password updated. You can now sign in.'})
 
 
 def is_safe_query(sql):
