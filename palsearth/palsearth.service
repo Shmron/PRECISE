@@ -1,0 +1,21 @@
+[Unit]
+Description=PALSearth Streamlit App
+After=network.target
+
+[Service]
+User=rutendo
+Restart=always
+RestartSec=10
+WorkingDirectory=/home/rutendo/PRECISE/palsearth
+ExecStart=/opt/anaconda3/bin/streamlit run app.py \
+    --server.port 8503 \
+    --server.baseUrlPath /palsearth \
+    --server.address 127.0.0.1 \
+    --server.headless true \
+    --server.enableCORS false \
+    --server.enableXsrfProtection false
+Environment=PYTHONPATH=/home/rutendo/PRECISE/palsearth
+Environment=ANTHROPIC_API_KEY=REPLACE_WITH_NEW_KEY
+
+[Install]
+WantedBy=multi-user.target

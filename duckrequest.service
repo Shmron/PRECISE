@@ -1,0 +1,16 @@
+[Unit]
+Description=PRECISE DuckDB Request Admin Service
+After=network.target
+
+[Service]
+User=rutendo
+Restart=always
+RestartSec=10
+WorkingDirectory=/home/rutendo/PRECISE
+ExecStart=/opt/anaconda3/bin/python3 /home/rutendo/PRECISE/duckdb_request.py
+Environment=FLASK_SECRET_KEY=e83cbe3dc8fc2c7d76eb426c98f460c3245527394d14b6f2d9a17bc0ad9333a2
+Environment=SMTP_APP_PASSWORD=REPLACE_WITH_GMAIL_APP_PASSWORD
+Environment=PYTHONPATH=/home/rutendo/PRECISE
+
+[Install]
+WantedBy=multi-user.target

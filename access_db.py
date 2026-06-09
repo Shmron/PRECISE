@@ -3,6 +3,7 @@ Access control database for PRECISE DuckDB requests.
 SQLite-backed store for requests, approvals, and API keys.
 """
 import sqlite3, secrets, json, datetime, os
+import bcrypt as _bcrypt
 
 DB_PATH = '/home/rutendo/PRECISE/access_control.db'
 
@@ -13,6 +14,18 @@ def _conn():
     c = sqlite3.connect(DB_PATH)
     c.row_factory = sqlite3.Row
     return c
+
+
+def _hash_pw(password: str) -> str:
+    return _bcrypt.hashpw(password.encode(), _bcrypt.gensalt()).decode()
+
+
+def _verify_pw(password: str, stored: str) -> bool:
+    b = stored.encode() if isinstance(stored, str) else stored
+    if not b.startswith(b'$2'):
+        # Legacy plaintext — compare directly; caller should migrate on success
+        return password == stored
+    return _bcrypt.checkpw(password.encode(), b)
 
 
 def init_db():
@@ -279,10 +292,10 @@ def _seed_admins():
                 "SELECT 1 FROM admins WHERE username=?", (username,)
             ).fetchone()
             if not existing:
-                pw = info['password'] if info['password'] is not None else legacy_pass
+                raw_pw = info['password'] if info['password'] is not None else legacy_pass
                 c.execute(
                     "INSERT INTO admins (username, password, email, must_change_pw) VALUES (?,?,?,?)",
-                    (username, pw, info['email'], info['must_change_pw'])
+                    (username, _hash_pw(raw_pw), info['email'], info['must_change_pw'])
                 )
             else:
                 # Patch email in if the column was just added
@@ -298,9 +311,14 @@ def check_admin(username, password):
         row = c.execute(
             "SELECT password, must_change_pw FROM admins WHERE username=?", (username,)
         ).fetchone()
-    if row and row['password'] == password:
-        return True, bool(row['must_change_pw'])
-    return False, False
+    if not row or not _verify_pw(password, row['password']):
+        return False, False
+    # Migrate legacy plaintext to bcrypt on first successful login
+    if not row['password'].startswith('$2'):
+        with _conn() as c:
+            c.execute("UPDATE admins SET password=? WHERE username=?",
+                      (_hash_pw(password), username))
+    return True, bool(row['must_change_pw'])
 
 
 def get_admin_email(username):
@@ -313,7 +331,7 @@ def set_admin_password(username, new_pass):
     with _conn() as c:
         c.execute(
             "UPDATE admins SET password=?, must_change_pw=0 WHERE username=?",
-            (new_pass, username)
+            (_hash_pw(new_pass), username)
         )
 
 
@@ -321,7 +339,7 @@ def add_admin(username, password, email=None):
     with _conn() as c:
         c.execute(
             "INSERT OR REPLACE INTO admins (username, password, email, must_change_pw) VALUES (?,?,?,1)",
-            (username, password, email)
+            (username, _hash_pw(password), email)
         )
 
 
@@ -414,7 +432,7 @@ def create_catalogue_user(catalogue, name, email, password, token_budget=1_000_0
             '''INSERT OR IGNORE INTO catalogue_users
                (id, catalogue, name, email, password, token_budget, created_at, notes)
                VALUES (?,?,?,?,?,?,?,?)''',
-            (user_id, catalogue, name, email.lower().strip(), password, token_budget, now, notes)
+            (user_id, catalogue, name, email.lower().strip(), _hash_pw(password), token_budget, now, notes)
         )
     return user_id
 
@@ -424,11 +442,21 @@ def authenticate_catalogue_user(catalogue, email, password):
     with _conn() as c:
         row = c.execute(
             """SELECT * FROM catalogue_users
-               WHERE catalogue=? AND email=? AND password=?
+               WHERE catalogue=? AND email=?
                  AND (status IS NULL OR status='approved') AND is_active=1""",
-            (catalogue, email.lower().strip(), password)
+            (catalogue, email.lower().strip())
         ).fetchone()
-    return dict(row) if row else None
+    if not row:
+        return None
+    user = dict(row)
+    if not _verify_pw(password, user['password']):
+        return None
+    # Migrate legacy plaintext to bcrypt on first successful login
+    if not user['password'].startswith('$2'):
+        with _conn() as c:
+            c.execute("UPDATE catalogue_users SET password=? WHERE id=?",
+                      (_hash_pw(password), user['id']))
+    return user
 
 
 def get_catalogue_user(user_id):
@@ -618,7 +646,7 @@ def create_catalogue_signup_user(catalogue, name, email, password, institution='
             '''INSERT INTO catalogue_users
                (id, catalogue, name, email, password, token_budget, is_active, status, created_at, notes)
                VALUES (?,?,?,?,?,?,?,?,?,?)''',
-            (user_id, catalogue, name, email, password, 1_000_000, 0, 'pending', now,
+            (user_id, catalogue, name, email, _hash_pw(password), 1_000_000, 0, 'pending', now,
              f'institution={institution};reason={reason}')
         )
     return user_id, None
@@ -673,7 +701,7 @@ def create_portal_user(name, email, password, institution='', purpose=''):
             '''INSERT INTO catalogue_users
                (id, catalogue, name, email, password, token_budget, is_active, status, created_at, notes)
                VALUES (?,?,?,?,?,?,?,?,?,?)''',
-            (user_id, 'portal', name, email, password, 0, 0, 'pending', now,
+            (user_id, 'portal', name, email, _hash_pw(password), 0, 0, 'pending', now,
              f'institution={institution};purpose={purpose}')
         )
     return user_id, None
@@ -707,11 +735,21 @@ def authenticate_portal_user(email, password):
     with _conn() as c:
         row = c.execute(
             """SELECT * FROM catalogue_users
-               WHERE catalogue='portal' AND email=? AND password=?
+               WHERE catalogue='portal' AND email=?
                  AND status='approved' AND is_active=1""",
-            (email.lower().strip(), password)
+            (email.lower().strip(),)
         ).fetchone()
-    return dict(row) if row else None
+    if not row:
+        return None
+    user = dict(row)
+    if not _verify_pw(password, user['password']):
+        return None
+    # Migrate legacy plaintext to bcrypt on first successful login
+    if not user['password'].startswith('$2'):
+        with _conn() as c:
+            c.execute("UPDATE catalogue_users SET password=? WHERE id=?",
+                      (_hash_pw(password), user['id']))
+    return user
 
 
 def approve_portal_user(user_id):
@@ -799,7 +837,8 @@ def consume_user_reset_token(token, new_password):
     if not user_id:
         return None
     with _conn() as c:
-        c.execute("UPDATE catalogue_users SET password=? WHERE id=?", (new_password, user_id))
+        c.execute("UPDATE catalogue_users SET password=? WHERE id=?",
+                  (_hash_pw(new_password), user_id))
         c.execute("DELETE FROM user_reset_tokens WHERE token=?", (token,))
     return user_id
 

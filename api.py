@@ -124,9 +124,8 @@ For technical issues or account problems, contact the PALs admin."""
 # ── Security helpers ──────────────────────────────────────────────────────────
 
 def get_api_key():
-    """Extract API key from X-API-Key header or ?api_key= query param."""
+    """Extract API key from X-API-Key header only (not URL params — avoids nginx log exposure)."""
     return (request.headers.get('X-API-Key') or
-            request.args.get('api_key') or
             (request.get_json(silent=True) or {}).get('api_key'))
 
 

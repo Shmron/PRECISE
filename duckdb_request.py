@@ -19,7 +19,7 @@ from fpdf import FPDF
 import access_db
 
 app = Flask(__name__)
-app.secret_key = os.urandom(32)   # ephemeral — session survives only while process runs
+app.secret_key = os.environ.get('FLASK_SECRET_KEY') or os.urandom(32)
 
 # All URLs behind /duckrequest/ nginx prefix
 PREFIX = '/duckrequest'
