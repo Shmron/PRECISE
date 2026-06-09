@@ -1928,6 +1928,15 @@ Zambia: code 1 [1, 3]</div>
             mainContent.classList.add('blurred');
         }
 
+        let _heatIdleTimer = null;
+        function _startHeatIdleTimer() {
+            function _ping() { clearTimeout(_heatIdleTimer); _heatIdleTimer = setTimeout(showGate, 2 * 60 * 60 * 1000); }
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(
+                ev => document.addEventListener(ev, _ping, { passive: true })
+            );
+            _ping();
+        }
+
         const _urlParams  = new URLSearchParams(window.location.search);
         const _resetToken = _urlParams.get('reset_token');
 
@@ -1941,7 +1950,7 @@ Zambia: code 1 [1, 3]</div>
                     fetch('/precise-api/api/validate-session', {
                         headers: { 'X-Session-Token': _storedToken }
                     }).then(r => {
-                        if (r.ok) { loginGate.classList.add('hidden'); mainContent.classList.remove('blurred'); }
+                        if (r.ok) { loginGate.classList.add('hidden'); mainContent.classList.remove('blurred'); _startHeatIdleTimer(); }
                         else showGate();
                     }).catch(() => loginGate.classList.add('hidden'));
                 } else {
@@ -1987,6 +1996,7 @@ Zambia: code 1 [1, 3]</div>
                     sessionStorage.setItem(TOKEN_KEY, data.token);
                     loginGate.classList.add('hidden');
                     mainContent.classList.remove('blurred');
+                    _startHeatIdleTimer();
                 } else {
                     errEl.textContent = data.error || 'Incorrect email or password.';
                     errEl.classList.add('show');

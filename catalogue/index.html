@@ -4460,6 +4460,15 @@ by most village residents.</div>
                 loginGate.classList.remove('hidden');
             }
 
+            let _catIdleTimer = null;
+            function _startCatIdleTimer() {
+                function _ping() { clearTimeout(_catIdleTimer); _catIdleTimer = setTimeout(showGate, 2 * 60 * 60 * 1000); }
+                ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(
+                    ev => document.addEventListener(ev, _ping, { passive: true })
+                );
+                _ping();
+            }
+
             const _urlParams  = new URLSearchParams(window.location.search);
             const _resetToken = _urlParams.get('reset_token');
 
@@ -4471,7 +4480,7 @@ by most village residents.</div>
                     const _tok = sessionStorage.getItem('catalogueToken');
                     if (_tok) {
                         fetch(API_BASE + '/api/validate-session', { headers: { 'X-Session-Token': _tok } })
-                            .then(r => { if (r.ok) loginGate.classList.add('hidden'); else showGate(); })
+                            .then(r => { if (r.ok) { loginGate.classList.add('hidden'); _startCatIdleTimer(); } else showGate(); })
                             .catch(() => loginGate.classList.add('hidden'));
                     }
                 }
@@ -4514,7 +4523,7 @@ by most village residents.</div>
                         sessionStorage.setItem('catalogueToken', data.token);
                         loginGate.style.transition = 'opacity 0.3s ease';
                         loginGate.style.opacity = '0';
-                        setTimeout(() => loginGate.classList.add('hidden'), 300);
+                        setTimeout(() => { loginGate.classList.add('hidden'); _startCatIdleTimer(); }, 300);
                     } else {
                         loginError.textContent = data.error || 'Incorrect email or password.';
                         loginError.classList.add('show');

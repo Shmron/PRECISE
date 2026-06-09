@@ -1970,10 +1970,29 @@
             el.textContent = '';
         }
 
+        const _IDLE_MS = 2 * 60 * 60 * 1000; // 2 hours inactivity → re-lock
+        let _idleTimer = null;
+        function _startIdleTimer() {
+            function _lock() {
+                const tok = localStorage.getItem(TOKEN_KEY);
+                if (tok) fetch(API + '/logout', { method: 'POST', headers: { 'X-Session-Token': tok } }).catch(() => {});
+                localStorage.removeItem(TOKEN_KEY);
+                const g = document.getElementById('authGate');
+                g.classList.remove('hidden');
+                g.style.display = 'flex';
+            }
+            function _ping() { clearTimeout(_idleTimer); _idleTimer = setTimeout(_lock, _IDLE_MS); }
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(
+                ev => document.addEventListener(ev, _ping, { passive: true })
+            );
+            _ping();
+        }
+
         function unlockPortal(name) {
             document.getElementById('authGate').classList.add('hidden');
             const next = sessionStorage.getItem('pals_portal_next');
-            if (next) { sessionStorage.removeItem('pals_portal_next'); window.location.href = next; }
+            if (next) { sessionStorage.removeItem('pals_portal_next'); window.location.href = next; return; }
+            _startIdleTimer();
         }
 
         // ── Check for ?reset_token= in URL ───────────────────────────────────
