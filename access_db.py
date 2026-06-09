@@ -420,10 +420,12 @@ def create_catalogue_user(catalogue, name, email, password, token_budget=1_000_0
 
 
 def authenticate_catalogue_user(catalogue, email, password):
-    """Return user dict if credentials match, else None."""
+    """Return user dict if credentials match and account is approved, else None."""
     with _conn() as c:
         row = c.execute(
-            "SELECT * FROM catalogue_users WHERE catalogue=? AND email=? AND password=?",
+            """SELECT * FROM catalogue_users
+               WHERE catalogue=? AND email=? AND password=?
+                 AND (status IS NULL OR status='approved') AND is_active=1""",
             (catalogue, email.lower().strip(), password)
         ).fetchone()
     return dict(row) if row else None
@@ -594,6 +596,61 @@ def get_shared_conversation(share_id):
     d = dict(row)
     d['messages'] = json.loads(d['messages'])
     return d
+
+
+# ── Catalogue user self-signup (precise / he2at) ─────────────────────────────
+
+def create_catalogue_signup_user(catalogue, name, email, password, institution='', reason=''):
+    """Create a catalogue user from a self-signup — status='pending', is_active=0.
+    Returns (user_id, None) on success or (None, existing_status) if email exists."""
+    email = email.lower().strip()
+    with _conn() as c:
+        existing = c.execute(
+            "SELECT id, status FROM catalogue_users WHERE catalogue=? AND email=?",
+            (catalogue, email)
+        ).fetchone()
+        if existing:
+            return None, existing['status']
+    user_id = secrets.token_hex(8)
+    now = datetime.datetime.utcnow().isoformat()
+    with _conn() as c:
+        c.execute(
+            '''INSERT INTO catalogue_users
+               (id, catalogue, name, email, password, token_budget, is_active, status, created_at, notes)
+               VALUES (?,?,?,?,?,?,?,?,?,?)''',
+            (user_id, catalogue, name, email, password, 1_000_000, 0, 'pending', now,
+             f'institution={institution};reason={reason}')
+        )
+    return user_id, None
+
+
+def get_catalogue_user_by_email(catalogue, email):
+    with _conn() as c:
+        row = c.execute(
+            "SELECT * FROM catalogue_users WHERE catalogue=? AND email=?",
+            (catalogue, email.lower().strip())
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def approve_catalogue_signup_user(user_id):
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET status='approved', is_active=1 WHERE id=?",
+            (user_id,)
+        )
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def reject_catalogue_signup_user(user_id):
+    with _conn() as c:
+        c.execute(
+            "UPDATE catalogue_users SET status='rejected', is_active=0 WHERE id=?",
+            (user_id,)
+        )
+        row = c.execute("SELECT * FROM catalogue_users WHERE id=?", (user_id,)).fetchone()
+    return dict(row) if row else None
 
 
 # ── Portal user accounts (public sign-up + admin approval) ───────────────────

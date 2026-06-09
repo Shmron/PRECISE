@@ -1059,24 +1059,68 @@ function renderUsersTable(users, elId) {
   if (!users.length) { el.innerHTML='<p style="color:#9ca3af;font-size:13px">No users yet.</p>'; return; }
   el.innerHTML = '<table><tr><th>User</th><th>Used</th><th>Budget</th><th>%</th><th>Last active</th><th>Status</th><th>Actions</th></tr>'
     + users.map(u => {
+      const st = u.status || (u.is_active ? 'approved' : 'revoked');
       const pct = u.token_budget > 0 ? Math.round(u.tokens_used/u.token_budget*100) : 0;
       const bar = `<div style="height:6px;background:#e5e7eb;border-radius:3px;width:80px;display:inline-block;vertical-align:middle"><div style="height:6px;background:${pct>90?'#ef4444':pct>70?'#f59e0b':'#10b981'};border-radius:3px;width:${Math.min(pct,100)}%"></div></div>`;
-      const status = u.is_active ? '<span class="badge badge-approved">Active</span>' : '<span class="badge badge-rejected">Revoked</span>';
-      const actions = u.is_active
-        ? `<button class="btn btn-sm btn-approve" onclick="openBudgetEdit('${u.id}','${u.name}',${u.token_budget})">Edit budget</button>
-           <button class="btn btn-sm btn-reject" style="margin-left:4px" onclick="catUserRevoke('${u.id}','${u.name}')">Revoke</button>`
-        : `<button class="btn btn-sm" style="background:#6b7280;color:white" onclick="catUserReinstate('${u.id}','${u.name}')">Reinstate</button>`;
+      let statusBadge, actions;
+      if (st === 'pending') {
+        statusBadge = '<span class="badge badge-pending">Pending</span>';
+        actions = `<button class="btn btn-sm btn-approve" onclick="openCatUserApprove('${u.id}','${u.name.replace(/'/g,"\\'")}')">Approve</button>
+                   <button class="btn btn-sm btn-reject" style="margin-left:4px" onclick="openCatUserReject('${u.id}','${u.name.replace(/'/g,"\\'")}')">Reject</button>`;
+      } else if (st === 'approved' && u.is_active) {
+        statusBadge = '<span class="badge badge-approved">Active</span>';
+        actions = `<button class="btn btn-sm btn-approve" onclick="openBudgetEdit('${u.id}','${u.name.replace(/'/g,"\\'")}',${u.token_budget})">Edit budget</button>
+                   <button class="btn btn-sm btn-reject" style="margin-left:4px" onclick="catUserRevoke('${u.id}','${u.name.replace(/'/g,"\\'")}')">Revoke</button>`;
+      } else if (st === 'rejected') {
+        statusBadge = '<span class="badge badge-rejected">Rejected</span>';
+        actions = '';
+      } else {
+        statusBadge = '<span class="badge" style="background:#f3e8ff;color:#6b21a8">Revoked</span>';
+        actions = `<button class="btn btn-sm" style="background:#6b7280;color:white" onclick="catUserReinstate('${u.id}','${u.name.replace(/'/g,"\\'")}')">Reinstate</button>`;
+      }
       return `<tr>
         <td>${u.name}<br><small style="color:#6b7280">${u.email}</small></td>
-        <td>${fmtTokens(u.tokens_used)}</td>
-        <td>${fmtTokens(u.token_budget)}</td>
-        <td>${bar} ${pct}%</td>
+        <td>${st==='pending'?'—':fmtTokens(u.tokens_used)}</td>
+        <td>${st==='pending'?'—':fmtTokens(u.token_budget)}</td>
+        <td>${st==='pending'?'—':bar+' '+pct+'%'}</td>
         <td><small>${u.last_used ? u.last_used.slice(0,10) : '—'}</small></td>
-        <td>${status}</td>
+        <td>${statusBadge}</td>
         <td>${actions}</td>
       </tr>`;
     }).join('')
     + '</table>';
+}
+
+let _catUserId = null;
+function openCatUserApprove(id, name) {
+  _catUserId = id;
+  document.getElementById('catUserApproveFor').textContent = name;
+  document.getElementById('catUserApproveModal').classList.add('open');
+}
+function openCatUserReject(id, name) {
+  _catUserId = id;
+  document.getElementById('catUserRejectFor').textContent = name;
+  document.getElementById('catUserRejectNotes').value = '';
+  document.getElementById('catUserRejectModal').classList.add('open');
+}
+async function submitCatUserApprove() {
+  const btn = document.querySelector('#catUserApproveModal .btn-approve');
+  btn.disabled = true; btn.textContent = 'Approving…';
+  const r = await fetch(PREFIX + '/admin/cat-user-approve', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: _catUserId})
+  });
+  const d = await r.json();
+  if (d.ok) { closeModals(); loadCatUsers(); } else { alert('Error: ' + d.error); btn.disabled=false; btn.textContent='Approve'; }
+}
+async function submitCatUserReject() {
+  const notes = document.getElementById('catUserRejectNotes').value.trim();
+  const r = await fetch(PREFIX + '/admin/cat-user-reject', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({user_id: _catUserId, notes})
+  });
+  const d = await r.json();
+  if (d.ok) { closeModals(); loadCatUsers(); } else alert('Error: ' + d.error);
 }
 
 async function loadCatUsers() {
@@ -1302,6 +1346,33 @@ loadPortalUsers();
     <div class="modal-footer">
       <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
       <button class="btn btn-reject" onclick="submitCatReject()">Reject Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- Catalogue self-signup approve modal -->
+<div class="modal-backdrop" id="catUserApproveModal">
+  <div class="modal">
+    <h3>Approve Catalogue Account</h3>
+    <p id="catUserApproveFor" style="font-size:13px;color:#6b7280;margin-bottom:16px"></p>
+    <p style="font-size:13px;color:#374151;margin-bottom:0">The user set their own password. An approval email will be sent and they can log in immediately.</p>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
+      <button class="btn btn-approve" onclick="submitCatUserApprove()">Approve</button>
+    </div>
+  </div>
+</div>
+
+<!-- Catalogue self-signup reject modal -->
+<div class="modal-backdrop" id="catUserRejectModal">
+  <div class="modal">
+    <h3>Reject Catalogue Account</h3>
+    <p id="catUserRejectFor" style="font-size:13px;color:#6b7280;margin-bottom:16px"></p>
+    <label>Reason (optional, emailed to requester)</label>
+    <textarea id="catUserRejectNotes" style="min-height:60px" placeholder="e.g. Outside our research scope"></textarea>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModals()" style="background:#e5e7eb;color:#374151">Cancel</button>
+      <button class="btn btn-reject" onclick="submitCatUserReject()">Reject</button>
     </div>
   </div>
 </div>
@@ -1591,6 +1662,45 @@ def admin_cat_user_reinstate():
     if not user_id:
         return jsonify({'ok': False, 'error': 'Missing user_id'})
     access_db.reinstate_catalogue_user(user_id)
+    return jsonify({'ok': True})
+
+
+# ── Catalogue self-signup approval routes ────────────────────────────────────
+
+@app.route('/admin/cat-user-approve', methods=['POST'])
+@admin_required
+def admin_cat_user_approve_signup():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    user = access_db.approve_catalogue_signup_user(user_id)
+    if not user:
+        return jsonify({'ok': False, 'error': 'User not found'})
+    label = CATALOGUE_LABELS.get(user['catalogue'], user['catalogue'])
+    url   = ('https://portal.placealert.org/catalogue/' if user['catalogue'] == 'precise'
+             else 'https://portal.placealert.org/heat-catalogue/')
+    _send(user['email'],
+          f'[{label}] Your account has been approved',
+          f'Hi {user["name"]},\n\n'
+          f'Your request to access the {label} has been approved.\n\n'
+          f'Sign in with the password you chose during sign-up:\n{url}\n\n'
+          f'PALS Lab Team')
+    return jsonify({'ok': True})
+
+
+@app.route('/admin/cat-user-reject', methods=['POST'])
+@admin_required
+def admin_cat_user_reject_signup():
+    d       = request.get_json(force=True) or {}
+    user_id = d.get('user_id', '')
+    notes   = d.get('notes', '')
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Missing user_id'})
+    user = access_db.reject_catalogue_signup_user(user_id)
+    if not user:
+        return jsonify({'ok': False, 'error': 'User not found'})
+    notify_catalogue_rejected(user['catalogue'], user['name'], user['email'], notes)
     return jsonify({'ok': True})
 
 

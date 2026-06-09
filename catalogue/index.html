@@ -729,7 +729,10 @@
                     <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
                     <button type="submit">Log In</button>
                 </form>
-                <p id="loginError" class="login-error">Incorrect email or password. Please try again.</p>
+                <p id="loginError" class="login-error"></p>
+                <p style="text-align:right;margin-top:0.6rem;font-size:0.82rem">
+                    <a href="#" onclick="switchTab('forgot');return false" style="color:var(--teal-deep);text-decoration:none">Forgot password?</a>
+                </p>
             </div>
 
             <!-- Request access pane -->
@@ -738,11 +741,38 @@
                     <input type="text" id="reqName" placeholder="Full name" required>
                     <input type="email" id="reqEmail" placeholder="Email address" required>
                     <input type="text" id="reqInstitution" placeholder="Institution / affiliation">
-                    <textarea id="reqReason" placeholder="Brief reason for access (1–2 sentences)" required></textarea>
-                    <button type="submit" id="reqSubmitBtn">Send Request</button>
+                    <textarea id="reqReason" placeholder="Brief reason for access (1–2 sentences)"></textarea>
+                    <input type="password" id="reqPassword" placeholder="Choose a password (min. 8 characters)" autocomplete="new-password" required>
+                    <input type="password" id="reqPassword2" placeholder="Confirm password" autocomplete="new-password" required>
+                    <button type="submit" id="reqSubmitBtn">Request Access</button>
                 </form>
-                <p id="signupError" class="login-error">Could not send request. Please try again.</p>
-                <p class="gate-success" id="signupSuccess">&#10003; Request sent! You'll hear from the PALS Lab team once your access is approved.</p>
+                <p id="signupError" class="login-error"></p>
+                <p class="gate-success" id="signupSuccess">&#10003; Request submitted! You'll receive an email once your account is approved.</p>
+            </div>
+
+            <!-- Forgot password pane (no tab — triggered by link) -->
+            <div class="gate-pane" id="paneForgot">
+                <p style="font-size:0.88rem;color:#6b7280;margin-bottom:1rem">Enter your email and we'll send a reset link if your account is approved.</p>
+                <form id="forgotForm">
+                    <input type="email" id="forgotEmail" placeholder="Email address" autocomplete="email" required>
+                    <button type="submit" id="forgotSubmitBtn">Send Reset Link</button>
+                </form>
+                <p id="forgotMsg" class="gate-success"></p>
+                <p style="margin-top:0.75rem;font-size:0.82rem">
+                    <a href="#" onclick="switchTab('login');return false" style="color:var(--teal-deep);text-decoration:none">&#8592; Back to sign in</a>
+                </p>
+            </div>
+
+            <!-- Reset password pane (shown via ?reset_token= URL param) -->
+            <div class="gate-pane" id="paneReset">
+                <p style="font-size:0.88rem;color:#6b7280;margin-bottom:1rem">Choose a new password for your account.</p>
+                <form id="resetForm">
+                    <input type="password" id="resetPassword" placeholder="New password (min. 8 characters)" autocomplete="new-password" required>
+                    <input type="password" id="resetPassword2" placeholder="Confirm password" autocomplete="new-password" required>
+                    <button type="submit" id="resetSubmitBtn">Set Password</button>
+                </form>
+                <p id="resetMsg" class="gate-success"></p>
+                <p id="resetError" class="login-error"></p>
             </div>
         </div>
     </div>
@@ -4422,19 +4452,20 @@ by most village residents.</div>
 
         (function() {
             const loginGate    = document.getElementById('loginGate');
-            const loginForm    = document.getElementById('loginForm');
-            const loginError   = document.getElementById('loginError');
+            const loginForm  = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
 
             function showGate() {
                 sessionStorage.removeItem('catalogueToken');
                 loginGate.classList.remove('hidden');
             }
 
-            // Open-access demo window: 4 June 2026, 11:00–13:00 CAT (UTC+2)
-            const _demoStart = new Date('2026-06-04T09:00:00Z');
-            const _demoEnd   = new Date('2026-06-04T11:00:00Z');
-            if (Date.now() >= _demoStart && Date.now() < _demoEnd) {
-                loginGate.classList.add('hidden');
+            // Check for ?reset_token= in URL — show reset pane if present
+            const _urlParams   = new URLSearchParams(window.location.search);
+            const _resetToken  = _urlParams.get('reset_token');
+            if (_resetToken) {
+                switchTab('reset');
+                loginGate.classList.remove('hidden');
             } else {
                 // Validate existing token server-side before hiding the gate
                 const _tok = sessionStorage.getItem('catalogueToken');
@@ -4449,7 +4480,9 @@ by most village residents.</div>
                 e.preventDefault();
                 const email    = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value;
-
+                loginError.classList.remove('show');
+                const btn = loginForm.querySelector('button[type=submit]');
+                btn.disabled = true; btn.textContent = 'Logging in…';
                 try {
                     const resp = await fetch(API_BASE + '/api/catalogue-user-login', {
                         method: 'POST',
@@ -4457,7 +4490,6 @@ by most village residents.</div>
                         body: JSON.stringify({ catalogue: 'precise', email, password })
                     });
                     const data = await resp.json();
-
                     if (data.ok) {
                         sessionStorage.setItem('catalogueToken', data.token);
                         loginGate.style.transition = 'opacity 0.3s ease';
@@ -4465,28 +4497,67 @@ by most village residents.</div>
                         setTimeout(() => loginGate.classList.add('hidden'), 300);
                     } else {
                         loginError.textContent = data.error || 'Incorrect email or password.';
-                        throw new Error('invalid');
+                        loginError.classList.add('show');
+                        loginForm.style.animation = 'shake 0.5s ease';
+                        setTimeout(() => { loginForm.style.animation = ''; }, 500);
                     }
                 } catch (_) {
+                    loginError.textContent = 'Network error. Please try again.';
                     loginError.classList.add('show');
-                    loginForm.style.animation = 'shake 0.5s ease';
-                    setTimeout(() => { loginForm.style.animation = ''; }, 500);
                 }
+                btn.disabled = false; btn.textContent = 'Log In';
             });
 
-            // Hide error on new input
             document.getElementById('loginEmail').addEventListener('input', () => loginError.classList.remove('show'));
             document.getElementById('loginPassword').addEventListener('input', () => loginError.classList.remove('show'));
 
-            // Add shake animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    20%, 60% { transform: translateX(-10px); }
-                    40%, 80% { transform: translateX(10px); }
+            // ── Forgot password ──────────────────────────────────────────────
+            document.getElementById('forgotForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('forgotEmail').value.trim();
+                const btn   = document.getElementById('forgotSubmitBtn');
+                btn.disabled = true; btn.textContent = 'Sending…';
+                const r = await fetch(API_BASE + '/api/catalogue/forgot-password', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ catalogue: 'precise', email })
+                });
+                const d = await r.json();
+                const msg = document.getElementById('forgotMsg');
+                msg.textContent = d.message || 'If that email is registered, a reset link has been sent.';
+                msg.classList.add('show');
+                btn.disabled = false; btn.textContent = 'Send Reset Link';
+            });
+
+            // ── Reset password ───────────────────────────────────────────────
+            document.getElementById('resetForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const pw  = document.getElementById('resetPassword').value;
+                const pw2 = document.getElementById('resetPassword2').value;
+                const errEl = document.getElementById('resetError');
+                const msgEl = document.getElementById('resetMsg');
+                errEl.classList.remove('show');
+                if (pw.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
+                if (pw !== pw2)    { errEl.textContent = 'Passwords do not match.'; errEl.classList.add('show'); return; }
+                const btn = document.getElementById('resetSubmitBtn');
+                btn.disabled = true; btn.textContent = 'Saving…';
+                const r = await fetch(API_BASE + '/api/catalogue/reset-password', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: _resetToken, password: pw })
+                });
+                const d = await r.json();
+                if (d.ok) {
+                    msgEl.textContent = 'Password updated! Redirecting to sign in…';
+                    msgEl.classList.add('show');
+                    setTimeout(() => { window.history.replaceState({}, '', window.location.pathname); switchTab('login'); }, 1800);
+                } else {
+                    errEl.textContent = d.error || 'Reset failed.';
+                    errEl.classList.add('show');
+                    btn.disabled = false; btn.textContent = 'Set Password';
                 }
-            `;
+            });
+
+            const style = document.createElement('style');
+            style.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}`;
             document.head.appendChild(style);
         })();
     </script>
@@ -4502,20 +4573,26 @@ by most village residents.</div>
 
         document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const errEl = document.getElementById('signupError');
+            errEl.classList.remove('show');
+            const pw  = document.getElementById('reqPassword').value;
+            const pw2 = document.getElementById('reqPassword2').value;
+            if (pw.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
+            if (pw !== pw2)    { errEl.textContent = 'Passwords do not match.'; errEl.classList.add('show'); return; }
             const btn = document.getElementById('reqSubmitBtn');
-            btn.disabled = true;
-            btn.textContent = 'Sending…';
-            const payload = {
-                name:        document.getElementById('reqName').value.trim(),
-                email:       document.getElementById('reqEmail').value.trim(),
-                institution: document.getElementById('reqInstitution').value.trim(),
-                reason:      document.getElementById('reqReason').value.trim(),
-            };
+            btn.disabled = true; btn.textContent = 'Submitting…';
             try {
-                const res = await fetch('/duckrequest/cat-submit', {
+                const res = await fetch('/precise-api/api/catalogue/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...payload, catalogue: 'precise' })
+                    body: JSON.stringify({
+                        catalogue:   'precise',
+                        name:        document.getElementById('reqName').value.trim(),
+                        email:       document.getElementById('reqEmail').value.trim(),
+                        institution: document.getElementById('reqInstitution').value.trim(),
+                        reason:      document.getElementById('reqReason').value.trim(),
+                        password:    pw,
+                    })
                 });
                 const data = await res.json();
                 if (data.ok) {
@@ -4525,10 +4602,9 @@ by most village residents.</div>
                     throw new Error(data.error || 'Unknown error');
                 }
             } catch(err) {
-                document.getElementById('signupError').textContent = 'Could not send request: ' + err.message;
-                document.getElementById('signupError').classList.add('show');
-                btn.disabled = false;
-                btn.textContent = 'Send Request';
+                errEl.textContent = err.message || 'Could not send request. Please try again.';
+                errEl.classList.add('show');
+                btn.disabled = false; btn.textContent = 'Request Access';
             }
         });
     </script>

@@ -168,11 +168,20 @@ def catalogue_user_login():
     if not email or not password:
         return jsonify({'ok': False, 'error': 'Email and password required'}), 400
 
+    # Check status before password so we can give informative messages
+    existing = access_db.get_catalogue_user_by_email(catalogue, email)
+    if existing:
+        status = existing.get('status') or 'approved'
+        if status == 'pending':
+            return jsonify({'ok': False, 'error': 'Your account is pending admin approval. You will receive an email when approved.'}), 403
+        if status == 'rejected':
+            return jsonify({'ok': False, 'error': 'Your access request was not approved. Contact the administrator.'}), 403
+        if status == 'revoked':
+            return jsonify({'ok': False, 'error': 'Your access has been revoked. Contact the administrator.'}), 403
+
     user = access_db.authenticate_catalogue_user(catalogue, email, password)
     if not user:
         return jsonify({'ok': False, 'error': 'Invalid email or password'}), 401
-    if not user['is_active']:
-        return jsonify({'ok': False, 'error': 'Your access has been revoked. Contact the administrator.'}), 403
     if user['tokens_used'] >= user['token_budget']:
         return jsonify({'ok': False, 'error': 'Your token budget is exhausted. Contact the administrator.'}), 403
 
@@ -296,6 +305,106 @@ def portal_forgot_password():
 
 @app.route('/api/portal/reset-password', methods=['POST'])
 def portal_reset_password():
+    d        = request.json or {}
+    token    = d.get('token', '').strip()
+    password = d.get('password', '')
+
+    if not token or not password:
+        return jsonify({'ok': False, 'error': 'Token and password are required'}), 400
+    if len(password) < 8:
+        return jsonify({'ok': False, 'error': 'Password must be at least 8 characters'}), 400
+
+    user_id = access_db.consume_user_reset_token(token, password)
+    if not user_id:
+        return jsonify({'ok': False, 'error': 'Reset link is invalid or has expired'}), 400
+
+    return jsonify({'ok': True, 'message': 'Password updated. You can now sign in.'})
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CATALOGUE SELF-SIGNUP  (precise / he2at — users choose their own password)
+# ══════════════════════════════════════════════════════════════════════════════
+
+_CATALOGUE_URLS = {
+    'precise': 'https://portal.placealert.org/catalogue/',
+    'he2at':   'https://portal.placealert.org/heat-catalogue/',
+}
+_CATALOGUE_LABELS = {
+    'precise': 'PRECISE Catalogue',
+    'he2at':   'HE²AT Catalogue',
+}
+
+
+@app.route('/api/catalogue/signup', methods=['POST'])
+def catalogue_signup():
+    d           = request.json or {}
+    catalogue   = d.get('catalogue', '').strip()
+    name        = d.get('name', '').strip()
+    email       = d.get('email', '').strip()
+    password    = d.get('password', '')
+    institution = d.get('institution', '').strip()
+    reason      = d.get('reason', '').strip()
+
+    if catalogue not in ('precise', 'he2at'):
+        return jsonify({'ok': False, 'error': 'Unknown catalogue'}), 400
+    if not name or not email or not password:
+        return jsonify({'ok': False, 'error': 'Name, email and password are required'}), 400
+    if len(password) < 8:
+        return jsonify({'ok': False, 'error': 'Password must be at least 8 characters'}), 400
+
+    user_id, conflict = access_db.create_catalogue_signup_user(
+        catalogue, name, email, password, institution, reason
+    )
+    if user_id is None:
+        if conflict == 'pending':
+            return jsonify({'ok': False, 'error': 'A request for this email is already pending review.'}), 409
+        if conflict == 'approved':
+            return jsonify({'ok': False, 'error': 'An account with this email already exists. Please sign in.'}), 409
+        return jsonify({'ok': False, 'error': 'This email is already registered.'}), 409
+
+    label = _CATALOGUE_LABELS.get(catalogue, catalogue)
+    body = (
+        f'A new {label} account request requires your approval.\n\n'
+        f'Name:        {name}\n'
+        f'Email:       {email}\n'
+        f'Institution: {institution}\n\n'
+        f'Reason:\n{reason or "(not provided)"}\n\n'
+        f'Review at: https://portal.placealert.org/duckrequest/admin\n'
+        f'User ID: {user_id}'
+    )
+    for addr in ADMIN_EMAILS:
+        _send_email(addr, f'[{label}] New account request from {name}', body)
+
+    return jsonify({'ok': True, 'message': 'Your request has been submitted. You will receive an email once approved.'})
+
+
+@app.route('/api/catalogue/forgot-password', methods=['POST'])
+def catalogue_forgot_password():
+    d         = request.json or {}
+    catalogue = d.get('catalogue', '').strip()
+    email     = d.get('email', '').strip()
+
+    if email and catalogue in ('precise', 'he2at'):
+        user = access_db.get_catalogue_user_by_email(catalogue, email)
+        if user and user.get('status') in (None, 'approved'):
+            token     = access_db.create_user_reset_token(user['id'])
+            reset_url = f"{_CATALOGUE_URLS.get(catalogue, PORTAL_URL)}?reset_token={token}"
+            label     = _CATALOGUE_LABELS.get(catalogue, catalogue)
+            _send_email(
+                email,
+                f'[{label}] Password reset request',
+                f'Hi {user["name"]},\n\n'
+                f'You requested a password reset for your {label} account.\n\n'
+                f'Click the link below to set a new password (valid for 1 hour):\n'
+                f'{reset_url}\n\n'
+                f'If you did not request this, ignore this email.\n\n'
+                f'PALS Lab Team'
+            )
+    return jsonify({'ok': True, 'message': 'If that email is registered and approved, a reset link has been sent.'})
+
+
+@app.route('/api/catalogue/reset-password', methods=['POST'])
+def catalogue_reset_password():
     d        = request.json or {}
     token    = d.get('token', '').strip()
     password = d.get('password', '')
