@@ -20,7 +20,6 @@ HIGHLIGHT = {
     "Bulawayo": "#B89C8E",             # taupe
     "Masvingo": "#D2C29E",             # sand
     "Mashonaland Central": "#B8A9CF",  # lavender
-    "Matabeleland North": "#9DB4D0",   # soft blue
     "Matabeleland South": "#A9C9C4",   # grey-teal
 }
 OTHER = "#efefef"
