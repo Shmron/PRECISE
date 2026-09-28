@@ -13,15 +13,17 @@ from shapely.geometry import shape
 HERE = Path(__file__).parent
 features = json.load(open(HERE / "zw_adm1.geojson"))["features"]
 
+# Muted hues of similar lightness: purely categorical, so no colour should read
+# as good/bad or more/less (no red, green, orange or traffic-light hues).
 HIGHLIGHT = {
-    "Harare": "#d62728",
-    "Bulawayo": "#9467bd",
-    "Masvingo": "#ff7f0e",
-    "Mashonaland Central": "#2ca02c",
-    "Matabeleland North": "#1f77b4",
-    "Matabeleland South": "#17becf",
+    "Harare": "#8E97B8",               # slate
+    "Bulawayo": "#B89C8E",             # taupe
+    "Masvingo": "#D2C29E",             # sand
+    "Mashonaland Central": "#B8A9CF",  # lavender
+    "Matabeleland North": "#9DB4D0",   # soft blue
+    "Matabeleland South": "#A9C9C4",   # grey-teal
 }
-OTHER = "#e6e6e6"
+OTHER = "#efefef"
 # Label offsets (lon, lat) for the two small metropolitan provinces
 CALLOUT = {"Harare": (1.6, 0.6), "Bulawayo": (-1.9, 0.2)}
 
@@ -34,7 +36,7 @@ for f in features:
     for p in polys:
         ax.add_patch(MplPolygon(list(p.exterior.coords), closed=True,
                                 facecolor=color, edgecolor="white", linewidth=1.2,
-                                alpha=0.9 if name in HIGHLIGHT else 1))
+                                alpha=1))
     pt = geom.representative_point()
     if name in CALLOUT:
         dx, dy = CALLOUT[name]
